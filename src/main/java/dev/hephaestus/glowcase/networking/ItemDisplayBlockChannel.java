@@ -37,6 +37,7 @@ public class ItemDisplayBlockChannel implements ModInitializer, ClientModInitial
         buf.writeBlockPos(itemDisplayBlockEntity.getPos());
         buf.writeEnumConstant(itemDisplayBlockEntity.rotationType);
         buf.writeEnumConstant(itemDisplayBlockEntity.givesItem);
+        buf.writeEnumConstant(itemDisplayBlockEntity.offset);
         buf.writeVarInt(itemDisplayBlockEntity.getCachedState().get(Properties.ROTATION));
         buf.writeBoolean(itemDisplayBlockEntity.showName);
 
@@ -79,6 +80,7 @@ public class ItemDisplayBlockChannel implements ModInitializer, ClientModInitial
         BlockPos pos = buf.readBlockPos();
         ItemDisplayBlockEntity.RotationType rotationType = buf.readEnumConstant(ItemDisplayBlockEntity.RotationType.class);
         ItemDisplayBlockEntity.GivesItem givesItem = buf.readEnumConstant(ItemDisplayBlockEntity.GivesItem.class);
+        ItemDisplayBlockEntity.Offset offset = buf.readEnumConstant(ItemDisplayBlockEntity.Offset.class);
         int rotation = buf.readVarInt();
         boolean showName = buf.readBoolean();
 
@@ -89,6 +91,7 @@ public class ItemDisplayBlockChannel implements ModInitializer, ClientModInitial
             if (player.world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be) {
                 be.givesItem = givesItem;
                 be.rotationType = rotationType;
+                be.offset = offset;
                 be.pitch = pitch;
                 be.yaw = yaw;
                 be.showName = showName;

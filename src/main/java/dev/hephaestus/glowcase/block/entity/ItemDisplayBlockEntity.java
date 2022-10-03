@@ -33,6 +33,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 
 	public RotationType rotationType = RotationType.TRACKING;
 	public GivesItem givesItem = GivesItem.YES;
+	public Offset offset = Offset.CENTER;
 	public boolean showName = true;
 	public float pitch;
 	public float yaw;
@@ -58,6 +59,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		tag.putFloat("yaw", this.yaw);
 		tag.putBoolean("show_name", this.showName);
 		tag.putString("gives_item", this.givesItem.name());
+		tag.putString("offset", this.offset.name());
 		NbtList given = new NbtList();
 		for (UUID id : givenTo) {
 			NbtCompound givenTag = new NbtCompound();
@@ -85,6 +87,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 			this.givesItem = GivesItem.valueOf(tag.getString("gives_item"));
 		} else {
 			this.givesItem = GivesItem.YES;
+		}
+
+		if (tag.contains("offset")) {
+			this.offset = Offset.valueOf(tag.getString("offset"));
+		} else {
+			this.offset = Offset.CENTER;
 		}
 
 		if (tag.contains("pitch")) {
@@ -170,6 +178,14 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		}
 	}
 
+	public void cycleOffset() {
+		switch (this.offset) {
+			case CENTER -> this.offset = Offset.BACK;
+			case BACK -> this.offset = Offset.FRONT;
+			case FRONT -> this.offset = Offset.CENTER;
+		}
+	}
+
 	@Environment(EnvType.CLIENT)
 	public static Vec2f getPitchAndYaw(PlayerEntity player, BlockPos pos) {
 		double d = pos.getX() - player.getPos().x + 0.5;
@@ -196,5 +212,9 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 
 	public enum GivesItem {
 		YES, NO, ONCE
+	}
+
+	public enum Offset {
+		CENTER, BACK, FRONT
 	}
 }
