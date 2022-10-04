@@ -54,6 +54,11 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 			}
 		}
 
+		switch (entity.offset) {
+			case FRONT -> matrices.translate(0D, Math.sin(pitch) * 0.4, -0.4D);
+			case BACK -> matrices.translate(0D, Math.sin(pitch) * -0.4, 0.4D);
+		}
+
 		ItemStack stack = entity.getUseStack();
 		Text name;
 		if (stack.getItem() instanceof SpawnEggItem) {

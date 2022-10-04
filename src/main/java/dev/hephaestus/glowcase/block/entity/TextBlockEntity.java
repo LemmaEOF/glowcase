@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 public class TextBlockEntity extends BlockEntity {
 	public List<MutableText> lines = new ArrayList<>();
 	public TextAlignment textAlignment = TextAlignment.CENTER;
-	public  ZOffset zOffset = ZOffset.CENTER;
+	public ZOffset zOffset = ZOffset.CENTER;
 	public ShadowType shadowType = ShadowType.DROP;
 	public float scale = 1F;
 	public int color = 0xFFFFFF;
