@@ -74,6 +74,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		super.readNbt(tag);
 
 		this.stack = ItemStack.fromNbt(tag.getCompound("item"));
+		this.clearDisplayEntity();
 
 		if (tag.contains("tracking")) {
 			this.rotationType = tag.getBoolean("tracking") ? RotationType.TRACKING : RotationType.LOCKED;
@@ -136,20 +137,20 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 
 		this.givenTo.clear();
 
-		this.setDisplayEntity();
+		this.clearDisplayEntity();
 
 		this.markDirty();
 	}
 
-	private void setDisplayEntity() {
-		if (this.stack.getItem() instanceof SpawnEggItem) {
-			this.displayEntity = ((SpawnEggItem) this.stack.getItem()).getEntityType(this.stack.getNbt()).create(this.world);
-		} else {
-			this.displayEntity = null;
-		}
+	private void clearDisplayEntity() {
+		this.displayEntity = null;
 	}
 
 	public Entity getDisplayEntity() {
+		if (this.displayEntity == null && this.world != null && this.stack.getItem() instanceof SpawnEggItem eggItem) {
+			this.displayEntity = eggItem.getEntityType(this.stack.getNbt()).create(this.world);
+		}
+
 		return this.displayEntity;
 	}
 
@@ -200,7 +201,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	public static void tick(World world, BlockPos blockPos, BlockState state, ItemDisplayBlockEntity blockEntity) {
-		if (blockEntity.displayEntity != null) {
+		if (blockEntity.getDisplayEntity() != null) {
 			blockEntity.displayEntity.tick();
 			++blockEntity.displayEntity.age;
 		}
