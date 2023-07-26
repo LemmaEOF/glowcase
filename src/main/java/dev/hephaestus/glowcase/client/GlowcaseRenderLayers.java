@@ -12,7 +12,7 @@ public class GlowcaseRenderLayers extends RenderPhase {
 			.texture(NO_TEXTURE)
 			.transparency(TRANSLUCENT_TRANSPARENCY)
 			.writeMaskState(COLOR_MASK)
-			.program(COLOR_PROGRAM)
+			.shader(COLOR_SHADER)
 			.build(false));
 
 	private GlowcaseRenderLayers() {

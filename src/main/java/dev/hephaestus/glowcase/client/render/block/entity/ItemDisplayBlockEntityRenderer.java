@@ -3,14 +3,12 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer.TextLayerType;
-import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,8 +18,8 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3f;
 
 public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<ItemDisplayBlockEntity> {
 	private static final MinecraftClient mc = MinecraftClient.getInstance();
@@ -43,16 +41,16 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(player, entity.getPos());
 				pitch = pitchAndYaw.x;
 				yaw = pitchAndYaw.y;
-				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
+				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(yaw));
 			}
 			case HORIZONTAL -> {
 				float rotation = -(entity.getCachedState().get(Properties.ROTATION) * 360) / 16.0F;
-				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(rotation));
+				matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation));
 			}
 			case LOCKED -> {
 				pitch = entity.pitch;
 				yaw = entity.yaw;
-				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
+				matrices.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion(yaw));
 			}
 		}
 
@@ -79,7 +77,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 				renderEntity.setPitch(-pitch * 57.2957763671875F);
 				renderEntity.setHeadYaw(yaw);
 
-				matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+				matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180));
 				EntityRenderer<? super Entity> entityRenderer = context.getEntityRenderDispatcher().getRenderer(renderEntity);
 				entityRenderer.render(renderEntity, 0, tickDelta, matrices, vertexConsumers, light);
 			} else {
@@ -92,14 +90,14 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 			name = stack.isEmpty() ? Text.translatable("gui.glowcase.none") : (Text.literal("")).append(stack.getName()).formatted(stack.getRarity().formatting);
 			matrices.translate(0, 0.5, 0);
 			matrices.scale(0.5F, 0.5F, 0.5F);
-			matrices.multiply(RotationAxis.POSITIVE_X.rotation(pitch));
-			context.getItemRenderer().renderItem(entity.getUseStack(), ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
+			matrices.multiply(Vec3f.POSITIVE_X.getRadialQuaternion(pitch));
+			context.getItemRenderer().renderItem(entity.getUseStack(), ModelTransformation.Mode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
 		}
 
 		if (entity.showName) {
 			HitResult hitResult = mc.crosshairTarget;
 			if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
-				matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+				matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0F));
 				matrices.translate(0, 0, -0.4);
 
 				float scale = 0.025F;
@@ -107,7 +105,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 				int color = name.getStyle().getColor() == null ? 0xFFFFFF : name.getStyle().getColor().getRgb();
 				matrices.translate(-context.getTextRenderer().getWidth(name) / 2F, -4, 0);
-				context.getTextRenderer().draw(name, 0, 0, color, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+				context.getTextRenderer().drawWithShadow(matrices, name, 0, 0, color);
 			}
 		}
 

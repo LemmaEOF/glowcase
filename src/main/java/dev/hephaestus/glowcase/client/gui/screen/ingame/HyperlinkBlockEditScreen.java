@@ -26,7 +26,7 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 
 		if (this.client == null) return;
 
-		// this.client.keyboard.setRepeatEvents(true);
+		this.client.keyboard.setRepeatEvents(true);
 
 		this.urlEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, height / 2 - 10, 8 * width / 10, 20, Text.empty());
 		this.urlEntryWidget.setText(this.hyperlinkBlockEntity.url);

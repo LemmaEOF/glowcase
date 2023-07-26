@@ -1,16 +1,14 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
-import org.joml.Matrix4f;
-
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.client.GlowcaseRenderLayers;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
 
 public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockEntity> {
 	public TextBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
@@ -36,7 +34,7 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 		matrices.translate(0.5D, 0.5D, 0.5D);
 
 		float rotation = -(blockEntity.getCachedState().get(Properties.ROTATION) * 360) / 16.0F;
-		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
+		matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation));
 
 		switch (blockEntity.zOffset) {
 			case FRONT -> matrices.translate(0D, 0D, 0.4D);
@@ -76,11 +74,11 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 				// Don't use the vanilla shadow rendering - it breaks when you try to use it in 3D
 				int shadowColor = 0x88000000;
 				matrices.translate(0, 0, -0.025D);
-				textRenderer.draw(blockEntity.lines.get(i), 1, (i * 12) + 1, shadowColor, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+				textRenderer.draw(blockEntity.lines.get(i), 1, (i * 12) + 1, shadowColor, false, matrices.peek().getPositionMatrix(), vertexConsumers, false, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 				matrices.translate(0, 0, 0.025D);
 			}
 
-			textRenderer.draw(blockEntity.lines.get(i), 0, i * 12, blockEntity.color, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+			textRenderer.draw(blockEntity.lines.get(i), 0, i * 12, blockEntity.color, false, matrices.peek().getPositionMatrix(), vertexConsumers, false, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 
 			matrices.pop();
 		}

@@ -88,7 +88,7 @@ public class ItemDisplayBlockChannel implements ModInitializer, ClientModInitial
         float yaw = buf.readFloat();
 
         server.execute(() -> {
-            if (player.getWorld().getBlockEntity(pos) instanceof ItemDisplayBlockEntity be) {
+            if (player.world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be) {
                 be.givesItem = givesItem;
                 be.rotationType = rotationType;
                 be.offset = offset;
@@ -96,7 +96,7 @@ public class ItemDisplayBlockChannel implements ModInitializer, ClientModInitial
                 be.yaw = yaw;
                 be.showName = showName;
 
-                player.getWorld().setBlockState(pos, player.getWorld().getBlockState(pos).with(Properties.ROTATION, rotation));
+                player.world.setBlockState(pos, player.world.getBlockState(pos).with(Properties.ROTATION, rotation));
 
                 be.markDirty();
             }
