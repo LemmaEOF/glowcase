@@ -90,7 +90,7 @@ public class TextBlockChannel implements ModInitializer, ClientModInitializer {
         }
 
         server.execute(() -> {
-            BlockEntity blockEntity = player.getWorld().getBlockEntity(pos);
+            BlockEntity blockEntity = player.world.getBlockEntity(pos);
             if (blockEntity instanceof TextBlockEntity) {
                 ((TextBlockEntity) blockEntity).scale = scale;
                 ((TextBlockEntity) blockEntity).lines = lines;

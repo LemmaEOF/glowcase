@@ -18,11 +18,11 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -102,7 +102,8 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 		private static final Set<RenderRegionPos> needsRebuild = Sets.newHashSet();
 		private static final Map<RenderRegionPos, RegionBufferBuilder> builders = new Object2ObjectOpenHashMap<>();
 
-		private static final Matrix3f MATRIX3F_IDENTITY = new Matrix3f().identity();
+		private static final Matrix3f MATRIX3F_IDENTITY = new Matrix3f();
+		static { MATRIX3F_IDENTITY.loadIdentity(); }
 
 		private static ClientWorld currentWorld = null;
 
@@ -123,7 +124,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 			}
 
 			public void upload(RenderLayer l, BufferBuilder newBuf) {
-				VertexBuffer buf = layerBuffers.computeIfAbsent(l, renderLayer -> new VertexBuffer(VertexBuffer.Usage.STATIC));
+				VertexBuffer buf = layerBuffers.computeIfAbsent(l, renderLayer -> new VertexBuffer());
  
 				buf.bind();
 				buf.upload(newBuf.end());
@@ -182,7 +183,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 			return Math.abs(rrp.x - ((int)cam.getX() >> REGION_SHIFT)) <= VIEW_RADIUS && Math.abs(rrp.z - ((int)cam.getZ() >> REGION_SHIFT)) <= VIEW_RADIUS;
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"rawtypes", "unchecked"})
 		public static void render(WorldRenderContext wrc) {
 			wrc.profiler().push("glowcase:baked_block_entity_rendering");
 

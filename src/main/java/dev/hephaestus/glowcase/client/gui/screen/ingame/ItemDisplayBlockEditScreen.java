@@ -30,29 +30,29 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 			int centerW = width / 2;
 			int centerH = height / 2;
 
-			this.givesItemButtom = ButtonWidget.builder(Text.translatable("gui.glowcase.gives_item", this.displayBlock.givesItem), (action) -> {
+			this.givesItemButtom = new ButtonWidget(centerW - 75, centerH - 40 - individualPadding, 150, 20, Text.translatable("gui.glowcase.gives_item", this.displayBlock.givesItem), (action) -> {
 				this.displayBlock.cycleGiveType();
 				this.givesItemButtom.setMessage(Text.translatable("gui.glowcase.gives_item", this.displayBlock.givesItem));
 				ItemDisplayBlockChannel.sync(this.displayBlock, true);
-			}).dimensions(centerW - 75, centerH - 40 - individualPadding, 150, 20).build();
+			});
 
-			this.rotationTypeButton = ButtonWidget.builder(Text.translatable("gui.glowcase.rotation_type", this.displayBlock.rotationType), (action) -> {
+			this.rotationTypeButton = new ButtonWidget(centerW - 75, centerH - 20, 150, 20, Text.translatable("gui.glowcase.rotation_type", this.displayBlock.rotationType), (action) -> {
 				this.displayBlock.cycleRotationType(this.client.player);
 				this.rotationTypeButton.setMessage(Text.translatable("gui.glowcase.rotation_type", this.displayBlock.rotationType));
 				ItemDisplayBlockChannel.sync(this.displayBlock, true);
-			}).dimensions(centerW - 75, centerH - 20, 150, 20).build();
+			});
 
-			this.showNameButton = ButtonWidget.builder(Text.translatable("gui.glowcase.show_name", this.displayBlock.showName), (action) -> {
+			this.showNameButton = new ButtonWidget(centerW - 75, centerH + individualPadding, 150, 20, Text.translatable("gui.glowcase.show_name", this.displayBlock.showName), (action) -> {
 				this.displayBlock.showName = !this.displayBlock.showName;
 				this.showNameButton.setMessage(Text.translatable("gui.glowcase.show_name", this.displayBlock.showName));
 				ItemDisplayBlockChannel.sync(this.displayBlock, false);
-			}).dimensions(centerW - 75, centerH + individualPadding, 150, 20).build();
+			});
 
-			this.offsetButton = ButtonWidget.builder(Text.translatable("gui.glowcase.offset", this.displayBlock.offset), (action) -> {
+			this.offsetButton = new ButtonWidget(centerW - 75, centerH + 20 + padding, 150, 20, Text.translatable("gui.glowcase.offset", this.displayBlock.offset), (action) -> {
 				this.displayBlock.cycleOffset();
 				this.offsetButton.setMessage(Text.translatable("gui.glowcase.offset", this.displayBlock.offset));
 				ItemDisplayBlockChannel.sync(this.displayBlock, true);
-			}).dimensions(centerW - 75, centerH + 20 + padding, 150, 20).build();
+			});
 
 			this.addDrawableChild(this.givesItemButtom);
 			this.addDrawableChild(this.rotationTypeButton);

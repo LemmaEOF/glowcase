@@ -13,13 +13,14 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.util.NbtType;
 
 public class MailboxBlockEntity extends BlockEntity {
     private final Deque<Message> messages = new ArrayDeque<>();
@@ -75,7 +76,7 @@ public class MailboxBlockEntity extends BlockEntity {
 
         nbt.putUuid("Owner", this.owner);
 
-        NbtList list = nbt.getList("Messages", NbtElement.COMPOUND_TYPE);
+        NbtList list = nbt.getList("Messages", NbtType.COMPOUND);
 
         for (Message message : this.messages) {
             NbtCompound messageTag = new NbtCompound();
@@ -97,7 +98,7 @@ public class MailboxBlockEntity extends BlockEntity {
         this.owner = nbt.getUuid("Owner");
         this.messages.clear();
 
-        for (NbtElement element : nbt.getList("Messages", NbtElement.COMPOUND_TYPE)) {
+        for (NbtElement element : nbt.getList("Messages", NbtType.COMPOUND)) {
             if (element instanceof NbtCompound message) {
                 this.messages.addLast(new Message(
                         message.getUuid("Sender"),
