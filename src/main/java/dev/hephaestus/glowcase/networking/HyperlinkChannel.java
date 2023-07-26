@@ -82,7 +82,7 @@ public class HyperlinkChannel implements ModInitializer, ClientModInitializer {
         String url = buf.readString();
 
         server.execute(() -> {
-            BlockEntity blockEntity = player.world.getBlockEntity(pos);
+            BlockEntity blockEntity = player.getWorld().getBlockEntity(pos);
 
             if (blockEntity instanceof HyperlinkBlockEntity && URL.matcher(url).matches()) {
                 ((HyperlinkBlockEntity) blockEntity).url = url;

@@ -8,13 +8,12 @@ import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRender
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.util.Window;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.StringVisitable;
@@ -27,14 +26,14 @@ import java.util.List;
 public class GlowcaseClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		BlockEntityRendererRegistry.register(Glowcase.TEXT_BLOCK_ENTITY, TextBlockEntityRenderer::new);
-		BlockEntityRendererRegistry.register(Glowcase.HYPERLINK_BLOCK_ENTITY, HyperlinkBlockEntityRenderer::new);
-		BlockEntityRendererRegistry.register(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, ItemDisplayBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(Glowcase.TEXT_BLOCK_ENTITY, TextBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(Glowcase.HYPERLINK_BLOCK_ENTITY, HyperlinkBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, ItemDisplayBlockEntityRenderer::new);
 
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(BakedBlockEntityRendererManager::render);
 		InvalidateRenderStateCallback.EVENT.register(BakedBlockEntityRendererManager::reset);
 
-		HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> {
+		HudRenderCallback.EVENT.register((context, tickDelta) -> {
 			MinecraftClient client = MinecraftClient.getInstance();
 
 			if (client.world != null && client.crosshairTarget instanceof BlockHitResult hitResult && client.world.getBlockEntity(hitResult.getBlockPos()) instanceof MailboxBlockEntity mailbox && mailbox.messageCount() > 0 && mailbox.owner().equals(client.getSession().getProfile().getId())) {
@@ -55,24 +54,24 @@ public class GlowcaseClient implements ClientModInitializer {
 				int startX = window.getScaledWidth() / 2 - totalWidth / 2;
 				int startY = window.getScaledHeight() / 2 - totalHeight / 2;
 
-				DrawableHelper.fill(matrixStack, startX, startY, startX + totalWidth, startY + totalHeight, 0x80000000);
+				context.fill(startX, startY, startX + totalWidth, startY + totalHeight, 0x80000000);
 
 				int y = startY + lineHeight * 2;
 
 				for (OrderedText line : lines) {
-					textRenderer.draw(matrixStack, line, startX + 3, y, -1);
+					context.drawText(client.textRenderer, line, startX + 3, y, -1, false);
 					y += lineHeight;
 				}
 
-				textRenderer.draw(matrixStack, Text.translatable("glowcase.mailbox.sender", message.senderName()), startX + 3, startY + 3, -1);
+				context.drawText(client.textRenderer, Text.translatable("glowcase.mailbox.sender", message.senderName()), startX + 3, startY + 3, -1, false);
 
 				Text messageCount = Text.literal("1/" + mailbox.messageCount());
-				textRenderer.draw(matrixStack, messageCount, startX + totalWidth - 3 - textRenderer.getWidth(messageCount), y + lineHeight, -1);
+				context.drawText(client.textRenderer, messageCount, startX + totalWidth - 3 - textRenderer.getWidth(messageCount), y + lineHeight, -1, false);
 
 				Text reminder1 = Text.translatable("glowcase.mailbox.reminder1");
-				textRenderer.draw(matrixStack, reminder1, startX + totalWidth - 3 - textRenderer.getWidth(reminder1), y + lineHeight * 2, 0xFFAAAAAA);
+				context.drawText(client.textRenderer, reminder1, startX + totalWidth - 3 - textRenderer.getWidth(reminder1), y + lineHeight * 2, 0xFFAAAAAA, false);
 
-				textRenderer.draw(matrixStack, reminder2, startX + totalWidth - 3 - textRenderer.getWidth(reminder2), y + lineHeight * 3, 0xFFAAAAAA);
+				context.drawText(client.textRenderer, reminder2, startX + totalWidth - 3 - textRenderer.getWidth(reminder2), y + lineHeight * 3, 0xFFAAAAAA, false);
 
 			}
 		});

@@ -7,6 +7,7 @@ import dev.hephaestus.glowcase.networking.TextBlockChannel;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
@@ -15,7 +16,6 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.SelectionManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.math.MathHelper;
@@ -46,9 +46,9 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 
 		int innerPadding = width / 100;
 
-		if (this.client != null) {
-			this.client.keyboard.setRepeatEvents(true);
-		}
+		// if (this.client != null) {
+			// this.client.keyboard.setRepeatEvents(true);
+		// }
 
 		this.selectionManager = new SelectionManager(
 				() -> this.textBlockEntity.lines.get(this.currentRow).getString(),
@@ -60,17 +60,17 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 				SelectionManager.makeClipboardSetter(this.client),
 				(string) -> true);
 
-		ButtonWidget decreaseSize = new ButtonWidget(80, 0, 20, 20, Text.literal("-"), action -> {
+		ButtonWidget decreaseSize = ButtonWidget.builder(Text.literal("-"), action -> {
 			this.textBlockEntity.scale -= (float) Math.max(0, 0.125);
 			this.textBlockEntity.renderDirty = true;
-		});
+		}).dimensions(80, 0, 20, 20).build();
 
-		ButtonWidget increaseSize = new ButtonWidget(100, 0, 20, 20, Text.literal("+"), action -> {
+		ButtonWidget increaseSize = ButtonWidget.builder(Text.literal("+"), action -> {
 			this.textBlockEntity.scale += 0.125;
 			this.textBlockEntity.renderDirty = true;
-		});
+		}).dimensions(100, 0, 20, 20).build();
 
-		this.changeAlignment = new ButtonWidget(120 + innerPadding, 0, 160, 20, Text.translatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment), action -> {
+		this.changeAlignment = ButtonWidget.builder(Text.translatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment), action -> {
 			switch (textBlockEntity.textAlignment) {
 				case LEFT -> textBlockEntity.textAlignment = TextBlockEntity.TextAlignment.CENTER;
 				case CENTER -> textBlockEntity.textAlignment = TextBlockEntity.TextAlignment.RIGHT;
@@ -79,9 +79,9 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			this.textBlockEntity.renderDirty = true;
 
 			this.changeAlignment.setMessage(Text.translatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment));
-		});
+		}).dimensions(120 + innerPadding, 0, 160, 20).build();
 
-		this.shadowToggle = new ButtonWidget(120 + innerPadding, 20 + innerPadding, 160, 20, Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType), action -> {
+		this.shadowToggle = ButtonWidget.builder(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType), action -> {
 			switch (textBlockEntity.shadowType) {
 				case DROP -> textBlockEntity.shadowType = TextBlockEntity.ShadowType.PLATE;
 				case PLATE -> textBlockEntity.shadowType = TextBlockEntity.ShadowType.NONE;
@@ -90,7 +90,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			this.textBlockEntity.renderDirty = true;
 
 			this.shadowToggle.setMessage(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType));
-		});
+		}).dimensions(120 + innerPadding, 20 + innerPadding, 160, 20).build();
 
 		this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 0, 50, 20, Text.empty());
 		this.colorEntryWidget.setText("#" + Integer.toHexString(this.textBlockEntity.color & 0x00FFFFFF));
@@ -100,7 +100,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			this.textBlockEntity.renderDirty = true;
 		});
 
-		this.zOffsetToggle = new ButtonWidget(330 + innerPadding * 3, 0, 80, 20, Text.literal(this.textBlockEntity.zOffset.name()), action -> {
+		this.zOffsetToggle = ButtonWidget.builder(Text.literal(this.textBlockEntity.zOffset.name()), action -> {
 			switch (textBlockEntity.zOffset) {
 				case FRONT -> textBlockEntity.zOffset = TextBlockEntity.ZOffset.CENTER;
 				case CENTER -> textBlockEntity.zOffset = TextBlockEntity.ZOffset.BACK;
@@ -109,7 +109,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			this.textBlockEntity.renderDirty = true;
 
 			this.zOffsetToggle.setMessage(Text.literal(this.textBlockEntity.zOffset.name()));
-		});
+		}).dimensions(330 + innerPadding * 3, 0, 80, 20).build();
 
 		this.addDrawableChild(increaseSize);
 		this.addDrawableChild(decreaseSize);
@@ -131,17 +131,18 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		if (this.client != null) {
-			super.render(matrices, mouseX, mouseY, delta);
-			matrices.push();
+			super.render(context, mouseX, mouseY, delta);
 
-			matrices.translate(0, 40 + 2 * this.width / 100F, 0);
+			context.getMatrices().push();
+			context.getMatrices().translate(0, 40 + 2 * this.width / 100F, 0);
 			for (int i = 0; i < this.textBlockEntity.lines.size(); ++i) {
+				int lineWidth = this.textRenderer.getWidth(this.textBlockEntity.lines.get(i));
 				switch (this.textBlockEntity.textAlignment) {
-					case LEFT -> this.client.textRenderer.drawWithShadow(matrices, this.textBlockEntity.lines.get(i), this.width / 10F, i * 12, this.textBlockEntity.color);
-					case CENTER -> this.client.textRenderer.drawWithShadow(matrices, this.textBlockEntity.lines.get(i), this.width / 2F - this.textRenderer.getWidth(this.textBlockEntity.lines.get(i)) / 2F, i * 12, this.textBlockEntity.color);
-					case RIGHT -> this.client.textRenderer.drawWithShadow(matrices, this.textBlockEntity.lines.get(i), this.width - this.width / 10F - this.textRenderer.getWidth(this.textBlockEntity.lines.get(i)), i * 12, this.textBlockEntity.color);
+					case LEFT -> context.drawTextWithShadow(client.textRenderer, this.textBlockEntity.lines.get(i), this.width / 10, i * 12, this.textBlockEntity.color);
+					case CENTER -> context.drawTextWithShadow(client.textRenderer, this.textBlockEntity.lines.get(i), this.width / 2 - lineWidth / 2, i * 12, this.textBlockEntity.color);
+					case RIGHT -> context.drawTextWithShadow(client.textRenderer, this.textBlockEntity.lines.get(i), this.width - this.width / 10 - lineWidth, i * 12, this.textBlockEntity.color);
 				}
 			}
 
@@ -169,33 +170,30 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 				int caretEndY = this.currentRow * 12 + 9;
 				if (this.ticksSinceOpened / 6 % 2 == 0 && !this.colorEntryWidget.isActive()) {
 					if (selectionStart < line.length()) {
-						fill(matrices, startX, caretStartY, startX + 1, caretEndY, 0xCCFFFFFF);
+						context.fill(startX, caretStartY, startX + 1, caretEndY, 0xCCFFFFFF);
 					} else {
-						this.client.textRenderer.draw(matrices, "_", startX, this.currentRow * 12, 0xFFFFFFFF);
+						context.drawText(client.textRenderer, "_", startX, this.currentRow * 12, 0xFFFFFFFF, false);
 					}
 				}
 
 				if (caretStart != caretEnd) {
 					int endX = startX + this.client.textRenderer.getWidth(line.substring(selectionStart, selectionEnd));
-
 					Tessellator tessellator = Tessellator.getInstance();
 					BufferBuilder bufferBuilder = tessellator.getBuffer();
-					RenderSystem.disableTexture();
 					RenderSystem.enableColorLogicOp();
 					RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
 					bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-					bufferBuilder.vertex(matrices.peek().getPositionMatrix(), startX, caretEndY, 0.0F).color(0, 0, 255, 255).next();
-					bufferBuilder.vertex(matrices.peek().getPositionMatrix(), endX, caretEndY, 0.0F).color(0, 0, 255, 255).next();
-					bufferBuilder.vertex(matrices.peek().getPositionMatrix(), endX, caretStartY, 0.0F).color(0, 0, 255, 255).next();
-					bufferBuilder.vertex(matrices.peek().getPositionMatrix(), startX, caretStartY, 0.0F).color(0, 0, 255, 255).next();
-					BufferRenderer.drawWithoutShader(bufferBuilder.end());
+					bufferBuilder.vertex(context.getMatrices().peek().getPositionMatrix(), startX, caretEndY, 0.0F).color(0, 0, 255, 255).next();
+					bufferBuilder.vertex(context.getMatrices().peek().getPositionMatrix(), endX, caretEndY, 0.0F).color(0, 0, 255, 255).next();
+					bufferBuilder.vertex(context.getMatrices().peek().getPositionMatrix(), endX, caretStartY, 0.0F).color(0, 0, 255, 255).next();
+					bufferBuilder.vertex(context.getMatrices().peek().getPositionMatrix(), startX, caretStartY, 0.0F).color(0, 0, 255, 255).next();
+					BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 					RenderSystem.disableColorLogicOp();
-					RenderSystem.enableTexture();
 				}
 			}
 
-			matrices.pop();
-			this.client.textRenderer.drawWithShadow(matrices, Text.translatable("gui.glowcase.scale", this.textBlockEntity.scale), 7, 7, 0xFFFFFFFF);
+			context.getMatrices().pop();
+			context.drawTextWithShadow(client.textRenderer, Text.translatable("gui.glowcase.scale", this.textBlockEntity.scale), 7, 7, 0xFFFFFFFF);
 		}
 	}
 
@@ -278,7 +276,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		int topOffset = (int) (40 + 2 * this.width / 100F);
 		if (!this.colorEntryWidget.mouseClicked(mouseX, mouseY, button)) {
-			this.colorEntryWidget.setTextFieldFocused(false);
+			this.colorEntryWidget.setFocused(false);
 		}
 		if (mouseY > topOffset) {
 			this.currentRow = MathHelper.clamp((int) (mouseY - topOffset) / 12, 0, this.textBlockEntity.lines.size() - 1);

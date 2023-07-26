@@ -68,9 +68,8 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 					if (!display.hasItem() && !handStack.isEmpty()) {
 						display.setStack(handStack.copy());
 						return ActionResult.SUCCESS;
-					} else if (display.hasItem() && display.getUseStack().isItemEqualIgnoreDamage(handStack)) {
+					} else if (display.hasItem() && ItemStack.areItemsEqual(display.getUseStack(), handStack)) {
 						ItemDisplayBlockChannel.openScreen((ServerPlayerEntity) player, pos);
-
 						return ActionResult.SUCCESS;
 					} else if (display.hasItem() && handStack.isIn(Glowcase.ITEM_TAG)) {
 						display.setStack(ItemStack.EMPTY);
