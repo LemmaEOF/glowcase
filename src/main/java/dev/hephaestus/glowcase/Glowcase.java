@@ -22,42 +22,55 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class Glowcase implements ModInitializer {
 	public static final String MODID = "glowcase";
 
-	public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(id("items"), () -> new ItemStack(Items.GLOWSTONE));
-	public static final TagKey<Item> ITEM_TAG = TagKey.of(Registry.ITEM_KEY, id("items"));
+	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
 
-	public static final Block HYPERLINK_BLOCK = Registry.register(Registry.BLOCK, id("hyperlink_block"), new HyperlinkBlock());
-	public static final Item HYPERLINK_BLOCK_ITEM = Registry.register(Registry.ITEM, id("hyperlink_block"), new BlockItem(HYPERLINK_BLOCK, new FabricItemSettings().group(ITEM_GROUP)));
-	public static final BlockEntityType<HyperlinkBlockEntity> HYPERLINK_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, id("hyperlink_block"), FabricBlockEntityTypeBuilder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK).build());
+	public static final Block HYPERLINK_BLOCK = Registry.register(Registries.BLOCK, id("hyperlink_block"), new HyperlinkBlock());
+	public static final Item HYPERLINK_BLOCK_ITEM = Registry.register(Registries.ITEM, id("hyperlink_block"), new BlockItem(HYPERLINK_BLOCK, new FabricItemSettings()));
+	public static final BlockEntityType<HyperlinkBlockEntity> HYPERLINK_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("hyperlink_block"), FabricBlockEntityTypeBuilder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK).build());
 
-	public static final Block ITEM_DISPLAY_BLOCK = Registry.register(Registry.BLOCK, id("item_display_block"), new ItemDisplayBlock());
-	public static final Item ITEM_DISPLAY_BLOCK_ITEM = Registry.register(Registry.ITEM, id("item_display_block"), new BlockItem(ITEM_DISPLAY_BLOCK, new FabricItemSettings().group(ITEM_GROUP)));
-	public static final BlockEntityType<ItemDisplayBlockEntity> ITEM_DISPLAY_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, id("item_display_block"), FabricBlockEntityTypeBuilder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK).build());
+	public static final Block ITEM_DISPLAY_BLOCK = Registry.register(Registries.BLOCK, id("item_display_block"), new ItemDisplayBlock());
+	public static final Item ITEM_DISPLAY_BLOCK_ITEM = Registry.register(Registries.ITEM, id("item_display_block"), new BlockItem(ITEM_DISPLAY_BLOCK, new FabricItemSettings()));
+	public static final BlockEntityType<ItemDisplayBlockEntity> ITEM_DISPLAY_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("item_display_block"), FabricBlockEntityTypeBuilder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK).build());
 
-	public static final Block MAILBOX_BLOCK = Registry.register(Registry.BLOCK, id("mailbox"), new MailboxBlock());
-	public static final Item MAILBOX_ITEM = Registry.register(Registry.ITEM, id("mailbox"), new BlockItem(MAILBOX_BLOCK, new FabricItemSettings().group(ITEM_GROUP)));
-	public static final BlockEntityType<MailboxBlockEntity> MAILBOX_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, id("mailbox"), FabricBlockEntityTypeBuilder.create(MailboxBlockEntity::new, MAILBOX_BLOCK).build());
+	public static final Block MAILBOX_BLOCK = Registry.register(Registries.BLOCK, id("mailbox"), new MailboxBlock());
+	public static final Item MAILBOX_ITEM = Registry.register(Registries.ITEM, id("mailbox"), new BlockItem(MAILBOX_BLOCK, new FabricItemSettings()));
+	public static final BlockEntityType<MailboxBlockEntity> MAILBOX_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("mailbox"), FabricBlockEntityTypeBuilder.create(MailboxBlockEntity::new, MAILBOX_BLOCK).build());
 
-	public static final Block TEXT_BLOCK = Registry.register(Registry.BLOCK, id("text_block"), new TextBlock());
-	public static final Item TEXT_BLOCK_ITEM = Registry.register(Registry.ITEM, id("text_block"), new BlockItem(TEXT_BLOCK, new FabricItemSettings().group(ITEM_GROUP)));
-	public static final BlockEntityType<TextBlockEntity> TEXT_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE, id("text_block"), FabricBlockEntityTypeBuilder.create(TextBlockEntity::new, TEXT_BLOCK).build());
+	public static final Block TEXT_BLOCK = Registry.register(Registries.BLOCK, id("text_block"), new TextBlock());
+	public static final Item TEXT_BLOCK_ITEM = Registry.register(Registries.ITEM, id("text_block"), new BlockItem(TEXT_BLOCK, new FabricItemSettings()));
+	public static final BlockEntityType<TextBlockEntity> TEXT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("text_block"), FabricBlockEntityTypeBuilder.create(TextBlockEntity::new, TEXT_BLOCK).build());
+
+	public static final ItemGroup ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, id("items"), FabricItemGroup.builder()
+		.displayName(Text.translatable("itemGroup.glowcase.items"))
+		.icon(() -> new ItemStack(Items.GLOWSTONE))
+		.entries((displayContext, entries) -> {
+			entries.add(HYPERLINK_BLOCK_ITEM);
+			entries.add(ITEM_DISPLAY_BLOCK_ITEM);
+			entries.add(MAILBOX_ITEM);
+			entries.add(TEXT_BLOCK_ITEM);
+		})
+		.build()
+	);
 
 	public static Identifier id(String... path) {
 		return new Identifier(MODID, String.join(".", path));
@@ -80,9 +93,9 @@ public class Glowcase implements ModInitializer {
 		PlayerEntity sender = ctx.getSource().getPlayer();
 
 		if (sender != null) {
-			if (sender.world.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox) {
+			if (sender.getWorld().getBlockEntity(pos) instanceof MailboxBlockEntity mailbox) {
 				mailbox.addMessage(new MailboxBlockEntity.Message(sender.getUuid(), sender.getEntityName(), message));
-				ctx.getSource().sendFeedback(Text.translatable("command.glowcase.message_sent"), false);
+				ctx.getSource().sendFeedback(() -> Text.translatable("command.glowcase.message_sent"), false);
 				return 0;
 			} else {
 				ctx.getSource().sendError(Text.translatable("command.glowcase.failed.no_mailbox"));
