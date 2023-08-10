@@ -1,11 +1,13 @@
 package dev.hephaestus.glowcase.networking;
 
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
+import net.minecraft.text.MutableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 
@@ -40,5 +42,23 @@ public class GlowcaseClientNetworking {
 		buf.writeFloat(be.yaw);
 		
 		ClientPlayNetworking.send(GlowcaseCommonNetworking.EDIT_ITEM_DISPLAY_BLOCK_SETTINGS, buf);
+	}
+
+	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
+	public static void editTextBlock(TextBlockEntity be) {
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		buf.writeBlockPos(be.getPos());
+		buf.writeFloat(be.scale);
+		buf.writeVarInt(be.lines.size());
+		buf.writeEnumConstant(be.textAlignment);
+		buf.writeVarInt(be.color);
+		buf.writeEnumConstant(be.zOffset);
+		buf.writeEnumConstant(be.shadowType);
+
+		for (MutableText text : be.lines) {
+			buf.writeText(text);
+		}
+
+		ClientPlayNetworking.send(GlowcaseCommonNetworking.EDIT_TEXT_BLOCK, buf);
 	}
 }

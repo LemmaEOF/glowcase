@@ -13,12 +13,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "dev.hephaestus.glowcase.Glowcase",
-      "dev.hephaestus.glowcase.networking.TextBlockChannel"
+      "dev.hephaestus.glowcase.Glowcase"
     ],
     "client": [
-      "dev.hephaestus.glowcase.GlowcaseClient",
-      "dev.hephaestus.glowcase.networking.TextBlockChannel"
+      "dev.hephaestus.glowcase.GlowcaseClient"
     ]
   },
   "mixins": [

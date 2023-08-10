@@ -1,16 +1,17 @@
 package dev.hephaestus.glowcase.block;
 
+import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
-import dev.hephaestus.glowcase.networking.TextBlockChannel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -29,8 +30,7 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		super.appendProperties(builder);
-		builder.add(Properties.ROTATION);
+		super.appendProperties(builder.add(Properties.ROTATION));
 	}
 
 	@Override
@@ -38,27 +38,33 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double)((180.0F + ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
 	}
 
+	@Nullable
 	@Override
-	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-		if (!world.isClient) {
-			if (placer instanceof ServerPlayerEntity player && player.isCreative() && world.canPlayerModifyAt(player, pos)) {
-				TextBlockChannel.openScreen(player, pos);
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new TextBlockEntity(pos, state);
+	}
+	
+	@Override
+	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		if (world.isClient && placer instanceof PlayerEntity player && canEditGlowcase(player, pos)) {
+			//load any ctrl-picked NBT clientside
+			NbtCompound blockEntityTag = BlockItem.getBlockEntityNbt(stack);
+			if(blockEntityTag != null && world.getBlockEntity(pos) instanceof TextBlockEntity be) {
+				be.readNbt(blockEntityTag);
 			}
+
+			Glowcase.proxy.openTextBlockEditScreen(pos);
 		}
 	}
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!world.isClient) {
-			this.onPlaced(world, pos, state, player, null);
+		if (!(world.getBlockEntity(pos) instanceof TextBlockEntity be)) return ActionResult.CONSUME;
+		
+		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
+			Glowcase.proxy.openTextBlockEditScreen(pos);
 		}
 
 		return ActionResult.SUCCESS;
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return new TextBlockEntity(pos, state);
 	}
 }
