@@ -1,7 +1,5 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
-import org.joml.Matrix4f;
-
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -12,7 +10,6 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -23,7 +20,7 @@ import net.minecraft.util.math.RotationAxis;
 public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<HyperlinkBlockEntity> {
 	private static final MinecraftClient mc = MinecraftClient.getInstance();
 
-	public static final ItemStack STACK = new ItemStack(Glowcase.HYPERLINK_BLOCK_ITEM);
+	public static final ItemStack STACK = new ItemStack(Glowcase.HYPERLINK_BLOCK);
 
 	public void render(HyperlinkBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		Camera camera = context.getRenderDispatcher().camera;
@@ -40,8 +37,8 @@ public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context co
 		if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
 			float scale = 0.025F;
 			matrices.scale(scale, scale, scale);
-			matrices.translate(-context.getTextRenderer().getWidth(entity.url) / 2F, -4, scale);
-			context.getTextRenderer().draw(entity.url, 0, 0, 0xFFFFFF, true, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+			matrices.translate(-context.getTextRenderer().getWidth(entity.getUrl()) / 2F, -4, scale);
+			context.getTextRenderer().draw(entity.getUrl(), 0, 0, 0xFFFFFF, true, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 		}
 		matrices.pop();
 	}

@@ -13,6 +13,7 @@ import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 
+import dev.hephaestus.glowcase.networking.GlowcaseCommonNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.BlockPosArgumentType;
@@ -41,6 +42,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 public class Glowcase implements ModInitializer {
 	public static final String MODID = "glowcase";
 
+	public static GlowcaseCommonProxy proxy = new GlowcaseCommonProxy(); //Overridden in GlowcaseClient
+	
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
 
@@ -78,6 +81,8 @@ public class Glowcase implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		GlowcaseCommonNetworking.onInitialize();
+		
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(
 					LiteralArgumentBuilder.<ServerCommandSource>literal("mail")

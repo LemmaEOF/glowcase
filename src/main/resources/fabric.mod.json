@@ -14,14 +14,12 @@
   "entrypoints": {
     "main": [
       "dev.hephaestus.glowcase.Glowcase",
-      "dev.hephaestus.glowcase.networking.HyperlinkChannel",
       "dev.hephaestus.glowcase.networking.ItemDisplayBlockChannel",
       "dev.hephaestus.glowcase.networking.TextBlockChannel"
     ],
     "client": [
       "dev.hephaestus.glowcase.GlowcaseClient",
       "dev.hephaestus.glowcase.networking.ItemDisplayBlockChannel",
-      "dev.hephaestus.glowcase.networking.HyperlinkChannel",
       "dev.hephaestus.glowcase.networking.MailboxChannel",
       "dev.hephaestus.glowcase.networking.TextBlockChannel"
     ]
