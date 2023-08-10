@@ -16,15 +16,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.RotationPropertyHelper;
 
-import java.util.regex.Pattern;
-
 //TODO: Move other packet handling into this class.
 public class GlowcaseCommonNetworking {
 	public static final Identifier EDIT_HYPERLINK_BLOCK = Glowcase.id("channel.hyperlink.save");
 	public static final Identifier EDIT_ITEM_DISPLAY_BLOCK_SETTINGS = Glowcase.id("channel.item_display");
 	
-	//TODO: Is this needed for safety? is a simple "max length" check not good enough?
-	private static final Pattern ALLOWED_URL_REGEX = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
 	private static final int URL_MAX_LENGTH = 1024;
 	
 	public static void onInitialize() {
@@ -41,7 +37,6 @@ public class GlowcaseCommonNetworking {
 		server.submit(() -> {
 			if(sensible(player, pos) &&
 					url.length() <= URL_MAX_LENGTH &&
-					ALLOWED_URL_REGEX.matcher(url).matches() &&
 					Glowcase.HYPERLINK_BLOCK.canEditGlowcase(player, pos) &&
 					player.getServerWorld().getBlockEntity(pos) instanceof HyperlinkBlockEntity link)
 			{
@@ -77,6 +72,7 @@ public class GlowcaseCommonNetworking {
 				player.getWorld().setBlockState(pos, player.getWorld().getBlockState(pos).with(Properties.ROTATION, rotation));
 
 				be.markDirty();
+				be.dispatch();
 			}
 		});
 	}
