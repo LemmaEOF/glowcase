@@ -37,7 +37,7 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (world.isClient && placer instanceof PlayerEntity player && canEdit(player, pos)) {
+		if (world.isClient && placer instanceof PlayerEntity player && canEditGlowcase(player, pos)) {
 			//load any ctrl-picked NBT clientside
 			NbtCompound blockEntityTag = BlockItem.getBlockEntityNbt(stack);
 			if(blockEntityTag != null && world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be) {
@@ -53,7 +53,7 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) return ActionResult.CONSUME;
 
 		if (world.isClient) {
-			if (player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEdit(player, pos)) {
+			if (player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
 				Glowcase.proxy.openHyperlinkBlockEditScreen(pos);
 			} else {
 				Glowcase.proxy.openUrlWithConfirmation(be.getUrl());
@@ -61,9 +61,5 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 		}
 
 		return ActionResult.SUCCESS;
-	}
-	
-	public static boolean canEdit(PlayerEntity player, BlockPos pos) {
-		return player.isCreative() && player.canModifyAt(player.getWorld(), pos);
 	}
 }

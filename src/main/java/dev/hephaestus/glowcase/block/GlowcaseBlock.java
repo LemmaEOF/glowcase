@@ -10,6 +10,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -44,5 +45,9 @@ public class GlowcaseBlock extends Block {
 	@SuppressWarnings("unchecked")
 	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
 		return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
+	}
+
+	public boolean canEditGlowcase(PlayerEntity player, BlockPos pos) {
+		return player.isCreative() && player.canModifyAt(player.getWorld(), pos);
 	}
 }

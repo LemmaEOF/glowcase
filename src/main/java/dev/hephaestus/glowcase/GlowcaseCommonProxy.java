@@ -10,4 +10,8 @@ public class GlowcaseCommonProxy {
     public void openUrlWithConfirmation(String url) {
         //No-op
     }
+    
+    public void openItemDisplayBlockEditScreen(BlockPos pos) {
+        //No-op
+    }
 }

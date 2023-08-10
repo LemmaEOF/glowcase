@@ -1,7 +1,7 @@
 package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
-import dev.hephaestus.glowcase.networking.ItemDisplayBlockChannel;
+import dev.hephaestus.glowcase.networking.GlowcaseClientNetworking;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -33,25 +33,25 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 			this.givesItemButtom = ButtonWidget.builder(Text.translatable("gui.glowcase.gives_item", this.displayBlock.givesItem), (action) -> {
 				this.displayBlock.cycleGiveType();
 				this.givesItemButtom.setMessage(Text.translatable("gui.glowcase.gives_item", this.displayBlock.givesItem));
-				ItemDisplayBlockChannel.sync(this.displayBlock, true);
+				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, true);
 			}).dimensions(centerW - 75, centerH - 40 - individualPadding, 150, 20).build();
 
 			this.rotationTypeButton = ButtonWidget.builder(Text.translatable("gui.glowcase.rotation_type", this.displayBlock.rotationType), (action) -> {
 				this.displayBlock.cycleRotationType(this.client.player);
 				this.rotationTypeButton.setMessage(Text.translatable("gui.glowcase.rotation_type", this.displayBlock.rotationType));
-				ItemDisplayBlockChannel.sync(this.displayBlock, true);
+				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, true);
 			}).dimensions(centerW - 75, centerH - 20, 150, 20).build();
 
 			this.showNameButton = ButtonWidget.builder(Text.translatable("gui.glowcase.show_name", this.displayBlock.showName), (action) -> {
 				this.displayBlock.showName = !this.displayBlock.showName;
 				this.showNameButton.setMessage(Text.translatable("gui.glowcase.show_name", this.displayBlock.showName));
-				ItemDisplayBlockChannel.sync(this.displayBlock, false);
+				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, false);
 			}).dimensions(centerW - 75, centerH + individualPadding, 150, 20).build();
 
 			this.offsetButton = ButtonWidget.builder(Text.translatable("gui.glowcase.offset", this.displayBlock.offset), (action) -> {
 				this.displayBlock.cycleOffset();
 				this.offsetButton.setMessage(Text.translatable("gui.glowcase.offset", this.displayBlock.offset));
-				ItemDisplayBlockChannel.sync(this.displayBlock, true);
+				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, true);
 			}).dimensions(centerW - 75, centerH + 20 + padding, 150, 20).build();
 
 			this.addDrawableChild(this.givesItemButtom);

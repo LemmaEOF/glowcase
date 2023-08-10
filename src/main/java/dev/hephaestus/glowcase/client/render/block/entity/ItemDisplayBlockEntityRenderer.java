@@ -61,7 +61,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 			case BACK -> matrices.translate(0D, Math.sin(pitch) * -0.4, 0.4D);
 		}
 
-		ItemStack stack = entity.getUseStack();
+		ItemStack stack = entity.getDisplayedStack();
 		Text name;
 		if (stack.getItem() instanceof SpawnEggItem) {
 			matrices.push();
@@ -93,7 +93,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 			matrices.translate(0, 0.5, 0);
 			matrices.scale(0.5F, 0.5F, 0.5F);
 			matrices.multiply(RotationAxis.POSITIVE_X.rotation(pitch));
-			context.getItemRenderer().renderItem(entity.getUseStack(), ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
+			context.getItemRenderer().renderItem(entity.getDisplayedStack(), ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
 		}
 
 		if (entity.showName) {
