@@ -18,7 +18,6 @@
     ],
     "client": [
       "dev.hephaestus.glowcase.GlowcaseClient",
-      "dev.hephaestus.glowcase.networking.MailboxChannel",
       "dev.hephaestus.glowcase.networking.TextBlockChannel"
     ]
   },

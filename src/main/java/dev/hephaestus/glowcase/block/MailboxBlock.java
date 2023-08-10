@@ -1,9 +1,12 @@
 package dev.hephaestus.glowcase.block;
 
+import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
-import dev.hephaestus.glowcase.networking.MailboxChannel;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +25,8 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class MailboxBlock extends Block implements BlockEntityProvider {
 	public static final BooleanProperty HAS_MAIL = BooleanProperty.of("has_mail");
@@ -73,18 +78,18 @@ public class MailboxBlock extends Block implements BlockEntityProvider {
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (player instanceof ServerPlayerEntity serverPlayerEntity && world.getBlockEntity(pos) instanceof MailboxBlockEntity mailbox) {
-			if (serverPlayerEntity.getUuid().equals(mailbox.owner())) {
-				if (serverPlayerEntity.isSneaking()) {
-					mailbox.removeAllMessagesFromMostRecentSender();
-				} else {
-					mailbox.removeMessage();
-				}
-			} else {
-				MailboxChannel.openChat(serverPlayerEntity, pos);
-			}
+		if(!(world.getBlockEntity(pos) instanceof MailboxBlockEntity be)) return ActionResult.CONSUME;
+		boolean mine = Objects.equals(player.getUuid(), be.owner());
+		
+		if(world.isClient && !mine) {
+			Glowcase.proxy.prefillMailboxChat(pos);
 		}
-
+		
+		if(!world.isClient && mine) {
+			if(player.isSneaking()) be.removeAllMessagesFromMostRecentSender();
+			else be.removeMessage();
+		}
+		
 		return ActionResult.SUCCESS;
 	}
 }
