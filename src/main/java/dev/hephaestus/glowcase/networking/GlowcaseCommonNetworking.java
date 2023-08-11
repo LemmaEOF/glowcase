@@ -22,7 +22,6 @@ import net.minecraft.util.math.RotationPropertyHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: Move other packet handling into this class.
 public class GlowcaseCommonNetworking {
 	public static final Identifier EDIT_HYPERLINK_BLOCK = Glowcase.id("channel.hyperlink.save");
 	public static final Identifier EDIT_ITEM_DISPLAY_BLOCK_SETTINGS = Glowcase.id("channel.item_display");
