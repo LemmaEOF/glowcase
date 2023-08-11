@@ -72,15 +72,7 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 				matrices.translate(0, 0, 0.025D);
 			}
 
-			if (blockEntity.shadowType == TextBlockEntity.ShadowType.DROP) {
-				// Don't use the vanilla shadow rendering - it breaks when you try to use it in 3D
-				int shadowColor = 0x88000000;
-				matrices.translate(0, 0, -0.025D);
-				textRenderer.draw(blockEntity.lines.get(i), 1, (i * 12) + 1, shadowColor, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
-				matrices.translate(0, 0, 0.025D);
-			}
-
-			textRenderer.draw(blockEntity.lines.get(i), 0, i * 12, blockEntity.color, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+			textRenderer.draw(blockEntity.lines.get(i), 0, i * 12, blockEntity.color, blockEntity.shadowType == TextBlockEntity.ShadowType.DROP, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 
 			matrices.pop();
 		}

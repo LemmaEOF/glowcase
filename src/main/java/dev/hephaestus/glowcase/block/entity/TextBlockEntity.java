@@ -6,6 +6,10 @@ import java.util.List;
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer.BakedBlockEntityRendererManager;
 
+import eu.pb4.placeholders.api.ParserContext;
+import eu.pb4.placeholders.api.parsers.NodeParser;
+import eu.pb4.placeholders.api.parsers.TextParserV1;
+import net.minecraft.text.Style;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -24,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 public class TextBlockEntity extends BlockEntity {
+	public static final NodeParser PARSER = TextParserV1.DEFAULT;
 	public List<MutableText> lines = new ArrayList<>();
 	public TextAlignment textAlignment = TextAlignment.CENTER;
 	public ZOffset zOffset = ZOffset.CENTER;
@@ -95,6 +100,41 @@ public class TextBlockEntity extends BlockEntity {
 	@Override
 	public Packet<ClientPlayPacketListener> toUpdatePacket() {
 		return BlockEntityUpdateS2CPacket.create(this);
+	}
+
+	public String getRawLine(int i) {
+		var line = this.lines.get(i);
+
+		if (line.getStyle() == null) {
+			return line.getString();
+		}
+
+		var insert = line.getStyle().getInsertion();
+
+		if (insert == null) {
+			return line.getString();
+		}
+		return insert;
+	}
+
+	public void addRawLine(int i, String string) {
+		var parsed = PARSER.parseText(string, ParserContext.of());
+
+		if (parsed.getString().equals(string)) {
+			this.lines.add(i, Text.literal(string));
+		} else {
+			this.lines.add(i, Text.empty().append(parsed).setStyle(Style.EMPTY.withInsertion(string)));
+		}
+	}
+
+	public void setRawLine(int i, String string) {
+		var parsed = PARSER.parseText(string, ParserContext.of());
+
+		if (parsed.getString().equals(string)) {
+			this.lines.set(i, Text.literal(string));
+		} else {
+			this.lines.set(i, Text.empty().append(parsed).setStyle(Style.EMPTY.withInsertion(string)));
+		}
 	}
 
 	public enum TextAlignment {
