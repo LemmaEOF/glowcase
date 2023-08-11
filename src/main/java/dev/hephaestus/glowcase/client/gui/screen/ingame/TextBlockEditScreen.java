@@ -3,9 +3,7 @@ package dev.hephaestus.glowcase.client.gui.screen.ingame;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
-import dev.hephaestus.glowcase.networking.TextBlockChannel;
-import org.lwjgl.glfw.GLFW;
-
+import dev.hephaestus.glowcase.networking.GlowcaseClientNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -19,6 +17,7 @@ import net.minecraft.client.util.SelectionManager;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -126,7 +125,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 
 	@Override
 	public void close() {
-		TextBlockChannel.sync(this.textBlockEntity);
+		GlowcaseClientNetworking.editTextBlock(textBlockEntity);
 		super.close();
 	}
 

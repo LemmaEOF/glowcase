@@ -12,6 +12,8 @@ import eu.pb4.placeholders.api.parsers.TextParserV1;
 import net.minecraft.text.Style;
 import org.jetbrains.annotations.Nullable;
 
+import dev.hephaestus.glowcase.Glowcase;
+import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer.BakedBlockEntityRendererManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -21,11 +23,10 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 public class TextBlockEntity extends BlockEntity {
 	public static final NodeParser PARSER = TextParserV1.DEFAULT;
@@ -40,13 +41,6 @@ public class TextBlockEntity extends BlockEntity {
 	public TextBlockEntity(BlockPos pos, BlockState state) {
 		super(Glowcase.TEXT_BLOCK_ENTITY, pos, state);
 		lines.add((MutableText) Text.empty());
-	}
-
-	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		writeNbt(tag);
-		return tag;
 	}
 
 	@Override
@@ -155,5 +149,22 @@ public class TextBlockEntity extends BlockEntity {
 		if (world != null && world.isClient) {
 			BakedBlockEntityRendererManager.markForRebuild(getPos());
 		}
+	}
+
+	// standard blockentity boilerplate
+
+	public void dispatch() {
+		if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+	}
+
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		return createNbt();
+	}
+
+	@Nullable
+	@Override
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 }

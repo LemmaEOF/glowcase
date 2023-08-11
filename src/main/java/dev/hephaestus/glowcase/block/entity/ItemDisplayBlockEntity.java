@@ -3,7 +3,6 @@ package dev.hephaestus.glowcase.block.entity;
 import dev.hephaestus.glowcase.Glowcase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -16,7 +15,9 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
@@ -41,13 +42,6 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 
 	public ItemDisplayBlockEntity(BlockPos pos, BlockState state) {
 		super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, pos, state);
-	}
-
-	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		writeNbt(tag);
-		return tag;
 	}
 
 	@Override
@@ -115,31 +109,17 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		}
 	}
 
-	@Override
-	public void markDirty() {
-		PlayerLookup.tracking(this).forEach(player -> player.networkHandler.sendPacket(toUpdatePacket()));
-		super.markDirty();
-	}
-
-
-	@Nullable
-	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
-	}
-
 	public boolean hasItem() {
 		return this.stack != null && !this.stack.isEmpty();
 	}
 
 	public void setStack(ItemStack stack) {
-		this.stack = stack;
+		this.stack = stack.copy();
 
 		this.givenTo.clear();
-
 		this.clearDisplayEntity();
-
 		this.markDirty();
+		this.dispatch();
 	}
 
 	private void clearDisplayEntity() {
@@ -154,10 +134,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		return this.displayEntity;
 	}
 
-	public ItemStack getUseStack() {
+	public ItemStack getDisplayedStack() {
 		return this.stack;
 	}
 
+	//TODO: these cycleXxx methods are only used on ItemDisplayBlockEditScreen, and can probably be moved there
+	// -> yes, that means the setBlockState call is wacky
 	public void cycleRotationType(PlayerEntity playerEntity) {
 		switch (this.rotationType) {
 			case TRACKING -> {
@@ -169,6 +151,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 			case HORIZONTAL -> this.rotationType = RotationType.LOCKED;
 			case LOCKED -> this.rotationType = RotationType.TRACKING;
 		}
+		markDirty();
+		dispatch();
 	}
 
 	public void cycleGiveType() {
@@ -177,6 +161,9 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 			case NO -> this.givesItem = GivesItem.ONCE;
 			case ONCE -> this.givesItem = GivesItem.YES;
 		}
+		givenTo.clear();
+		markDirty();
+		dispatch();
 	}
 
 	public void cycleOffset() {
@@ -184,6 +171,25 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 			case CENTER -> this.offset = Offset.BACK;
 			case BACK -> this.offset = Offset.FRONT;
 			case FRONT -> this.offset = Offset.CENTER;
+		}
+		markDirty();
+		dispatch();
+	}
+	
+	public boolean canGiveTo(PlayerEntity player) {
+		if(!hasItem()) return false;
+		else return switch(this.givesItem) {
+			case YES -> true;
+			case NO -> false;
+			case ONCE -> player.isCreative() || !givenTo.contains(player.getUuid());
+		};
+	}
+	
+	public void giveTo(PlayerEntity player, Hand hand) {
+		player.setStackInHand(hand, getDisplayedStack().copy());
+		if (!player.isCreative()) {
+			givenTo.add(player.getUuid());
+			markDirty();
 		}
 	}
 
@@ -217,5 +223,22 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 
 	public enum Offset {
 		CENTER, BACK, FRONT
+	}
+
+	// standard blockentity boilerplate
+
+	public void dispatch() {
+		if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+	}
+
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		return createNbt();
+	}
+
+	@Nullable
+	@Override
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 }

@@ -7,7 +7,6 @@ import java.util.UUID;
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.MailboxBlock;
 import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -17,9 +16,8 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 public class MailboxBlockEntity extends BlockEntity {
     private final Deque<Message> messages = new ArrayDeque<>();
@@ -32,6 +30,7 @@ public class MailboxBlockEntity extends BlockEntity {
     public void setOwner(ServerPlayerEntity player) {
         this.owner = player.getUuid();
         this.markDirty();
+        this.dispatch();
     }
 
     public void addMessage(Message message) {
@@ -42,6 +41,7 @@ public class MailboxBlockEntity extends BlockEntity {
         }
 
         this.markDirty();
+        this.dispatch();
     }
 
     public void removeMessage() {
@@ -51,6 +51,7 @@ public class MailboxBlockEntity extends BlockEntity {
         } else if (this.messages.removeFirst() != null && this.world != null && this.messages.isEmpty()) {
             this.world.setBlockState(this.pos, this.getCachedState().with(MailboxBlock.HAS_MAIL, false));
             this.markDirty();
+            this.dispatch();
         }
     }
 
@@ -60,13 +61,6 @@ public class MailboxBlockEntity extends BlockEntity {
 
     public Message getMessage() {
         return this.messages.getFirst();
-    }
-
-    @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        NbtCompound tag = super.toInitialChunkDataNbt();
-        writeNbt(tag);
-        return tag;
     }
 
     @Override
@@ -108,18 +102,6 @@ public class MailboxBlockEntity extends BlockEntity {
         }
     }
 
-    @Override
-    public void markDirty() {
-        PlayerLookup.tracking(this).forEach(player -> player.networkHandler.sendPacket(toUpdatePacket()));
-        super.markDirty();
-    }
-
-    @Nullable
-    @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
-    }
-
     public UUID owner() {
         return this.owner;
     }
@@ -130,8 +112,26 @@ public class MailboxBlockEntity extends BlockEntity {
 
             this.messages.removeIf(message -> message.sender.equals(sender));
             this.markDirty();
+            this.dispatch();
         }
     }
 
     public static record Message(UUID sender, String senderName, String message) {}
+
+    // standard blockentity boilerplate
+
+    public void dispatch() {
+        if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return createNbt();
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
 }
