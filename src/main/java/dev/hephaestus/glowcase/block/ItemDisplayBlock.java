@@ -35,7 +35,8 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		super.appendProperties(builder.add(Properties.ROTATION));
+		super.appendProperties(builder);
+		builder.add(Properties.ROTATION);
 	}
 
 	@Override
@@ -51,13 +52,13 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ActionResult.CONSUME;
-		
+
 		ItemStack handStack = player.getStackInHand(hand);
-		
+
 		if(canEditGlowcase(player, pos)) {
 			boolean holdingGlowcaseItem = handStack.isIn(Glowcase.ITEM_TAG);
 			boolean holdingSameAsDisplay = ItemStack.areItemsEqual(be.getDisplayedStack(), handStack);
-			
+
 			if(!be.hasItem() && !handStack.isEmpty()) {
 				if(!world.isClient) be.setStack(handStack);
 				return ActionResult.SUCCESS;
@@ -69,7 +70,7 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 				return ActionResult.SUCCESS;
 			}
 		}
-		
+
 		if(be.canGiveTo(player) && handStack.isEmpty()) {
 			if(!world.isClient) be.giveTo(player, hand);
 			return ActionResult.SUCCESS;

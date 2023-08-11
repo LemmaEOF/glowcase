@@ -26,9 +26,9 @@ public class GlowcaseCommonNetworking {
 	public static final Identifier EDIT_HYPERLINK_BLOCK = Glowcase.id("channel.hyperlink.save");
 	public static final Identifier EDIT_ITEM_DISPLAY_BLOCK_SETTINGS = Glowcase.id("channel.item_display");
 	public static final Identifier EDIT_TEXT_BLOCK = Glowcase.id("channel.text_block");
-	
+
 	private static final int URL_MAX_LENGTH = 1024;
-	
+
 	public static void onInitialize() {
 		ServerPlayConnectionEvents.INIT.register((handler, server) -> {
 			ServerPlayNetworking.registerReceiver(handler, EDIT_HYPERLINK_BLOCK, GlowcaseCommonNetworking::onEditHyperlinkBlock);
@@ -36,11 +36,11 @@ public class GlowcaseCommonNetworking {
 			ServerPlayNetworking.registerReceiver(handler, EDIT_TEXT_BLOCK, GlowcaseCommonNetworking::onEditTextBlock);
 		});
 	}
-	
+
 	private static void onEditHyperlinkBlock(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender sender) {
 		BlockPos pos = buf.readBlockPos();
 		String url = buf.readString(URL_MAX_LENGTH);
-		
+
 		server.submit(() -> {
 			if(canEditGlowcase(player, pos, Glowcase.HYPERLINK_BLOCK) && player.getServerWorld().getBlockEntity(pos) instanceof HyperlinkBlockEntity link && url.length() <= URL_MAX_LENGTH) {
 				link.setUrl(url);
@@ -57,7 +57,7 @@ public class GlowcaseCommonNetworking {
 		boolean showName = buf.readBoolean();
 		float pitch = buf.readFloat();
 		float yaw = buf.readFloat();
-		
+
 		if(rotation < 0 || rotation >= RotationPropertyHelper.getMax()) return;
 
 		server.execute(() -> {
@@ -99,7 +99,7 @@ public class GlowcaseCommonNetworking {
 				be.color = color;
 				be.zOffset = zOffset;
 				be.shadowType = shadowType;
-				
+
 				be.markDirty();
 				be.dispatch();
 			}

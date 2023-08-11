@@ -17,7 +17,7 @@ public class GlowcaseClientNetworking {
 				.writeBlockPos(pos)
 				.writeString(url));
 	}
-	
+
 	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
 	public static void editItemDisplayBlock(ItemDisplayBlockEntity be, boolean updatePitchAndYaw) {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
@@ -36,7 +36,7 @@ public class GlowcaseClientNetworking {
 
 		buf.writeFloat(be.pitch);
 		buf.writeFloat(be.yaw);
-		
+
 		ClientPlayNetworking.send(GlowcaseCommonNetworking.EDIT_ITEM_DISPLAY_BLOCK_SETTINGS, buf);
 	}
 

@@ -30,7 +30,8 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-		super.appendProperties(builder.add(Properties.ROTATION));
+		super.appendProperties(builder);
+		builder.add(Properties.ROTATION);
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!(world.getBlockEntity(pos) instanceof TextBlockEntity be)) return ActionResult.CONSUME;
-		
+
 		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
 			Glowcase.proxy.openTextBlockEditScreen(pos);
 		}

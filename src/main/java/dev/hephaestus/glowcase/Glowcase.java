@@ -75,7 +75,7 @@ public class Glowcase implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		GlowcaseCommonNetworking.onInitialize();
-		
+
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(
 					LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
