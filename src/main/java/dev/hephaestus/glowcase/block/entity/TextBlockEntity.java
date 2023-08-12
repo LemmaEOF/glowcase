@@ -84,18 +84,6 @@ public class TextBlockEntity extends BlockEntity {
 		this.renderDirty = true;
 	}
 
-	@Override
-	public void markDirty() {
-		PlayerLookup.tracking(this).forEach(player -> player.networkHandler.sendPacket(toUpdatePacket()));
-		super.markDirty();
-	}
-
-	@Nullable
-	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
-	}
-
 	public String getRawLine(int i) {
 		var line = this.lines.get(i);
 
@@ -149,6 +137,7 @@ public class TextBlockEntity extends BlockEntity {
 		if (world != null && world.isClient) {
 			BakedBlockEntityRendererManager.markForRebuild(getPos());
 		}
+		super.markRemoved();
 	}
 
 	// standard blockentity boilerplate
