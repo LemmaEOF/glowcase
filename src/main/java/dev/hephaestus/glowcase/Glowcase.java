@@ -12,7 +12,9 @@ import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
+import dev.hephaestus.glowcase.compat.PolydexCompatibility;
 import dev.hephaestus.glowcase.networking.GlowcaseCommonNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -88,6 +90,10 @@ public class Glowcase implements ModInitializer {
 								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
 			);
 		});
+
+		if (FabricLoader.getInstance().isModLoaded("polydex2")) {
+			PolydexCompatibility.onInitialize();
+		}
 	}
 
 	private int sendMessage(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
