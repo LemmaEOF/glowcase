@@ -6,8 +6,13 @@ import java.util.List;
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
 
+import eu.pb4.placeholders.api.ParserContext;
+import eu.pb4.placeholders.api.parsers.NodeParser;
+import eu.pb4.placeholders.api.parsers.TextParserV1;
+import net.minecraft.text.Style;
 import org.jetbrains.annotations.Nullable;
 
+import dev.hephaestus.glowcase.Glowcase;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -17,13 +22,13 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-
 public class TextBlockEntity extends BlockEntity {
+	public static final NodeParser PARSER = TextParserV1.DEFAULT;
 	public List<MutableText> lines = new ArrayList<>();
 	public TextAlignment textAlignment = TextAlignment.CENTER;
 	public ZOffset zOffset = ZOffset.CENTER;
@@ -35,13 +40,6 @@ public class TextBlockEntity extends BlockEntity {
 	public TextBlockEntity(BlockPos pos, BlockState state) {
 		super(Glowcase.TEXT_BLOCK_ENTITY, pos, state);
 		lines.add((MutableText) Text.empty());
-	}
-
-	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		NbtCompound tag = super.toInitialChunkDataNbt();
-		writeNbt(tag);
-		return tag;
 	}
 
 	@Override
@@ -85,16 +83,39 @@ public class TextBlockEntity extends BlockEntity {
 		this.renderDirty = true;
 	}
 
-	@Override
-	public void markDirty() {
-		PlayerLookup.tracking(this).forEach(player -> player.networkHandler.sendPacket(toUpdatePacket()));
-		super.markDirty();
+	public String getRawLine(int i) {
+		var line = this.lines.get(i);
+
+		if (line.getStyle() == null) {
+			return line.getString();
+		}
+
+		var insert = line.getStyle().getInsertion();
+
+		if (insert == null) {
+			return line.getString();
+		}
+		return insert;
 	}
 
-	@Nullable
-	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
+	public void addRawLine(int i, String string) {
+		var parsed = PARSER.parseText(string, ParserContext.of());
+
+		if (parsed.getString().equals(string)) {
+			this.lines.add(i, Text.literal(string));
+		} else {
+			this.lines.add(i, Text.empty().append(parsed).setStyle(Style.EMPTY.withInsertion(string)));
+		}
+	}
+
+	public void setRawLine(int i, String string) {
+		var parsed = PARSER.parseText(string, ParserContext.of());
+
+		if (parsed.getString().equals(string)) {
+			this.lines.set(i, Text.literal(string));
+		} else {
+			this.lines.set(i, Text.empty().append(parsed).setStyle(Style.EMPTY.withInsertion(string)));
+		}
 	}
 
 	public enum TextAlignment {
@@ -115,5 +136,23 @@ public class TextBlockEntity extends BlockEntity {
 		if (world != null && world.isClient) {
 			BakedBlockEntityRenderer.Manager.markForRebuild(getPos());
 		}
+		super.markRemoved();
+	}
+
+	// standard blockentity boilerplate
+
+	public void dispatch() {
+		if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+	}
+
+	@Override
+	public NbtCompound toInitialChunkDataNbt() {
+		return createNbt();
+	}
+
+	@Nullable
+	@Override
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
 	}
 }

@@ -1,6 +1,7 @@
 package dev.hephaestus.glowcase;
 
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
+import dev.hephaestus.glowcase.client.GlowcaseClientProxy;
 import dev.hephaestus.glowcase.client.render.block.entity.HyperlinkBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
@@ -26,6 +27,8 @@ import java.util.List;
 public class GlowcaseClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		Glowcase.proxy = new GlowcaseClientProxy();
+
 		BlockEntityRendererFactories.register(Glowcase.TEXT_BLOCK_ENTITY, TextBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(Glowcase.HYPERLINK_BLOCK_ENTITY, HyperlinkBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, ItemDisplayBlockEntityRenderer::new);

@@ -2,7 +2,6 @@ package dev.hephaestus.glowcase.block;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
-import dev.hephaestus.glowcase.networking.ItemDisplayBlockChannel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -13,7 +12,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -53,40 +51,32 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!world.isClient) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
-			ItemStack handStack = player.getStackInHand(hand);
-			if (blockEntity instanceof ItemDisplayBlockEntity display) {
-				if (canGiveTo(display, player) && display.hasItem() && handStack.isEmpty()) {
-					player.setStackInHand(hand, display.getUseStack().copy());
-					if (!player.isCreative()) {
-						display.givenTo.add(player.getUuid());
-						display.markDirty();
-					}
-					return ActionResult.SUCCESS;
-				} else if (player.isCreative() && world.canPlayerModifyAt(player, pos)) {
-					if (!display.hasItem() && !handStack.isEmpty()) {
-						display.setStack(handStack.copy());
-						return ActionResult.SUCCESS;
-					} else if (display.hasItem() && ItemStack.areItemsEqual(display.getUseStack(), handStack)) {
-						ItemDisplayBlockChannel.openScreen((ServerPlayerEntity) player, pos);
-						return ActionResult.SUCCESS;
-					} else if (display.hasItem() && handStack.isIn(Glowcase.ITEM_TAG)) {
-						display.setStack(ItemStack.EMPTY);
-						return ActionResult.SUCCESS;
-					}
-				}
-			}
+		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ActionResult.CONSUME;
 
-			return ActionResult.PASS;
+		ItemStack handStack = player.getStackInHand(hand);
+
+		if(canEditGlowcase(player, pos)) {
+			boolean holdingGlowcaseItem = handStack.isIn(Glowcase.ITEM_TAG);
+			boolean holdingSameAsDisplay = ItemStack.areItemsEqual(be.getDisplayedStack(), handStack);
+
+			if(!be.hasItem() && !handStack.isEmpty()) {
+				if(!world.isClient) be.setStack(handStack);
+				return ActionResult.SUCCESS;
+			} else if(holdingSameAsDisplay) {
+				if(world.isClient) Glowcase.proxy.openItemDisplayBlockEditScreen(pos);
+				return ActionResult.SUCCESS;
+			} else if(holdingGlowcaseItem) {
+				if(!world.isClient) be.setStack(ItemStack.EMPTY);
+				return ActionResult.SUCCESS;
+			}
 		}
 
-		return ActionResult.SUCCESS;
-	}
+		if(be.canGiveTo(player) && handStack.isEmpty()) {
+			if(!world.isClient) be.giveTo(player, hand);
+			return ActionResult.SUCCESS;
+		}
 
-	private boolean canGiveTo(ItemDisplayBlockEntity be, PlayerEntity player) {
-		if (be.givesItem == ItemDisplayBlockEntity.GivesItem.ONCE) return !be.givenTo.contains(player.getUuid()) || player.isCreative();
-		return be.givesItem == ItemDisplayBlockEntity.GivesItem.YES;
+		return ActionResult.CONSUME;
 	}
 
 	@Nullable
