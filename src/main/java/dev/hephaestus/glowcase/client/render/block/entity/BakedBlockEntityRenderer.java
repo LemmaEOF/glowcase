@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
 
 import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
@@ -264,10 +265,13 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				MatrixStack matrices = wrc.matrixStack();
 				matrices.push();
 				matrices.translate(-cam.x, -cam.y, -cam.z);
-				for (Map.Entry<RenderRegionPos, RegionBuffer> entry : regions.object2ReferenceEntrySet()) {
+				ObjectIterator<Map.Entry<RenderRegionPos, RegionBuffer>> regionerator = regions.entrySet().iterator();
+				while(regionerator.hasNext()) {
+					Map.Entry<RenderRegionPos, RegionBuffer> entry = regionerator.next();
+
 					RenderRegionPos rrp = entry.getKey();
 					RegionBuffer regionBuffer = entry.getValue();
-					if (isVisiblePos(entry.getKey(), cam)) {
+					if (isVisiblePos(rrp, cam) && rrp.origin != null) {
 						// Iterate over used render layers in the region, render them
 						matrices.push();
 						matrices.translate(rrp.origin.getX(), rrp.origin.getY(), rrp.origin.getZ());
@@ -276,7 +280,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 						matrices.pop();
 					} else {
 						regionBuffer.release();
-						regions.remove(rrp);
+						regionerator.remove();
 					}
 				}
 				RenderSystem.setShaderFogEnd(originalFogEnd);
