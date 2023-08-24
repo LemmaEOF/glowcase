@@ -264,7 +264,9 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				MatrixStack matrices = wrc.matrixStack();
 				matrices.push();
 				matrices.translate(-cam.x, -cam.y, -cam.z);
-				for (Map.Entry<RenderRegionPos, RegionBuffer> entry : regions.object2ReferenceEntrySet()) {
+				var iter = regions.object2ReferenceEntrySet().iterator();
+				while (iter.hasNext()) {
+					var entry = iter.next();
 					RenderRegionPos rrp = entry.getKey();
 					RegionBuffer regionBuffer = entry.getValue();
 					if (isVisiblePos(entry.getKey(), cam)) {
@@ -276,7 +278,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 						matrices.pop();
 					} else {
 						regionBuffer.release();
-						regions.remove(rrp);
+						iter.remove();
 					}
 				}
 				RenderSystem.setShaderFogEnd(originalFogEnd);
