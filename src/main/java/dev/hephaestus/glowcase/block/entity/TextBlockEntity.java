@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.hephaestus.glowcase.Glowcase;
-import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer.BakedBlockEntityRendererManager;
+import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
 
 import eu.pb4.placeholders.api.ParserContext;
 import eu.pb4.placeholders.api.parsers.NodeParser;
@@ -13,7 +13,6 @@ import net.minecraft.text.Style;
 import org.jetbrains.annotations.Nullable;
 
 import dev.hephaestus.glowcase.Glowcase;
-import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer.BakedBlockEntityRendererManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -135,7 +134,7 @@ public class TextBlockEntity extends BlockEntity {
 	@Override
 	public void markRemoved() {
 		if (world != null && world.isClient) {
-			BakedBlockEntityRendererManager.markForRebuild(getPos());
+			BakedBlockEntityRenderer.Manager.markForRebuild(getPos());
 		}
 		super.markRemoved();
 	}

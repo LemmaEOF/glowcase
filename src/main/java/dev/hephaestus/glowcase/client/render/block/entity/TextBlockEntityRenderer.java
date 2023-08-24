@@ -26,7 +26,7 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 	public void renderUnbaked(TextBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		if (entity.renderDirty) {
 			entity.renderDirty = false;
-			BakedBlockEntityRendererManager.markForRebuild(entity.getPos());
+			Manager.markForRebuild(entity.getPos());
 		}
 	}
 
