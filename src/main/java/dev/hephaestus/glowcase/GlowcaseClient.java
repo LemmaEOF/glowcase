@@ -4,7 +4,7 @@ import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
 import dev.hephaestus.glowcase.client.render.block.entity.HyperlinkBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
-import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer.BakedBlockEntityRendererManager;
+import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,8 +30,8 @@ public class GlowcaseClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(Glowcase.HYPERLINK_BLOCK_ENTITY, HyperlinkBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, ItemDisplayBlockEntityRenderer::new);
 
-		WorldRenderEvents.AFTER_TRANSLUCENT.register(BakedBlockEntityRendererManager::render);
-		InvalidateRenderStateCallback.EVENT.register(BakedBlockEntityRendererManager::reset);
+		WorldRenderEvents.AFTER_TRANSLUCENT.register(BakedBlockEntityRenderer.Manager::render);
+		InvalidateRenderStateCallback.EVENT.register(BakedBlockEntityRenderer.Manager::reset);
 
 		HudRenderCallback.EVENT.register((context, tickDelta) -> {
 			MinecraftClient client = MinecraftClient.getInstance();
