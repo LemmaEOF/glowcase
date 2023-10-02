@@ -1,0 +1,23 @@
+{
+  "itemGroup.glowcase.items": "चमकीला आवरण",
+  "block.glowcase.text_block": "टेक्स्ट ब्लॉक",
+  "block.glowcase.hyperlink_block": "हाइपरलिंक ब्लॉक",
+  "block.glowcase.item_display_block": "आइटम प्रदर्शन ब्लॉक",
+  "block.glowcase.mailbox": "मेलबॉक्स",
+  "gui.glowcase.scale": "माप: %d",
+  "gui.glowcase.alignment": "संरेखण: %s",
+  "gui.glowcase.gives_item": "आइटम प्रदान करता है: %s",
+  "gui.glowcase.shadow_type": "छाया प्रकार",
+  "gui.glowcase.rotation_type": "पलटाने के प्रकार: %s",
+  "gui.glowcase.show_name": "नाम दिखाएं: %s",
+  "gui.glowcase.offset": "ऑफसेट: %s",
+  "gui.glowcase.none": "(कोई नहीं)",
+  "item.glowcase.text_block": "टेक्स्ट ब्लॉक",
+  "item.glowcase.hyperlink_block": "हाइपरलिंक ब्लॉक",
+  "command.glowcase.message_sent": "संदेश भेजा गया!",
+  "command.glowcase.failed.no_mailbox": "संदेश भेजने में विफल; उस स्थान पर कोई मेलबॉक्स मौजूद नहीं है",
+  "command.glowcase.failed.no_world": "संदेश भेजने में विफल; प्रेषक को एक दुनिया में होना चाहिए",
+  "glowcase.mailbox.sender": "से %s",
+  "glowcase.mailbox.reminder1": "इस संदेश को हटाने के लिए दाएं क्लिक करें",
+  "glowcase.mailbox.reminder2": "स्नीक+दाएं क्लिक करके इस प्रेषक से आने वाले सभी संदेशों को हटाने के लिए"
+}
