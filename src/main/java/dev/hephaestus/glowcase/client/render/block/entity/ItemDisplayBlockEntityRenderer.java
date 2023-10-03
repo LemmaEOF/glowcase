@@ -13,7 +13,6 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.state.property.Properties;
@@ -28,9 +27,9 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 	@Override
 	public void render(ItemDisplayBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-		PlayerEntity player = mc.player;
+		Entity camera = mc.getCameraEntity();
 
-		if (player == null) return;
+		if (camera == null) return;
 
 		matrices.push();
 		matrices.translate(0.5D, 0D, 0.5D);
@@ -40,7 +39,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 		switch (entity.rotationType) {
 			case TRACKING -> {
-				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(player, entity.getPos());
+				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(camera, entity.getPos());
 				pitch = pitchAndYaw.x;
 				yaw = pitchAndYaw.y;
 				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
