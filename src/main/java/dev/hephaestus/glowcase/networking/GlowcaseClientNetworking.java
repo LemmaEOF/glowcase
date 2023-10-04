@@ -28,8 +28,8 @@ public class GlowcaseClientNetworking {
 		buf.writeVarInt(be.getCachedState().get(Properties.ROTATION));
 		buf.writeBoolean(be.showName);
 
-		if (updatePitchAndYaw && MinecraftClient.getInstance().player != null) {
-			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().player, be.getPos());
+		if (updatePitchAndYaw && MinecraftClient.getInstance().getCameraEntity() != null) {
+			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().getCameraEntity(), be.getPos());
 			be.pitch = pitchAndYaw.x;
 			be.yaw = pitchAndYaw.y;
 		}
