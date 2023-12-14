@@ -39,7 +39,7 @@ public class GlowcaseClient implements ClientModInitializer {
 		HudRenderCallback.EVENT.register((context, tickDelta) -> {
 			MinecraftClient client = MinecraftClient.getInstance();
 
-			if (client.world != null && client.crosshairTarget instanceof BlockHitResult hitResult && client.world.getBlockEntity(hitResult.getBlockPos()) instanceof MailboxBlockEntity mailbox && mailbox.messageCount() > 0 && mailbox.owner().equals(client.getSession().getProfile().getId())) {
+			if (client.world != null && client.crosshairTarget instanceof BlockHitResult hitResult && client.world.getBlockEntity(hitResult.getBlockPos()) instanceof MailboxBlockEntity mailbox && mailbox.messageCount() > 0 && mailbox.owner().equals(client.getSession().getUuidOrNull())) {
 				Window window = client.getWindow();
 				TextRenderer textRenderer = client.textRenderer;
 				MailboxBlockEntity.Message message = mailbox.getMessage();

@@ -26,9 +26,9 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation include("eu.pb4:placeholder-api:2.1.2+1.20.1")
-    modCompileOnly "eu.pb4:polydex:1.0.0-beta.2.2+1.20.1"
-    modLocalRuntime "eu.pb4:polydex:1.0.0-beta.2.2+1.20.1"
+    modImplementation include("eu.pb4:placeholder-api:2.3.0+1.20.3")
+    modCompileOnly "eu.pb4:polydex:1.0.0+1.20.3-rc1"
+    modLocalRuntime "eu.pb4:polydex:1.0.0+1.20.3-rc1"
 
 }
 

@@ -55,7 +55,7 @@ public class TextBlockEntity extends BlockEntity {
 
 		NbtList lines = tag.getList("lines", 8);
 		for (MutableText text : this.lines) {
-			lines.add(NbtString.of(Text.Serializer.toJson(text)));
+			lines.add(NbtString.of(Text.Serialization.toJsonString(text)));
 		}
 
 		tag.put("lines", lines);
@@ -77,7 +77,7 @@ public class TextBlockEntity extends BlockEntity {
 
 		for (NbtElement line : lines) {
 			if (line.getType() == NbtElement.END_TYPE) break;
-			this.lines.add(Text.Serializer.fromJson(line.asString()));
+			this.lines.add(Text.Serialization.fromJson(line.asString()));
 		}
 		
 		this.renderDirty = true;

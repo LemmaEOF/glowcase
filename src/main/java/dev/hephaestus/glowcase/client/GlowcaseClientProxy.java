@@ -23,7 +23,7 @@ public class GlowcaseClientProxy extends GlowcaseCommonProxy {
 
     @Override
     public void openUrlWithConfirmation(String url) {
-        ConfirmLinkScreen.open(url, MinecraftClient.getInstance().currentScreen, false);
+        ConfirmLinkScreen.open(MinecraftClient.getInstance().currentScreen, url);
     }
 
     @Override

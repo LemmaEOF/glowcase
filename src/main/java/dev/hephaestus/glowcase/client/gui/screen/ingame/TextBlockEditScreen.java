@@ -2,6 +2,7 @@ package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.serialization.DataResult;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.networking.GlowcaseClientNetworking;
 import net.minecraft.client.MinecraftClient;
@@ -21,6 +22,8 @@ import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import java.util.Optional;
 
 //TODO: multi-character selection at some point? it may be a bit complex but it'd be nice
 @Environment(EnvType.CLIENT)
@@ -94,8 +97,8 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 0, 50, 20, Text.empty());
 		this.colorEntryWidget.setText("#" + Integer.toHexString(this.textBlockEntity.color & 0x00FFFFFF));
 		this.colorEntryWidget.setChangedListener(string -> {
-			TextColor color = TextColor.parse(this.colorEntryWidget.getText());
-			this.textBlockEntity.color = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
+			Optional<TextColor> color = TextColor.parse(this.colorEntryWidget.getText()).result();
+			this.textBlockEntity.color = color.map(textColor -> textColor.getRgb() | 0xFF000000).orElse(0xFFFFFFFF);
 			this.textBlockEntity.renderDirty = true;
 		});
 

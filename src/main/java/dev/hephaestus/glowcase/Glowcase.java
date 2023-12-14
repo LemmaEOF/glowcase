@@ -103,7 +103,7 @@ public class Glowcase implements ModInitializer {
 
 		if (sender != null) {
 			if (sender.getWorld().getBlockEntity(pos) instanceof MailboxBlockEntity mailbox) {
-				mailbox.addMessage(new MailboxBlockEntity.Message(sender.getUuid(), sender.getEntityName(), message));
+				mailbox.addMessage(new MailboxBlockEntity.Message(sender.getUuid(), sender.getName().getString(), message));
 				ctx.getSource().sendFeedback(() -> Text.translatable("command.glowcase.message_sent"), false);
 				return 0;
 			} else {
