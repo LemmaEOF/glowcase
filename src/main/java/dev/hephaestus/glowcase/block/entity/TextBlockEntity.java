@@ -8,11 +8,11 @@ import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRender
 
 import eu.pb4.placeholders.api.ParserContext;
 import eu.pb4.placeholders.api.parsers.NodeParser;
-import eu.pb4.placeholders.api.parsers.TextParserV1;
+import eu.pb4.placeholders.api.parsers.TagParser;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Style;
 import org.jetbrains.annotations.Nullable;
 
-import dev.hephaestus.glowcase.Glowcase;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 
 public class TextBlockEntity extends BlockEntity {
-	public static final NodeParser PARSER = TextParserV1.DEFAULT;
+	public static final NodeParser PARSER = TagParser.DEFAULT;
 	public List<MutableText> lines = new ArrayList<>();
 	public TextAlignment textAlignment = TextAlignment.CENTER;
 	public ZOffset zOffset = ZOffset.CENTER;
@@ -43,8 +43,8 @@ public class TextBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
+	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+		super.writeNbt(tag, registryLookup);
 
 		tag.putFloat("scale", this.scale);
 		tag.putInt("color", this.color);
@@ -55,15 +55,15 @@ public class TextBlockEntity extends BlockEntity {
 
 		NbtList lines = tag.getList("lines", 8);
 		for (MutableText text : this.lines) {
-			lines.add(NbtString.of(Text.Serializer.toJson(text)));
+			lines.add(NbtString.of(Text.Serialization.toJsonString(text, registryLookup)));
 		}
 
 		tag.put("lines", lines);
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
+	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+		super.readNbt(tag, registryLookup);
 
 		this.lines = new ArrayList<>();
 		this.scale = tag.getFloat("scale");
@@ -77,9 +77,9 @@ public class TextBlockEntity extends BlockEntity {
 
 		for (NbtElement line : lines) {
 			if (line.getType() == NbtElement.END_TYPE) break;
-			this.lines.add(Text.Serializer.fromJson(line.asString()));
+			this.lines.add(Text.Serialization.fromJson(line.asString(), registryLookup));
 		}
-		
+
 		this.renderDirty = true;
 	}
 
@@ -146,8 +146,8 @@ public class TextBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		return createNbt();
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+		return createNbt(registryLookup);
 	}
 
 	@Nullable

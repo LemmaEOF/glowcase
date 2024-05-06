@@ -12,6 +12,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -40,7 +41,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 		switch (entity.rotationType) {
 			case TRACKING -> {
-				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(player, entity.getPos());
+				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(mc.cameraEntity, entity.getPos());
 				pitch = pitchAndYaw.x;
 				yaw = pitchAndYaw.y;
 				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
@@ -67,9 +68,8 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 			matrices.push();
 			Entity renderEntity = entity.getDisplayEntity();
 			if (renderEntity != null) {
-				if (stack.hasCustomName()) {
-					name = stack.getName();
-				} else {
+				name = stack.get(DataComponentTypes.CUSTOM_NAME);
+				if (name == null) {
 					name = renderEntity.getName();
 				}
 
@@ -89,7 +89,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 			matrices.translate(0, 0.125F, 0);
 			matrices.scale(0.5F, 0.5F, 0.5F);
 		} else {
-			name = stack.isEmpty() ? Text.translatable("gui.glowcase.none") : (Text.literal("")).append(stack.getName()).formatted(stack.getRarity().formatting);
+			name = stack.isEmpty() ? Text.translatable("gui.glowcase.none") : (Text.literal("")).append(stack.getName()).formatted(stack.getRarity().getFormatting());
 			matrices.translate(0, 0.5, 0);
 			matrices.scale(0.5F, 0.5F, 0.5F);
 			matrices.multiply(RotationAxis.POSITIVE_X.rotation(pitch));

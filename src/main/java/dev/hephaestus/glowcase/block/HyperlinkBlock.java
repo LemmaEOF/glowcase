@@ -6,6 +6,8 @@ import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -13,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -39,9 +42,9 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (world.isClient && placer instanceof PlayerEntity player && canEditGlowcase(player, pos)) {
 			//load any ctrl-picked NBT clientside
-			NbtCompound blockEntityTag = BlockItem.getBlockEntityNbt(stack);
+			NbtComponent blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
 			if(blockEntityTag != null && world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be) {
-				be.readNbt(blockEntityTag);
+				blockEntityTag.applyToBlockEntity(be, world.getRegistryManager());
 			}
 			
 			Glowcase.proxy.openHyperlinkBlockEditScreen(pos);
@@ -49,17 +52,20 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) return ActionResult.CONSUME;
-
 		if (world.isClient) {
-			if (player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
-				Glowcase.proxy.openHyperlinkBlockEditScreen(pos);
-			} else {
-				Glowcase.proxy.openUrlWithConfirmation(be.getUrl());
-			}
+			Glowcase.proxy.openUrlWithConfirmation(be.getUrl());
 		}
-
 		return ActionResult.SUCCESS;
+	}
+
+	@Override
+	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) return ItemActionResult.CONSUME;
+		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
+			Glowcase.proxy.openHyperlinkBlockEditScreen(pos);
+		}
+		return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 }

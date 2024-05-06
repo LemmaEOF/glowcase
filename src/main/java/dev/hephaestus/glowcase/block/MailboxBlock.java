@@ -32,7 +32,7 @@ public class MailboxBlock extends Block implements BlockEntityProvider {
 	private static final VoxelShape SHAPE_EW = VoxelShapes.cuboid(0.0625, 0, 0.3125, 0.9375, 0.5, 0.6875);
 
 	public MailboxBlock() {
-		super(FabricBlockSettings.create().nonOpaque().strength(-1, Integer.MAX_VALUE));
+		super(Settings.create().nonOpaque().strength(-1, Integer.MAX_VALUE));
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class MailboxBlock extends Block implements BlockEntityProvider {
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if(!(world.getBlockEntity(pos) instanceof MailboxBlockEntity be)) return ActionResult.CONSUME;
 		boolean mine = Objects.equals(player.getUuid(), be.owner());
 

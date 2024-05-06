@@ -8,53 +8,51 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 
+import java.util.ArrayList;
+
 public class GlowcaseClientNetworking {
 	public static void editHyperlinkBlock(BlockPos pos, String url) {
-		ClientPlayNetworking.send(GlowcaseCommonNetworking.EDIT_HYPERLINK_BLOCK, new PacketByteBuf(Unpooled.buffer())
-				.writeBlockPos(pos)
-				.writeString(url));
+		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditHyperlinkBlock(pos, url));
 	}
 
 	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
 	public static void editItemDisplayBlock(ItemDisplayBlockEntity be, boolean updatePitchAndYaw) {
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeBlockPos(be.getPos());
-		buf.writeEnumConstant(be.rotationType);
-		buf.writeEnumConstant(be.givesItem);
-		buf.writeEnumConstant(be.offset);
-		buf.writeVarInt(be.getCachedState().get(Properties.ROTATION));
-		buf.writeBoolean(be.showName);
-
 		if (updatePitchAndYaw && MinecraftClient.getInstance().player != null) {
-			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().player, be.getPos());
+			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().cameraEntity, be.getPos());
 			be.pitch = pitchAndYaw.x;
 			be.yaw = pitchAndYaw.y;
 		}
-
-		buf.writeFloat(be.pitch);
-		buf.writeFloat(be.yaw);
-
-		ClientPlayNetworking.send(GlowcaseCommonNetworking.EDIT_ITEM_DISPLAY_BLOCK_SETTINGS, buf);
+		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditItemDisplayBlockSettings(
+				be.getPos(),
+				be.rotationType,
+				be.givesItem,
+				be.offset,
+				new GlowcaseCommonNetworking.ItemDisplayBlockValues(
+						be.getCachedState().get(Properties.ROTATION),
+						be.showName,
+						be.pitch,
+						be.yaw
+				)
+		));
 	}
 
 	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
 	public static void editTextBlock(TextBlockEntity be) {
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeBlockPos(be.getPos());
-		buf.writeFloat(be.scale);
-		buf.writeVarInt(be.lines.size());
-		buf.writeEnumConstant(be.textAlignment);
-		buf.writeVarInt(be.color);
-		buf.writeEnumConstant(be.zOffset);
-		buf.writeEnumConstant(be.shadowType);
-
-		for (MutableText text : be.lines) {
-			buf.writeText(text);
-		}
-
-		ClientPlayNetworking.send(GlowcaseCommonNetworking.EDIT_TEXT_BLOCK, buf);
+		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditTextBlock(
+				be.getPos(),
+				be.textAlignment,
+				be.zOffset,
+				be.shadowType,
+				new GlowcaseCommonNetworking.TextBlockValues(
+						be.scale,
+						be.lines.size(),
+						be.color,
+						(ArrayList<Text>) (Object) be.lines
+				)
+		));
 	}
 }

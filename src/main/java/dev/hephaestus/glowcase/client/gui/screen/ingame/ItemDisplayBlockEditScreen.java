@@ -30,15 +30,15 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 			int centerW = width / 2;
 			int centerH = height / 2;
 
-			this.givesItemButtom = ButtonWidget.builder(Text.translatable("gui.glowcase.gives_item", this.displayBlock.givesItem), (action) -> {
+			this.givesItemButtom = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.gives_item", this.displayBlock.givesItem), (action) -> {
 				this.displayBlock.cycleGiveType();
-				this.givesItemButtom.setMessage(Text.translatable("gui.glowcase.gives_item", this.displayBlock.givesItem));
+				this.givesItemButtom.setMessage(Text.stringifiedTranslatable("gui.glowcase.gives_item", this.displayBlock.givesItem));
 				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, true);
 			}).dimensions(centerW - 75, centerH - 40 - individualPadding, 150, 20).build();
 
-			this.rotationTypeButton = ButtonWidget.builder(Text.translatable("gui.glowcase.rotation_type", this.displayBlock.rotationType), (action) -> {
+			this.rotationTypeButton = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.rotation_type", this.displayBlock.rotationType), (action) -> {
 				this.displayBlock.cycleRotationType(this.client.player);
-				this.rotationTypeButton.setMessage(Text.translatable("gui.glowcase.rotation_type", this.displayBlock.rotationType));
+				this.rotationTypeButton.setMessage(Text.stringifiedTranslatable("gui.glowcase.rotation_type", this.displayBlock.rotationType));
 				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, true);
 			}).dimensions(centerW - 75, centerH - 20, 150, 20).build();
 
@@ -48,9 +48,9 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, false);
 			}).dimensions(centerW - 75, centerH + individualPadding, 150, 20).build();
 
-			this.offsetButton = ButtonWidget.builder(Text.translatable("gui.glowcase.offset", this.displayBlock.offset), (action) -> {
+			this.offsetButton = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.offset", this.displayBlock.offset), (action) -> {
 				this.displayBlock.cycleOffset();
-				this.offsetButton.setMessage(Text.translatable("gui.glowcase.offset", this.displayBlock.offset));
+				this.offsetButton.setMessage(Text.stringifiedTranslatable("gui.glowcase.offset", this.displayBlock.offset));
 				GlowcaseClientNetworking.editItemDisplayBlock(displayBlock, true);
 			}).dimensions(centerW - 75, centerH + 20 + padding, 150, 20).build();
 

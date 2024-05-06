@@ -40,6 +40,11 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 	}
 
 	@Override
+	public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+		renderDarkening(context);
+	}
+
+	@Override
 	public void init() {
 		super.init();
 
@@ -65,11 +70,11 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		}).dimensions(80, 0, 20, 20).build();
 
 		ButtonWidget increaseSize = ButtonWidget.builder(Text.literal("+"), action -> {
-			this.textBlockEntity.scale += 0.125;
+			this.textBlockEntity.scale += 0.125F;
 			this.textBlockEntity.renderDirty = true;
 		}).dimensions(100, 0, 20, 20).build();
 
-		this.changeAlignment = ButtonWidget.builder(Text.translatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment), action -> {
+		this.changeAlignment = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment), action -> {
 			switch (textBlockEntity.textAlignment) {
 				case LEFT -> textBlockEntity.textAlignment = TextBlockEntity.TextAlignment.CENTER;
 				case CENTER -> textBlockEntity.textAlignment = TextBlockEntity.TextAlignment.RIGHT;
@@ -77,7 +82,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			}
 			this.textBlockEntity.renderDirty = true;
 
-			this.changeAlignment.setMessage(Text.translatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment));
+			this.changeAlignment.setMessage(Text.stringifiedTranslatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment));
 		}).dimensions(120 + innerPadding, 0, 160, 20).build();
 
 		this.shadowToggle = ButtonWidget.builder(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType), action -> {
@@ -94,9 +99,10 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 0, 50, 20, Text.empty());
 		this.colorEntryWidget.setText("#" + Integer.toHexString(this.textBlockEntity.color & 0x00FFFFFF));
 		this.colorEntryWidget.setChangedListener(string -> {
-			TextColor color = TextColor.parse(this.colorEntryWidget.getText());
-			this.textBlockEntity.color = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
-			this.textBlockEntity.renderDirty = true;
+			TextColor.parse(this.colorEntryWidget.getText()).ifSuccess(color -> {
+				this.textBlockEntity.color = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
+				this.textBlockEntity.renderDirty = true;
+			});
 		});
 
 		this.zOffsetToggle = ButtonWidget.builder(Text.literal(this.textBlockEntity.zOffset.name()), action -> {
@@ -164,7 +170,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 					case RIGHT -> this.width - this.width / 10F - this.textRenderer.getWidth(line);
 				};
 
-				startX += push;
+				startX += (int) push;
 
 
 				int caretStartY = this.currentRow * 12;
@@ -198,12 +204,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		}
 	}
 
-	@Override
-	public boolean shouldPause() {
-		return false;
-	}
-
-	@Override
+    @Override
 	public boolean charTyped(char chr, int keyCode) {
 		if (this.colorEntryWidget.isActive()) {
 			return this.colorEntryWidget.charTyped(chr, keyCode);
@@ -223,7 +224,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 				return this.colorEntryWidget.keyPressed(keyCode, scanCode, modifiers);
 			}
 		} else {
-			this.focusOn(null);
+			setFocused(null);
 			if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
 				this.textBlockEntity.addRawLine(this.currentRow + 1,
 						this.textBlockEntity.getRawLine(this.currentRow).substring(

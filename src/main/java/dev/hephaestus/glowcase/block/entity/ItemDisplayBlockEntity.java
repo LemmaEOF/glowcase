@@ -6,6 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
@@ -15,6 +16,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Hand;
@@ -45,9 +47,11 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		tag.put("item", this.stack.writeNbt(new NbtCompound()));
+	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+		super.writeNbt(tag, registryLookup);
+		if (!this.stack.isEmpty()) {
+			tag.put("item", this.stack.encode(registryLookup));
+		}
 		tag.putString("rotation_type", this.rotationType.name());
 		tag.putFloat("pitch", this.pitch);
 		tag.putFloat("yaw", this.yaw);
@@ -64,10 +68,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public void readNbt(NbtCompound tag) {
-		super.readNbt(tag);
+	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+		super.readNbt(tag, registryLookup);
 
-		this.stack = ItemStack.fromNbt(tag.getCompound("item"));
+		this.stack = tag.contains("item", NbtElement.COMPOUND_TYPE)
+				? ItemStack.fromNbt(registryLookup, tag.getCompound("item")).orElse(ItemStack.EMPTY)
+				: ItemStack.EMPTY;
 		this.clearDisplayEntity();
 
 		if (tag.contains("tracking")) {
@@ -128,7 +134,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 
 	public Entity getDisplayEntity() {
 		if (this.displayEntity == null && this.world != null && this.stack.getItem() instanceof SpawnEggItem eggItem) {
-			this.displayEntity = eggItem.getEntityType(this.stack.getNbt()).create(this.world);
+			this.displayEntity = eggItem.getEntityType(this.stack).create(this.world);
 		}
 
 		return this.displayEntity;
@@ -194,10 +200,10 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static Vec2f getPitchAndYaw(PlayerEntity player, BlockPos pos) {
-		double d = pos.getX() - player.getPos().x + 0.5;
-		double e = pos.getY() - player.getEyeY() + 0.5;
-		double f = pos.getZ() - player.getPos().z + 0.5;
+	public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos) {
+		double d = pos.getX() - camera.getPos().x + 0.5;
+		double e = pos.getY() - camera.getEyeY() + 0.5;
+		double f = pos.getZ() - camera.getPos().z + 0.5;
 		double g = MathHelper.sqrt((float) (d * d + f * f));
 
 		float pitch = (float) ((-MathHelper.atan2(e, g)));
@@ -232,8 +238,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		return createNbt();
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+		return createNbt(registryLookup);
 	}
 
 	@Nullable
