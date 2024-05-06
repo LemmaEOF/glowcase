@@ -263,6 +263,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				// Iterate over all RegionBuffers, render visible and remove non-visible RegionBuffers
 				MatrixStack matrices = wrc.matrixStack();
 				matrices.push();
+				matrices.multiplyPositionMatrix(wrc.positionMatrix());
 				matrices.translate(-cam.x, -cam.y, -cam.z);
 				var iter = regions.object2ReferenceEntrySet().iterator();
 				while (iter.hasNext()) {
