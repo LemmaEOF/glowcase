@@ -21,8 +21,8 @@ public class GlowcaseClientNetworking {
 
 	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
 	public static void editItemDisplayBlock(ItemDisplayBlockEntity be, boolean updatePitchAndYaw) {
-		if (updatePitchAndYaw && MinecraftClient.getInstance().player != null) {
-			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().cameraEntity, be.getPos());
+		if (updatePitchAndYaw && MinecraftClient.getInstance().getCameraEntity() != null) {
+			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().getCameraEntity(), be.getPos());
 			be.pitch = pitchAndYaw.x;
 			be.yaw = pitchAndYaw.y;
 		}
