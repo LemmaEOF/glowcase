@@ -15,6 +15,13 @@ repositories {
         url "https://maven.nucleoid.xyz/"
         name "Nucleoid"
     }
+
+    maven {
+        url "https://maven.gegy.dev"
+        name "Gegy"
+    }
+
+    mavenLocal()
 }
 
 loom {
@@ -22,11 +29,23 @@ loom {
 }
 
 dependencies {
+    // Minecraft
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
+
+    // Yarn mappings
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+
+    // Fabric
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Text Placeholder API
     modImplementation include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
+
+    // SpruceUI
+    modImplementation include("dev.lambdaurora:spruceui:${project.spruceui_version}")
+
+    // Polydex (for compatibility)
     modCompileOnly modLocalRuntime("eu.pb4:polydex:${project.polydex_version}")
 }
 

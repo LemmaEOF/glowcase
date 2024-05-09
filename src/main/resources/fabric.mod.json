@@ -13,10 +13,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "dev.hephaestus.glowcase.Glowcase"
+      "net.modfest.glowcase.Glowcase"
     ],
     "client": [
-      "dev.hephaestus.glowcase.GlowcaseClient"
+      "net.modfest.glowcase.GlowcaseClient"
     ]
   },
   "mixins": [
