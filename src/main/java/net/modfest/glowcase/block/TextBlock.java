@@ -1,13 +1,10 @@
 package net.modfest.glowcase.block;
 
-import net.modfest.glowcase.Glowcase;
-import net.modfest.glowcase.block.entity.TextBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -20,12 +17,15 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.modfest.glowcase.Glowcase;
+import net.modfest.glowcase.block.entity.TextBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
+
 	public TextBlock() {
 		super();
-		this.setDefaultState(this.getDefaultState().with(Properties.ROTATION, 0));
+		setDefaultState(getDefaultState().with(Properties.ROTATION, 0));
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double)((180.0F + ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
+		return getDefaultState().with(Properties.ROTATION, MathHelper.floor((double) ((180.0f + ctx.getPlayerYaw()) * 16.0f / 360.0f) + 0.5d) & 15);
 	}
 
 	@Nullable
@@ -44,28 +44,26 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return new TextBlockEntity(pos, state);
 	}
-	
+
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (world.isClient && placer instanceof PlayerEntity player && canEditGlowcase(player, pos)) {
-			//load any ctrl-picked NBT clientside
-			NbtComponent blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
-			if(blockEntityTag != null && world.getBlockEntity(pos) instanceof TextBlockEntity be) {
-				blockEntityTag.applyToBlockEntity(be, world.getRegistryManager());
+		if (world.isClient && placer instanceof PlayerEntity player && canPlayerEdit(player, pos)) {
+			var blockEntityData = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+			if (blockEntityData != null && world.getBlockEntity(pos) instanceof TextBlockEntity blockEntity) {
+				blockEntityData.applyToBlockEntity(blockEntity, world.getRegistryManager());
 			}
-
 			Glowcase.proxy.openTextBlockEditScreen(pos);
 		}
 	}
 
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!(world.getBlockEntity(pos) instanceof TextBlockEntity be)) return ItemActionResult.CONSUME;
-
-		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
+		if (!(world.getBlockEntity(pos) instanceof TextBlockEntity)) {
+			return ItemActionResult.CONSUME;
+		}
+		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canPlayerEdit(player, pos)) {
 			Glowcase.proxy.openTextBlockEditScreen(pos);
 		}
-
 		return ItemActionResult.SUCCESS;
 	}
 }

@@ -1,6 +1,5 @@
 package net.modfest.glowcase.block.entity;
 
-import net.modfest.glowcase.Glowcase;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -10,9 +9,11 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.modfest.glowcase.Glowcase;
 import org.jetbrains.annotations.Nullable;
 
 public class HyperlinkBlockEntity extends BlockEntity {
+
 	private String url = "";
 
 	public HyperlinkBlockEntity(BlockPos pos, BlockState state) {
@@ -40,11 +41,12 @@ public class HyperlinkBlockEntity extends BlockEntity {
 		super.readNbt(tag, registryLookup);
 		this.url = tag.getString("url");
 	}
-
 	// standard blockentity boilerplate
 
 	public void dispatch() {
-		if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+		if (world instanceof ServerWorld sworld) {
+			sworld.getChunkManager().markForUpdate(pos);
+		}
 	}
 
 	@Override

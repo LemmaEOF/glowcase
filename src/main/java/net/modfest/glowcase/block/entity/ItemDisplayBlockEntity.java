@@ -1,6 +1,5 @@
 package net.modfest.glowcase.block.entity;
 
-import net.modfest.glowcase.Glowcase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -23,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.World;
+import net.modfest.glowcase.Glowcase;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ItemDisplayBlockEntity extends BlockEntity {
+
 	private ItemStack stack = ItemStack.EMPTY;
 	private Entity displayEntity = null;
 
@@ -69,41 +70,38 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	@Override
 	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		super.readNbt(tag, registryLookup);
-
 		this.stack = tag.contains("item", NbtElement.COMPOUND_TYPE)
 				? ItemStack.fromNbt(registryLookup, tag.getCompound("item")).orElse(ItemStack.EMPTY)
 				: ItemStack.EMPTY;
 		this.clearDisplayEntity();
-
 		if (tag.contains("tracking")) {
 			this.rotationType = tag.getBoolean("tracking") ? RotationType.TRACKING : RotationType.LOCKED;
-		} else if (tag.contains("rotation_type")) {
+		}
+		else if (tag.contains("rotation_type")) {
 			this.rotationType = RotationType.valueOf(tag.getString("rotation_type"));
-		} else {
+		}
+		else {
 			this.rotationType = RotationType.TRACKING;
 		}
-
 		if (tag.contains("gives_item")) {
 			this.givesItem = GivesItem.valueOf(tag.getString("gives_item"));
-		} else {
+		}
+		else {
 			this.givesItem = GivesItem.YES;
 		}
-
 		if (tag.contains("offset")) {
 			this.offset = Offset.valueOf(tag.getString("offset"));
-		} else {
+		}
+		else {
 			this.offset = Offset.CENTER;
 		}
-
 		if (tag.contains("pitch")) {
 			this.pitch = tag.getFloat("pitch");
 			this.yaw = tag.getFloat("yaw");
 		}
-
 		if (tag.contains("show_name")) {
 			this.showName = tag.getBoolean("show_name");
 		}
-
 		givenTo.clear();
 		if (tag.contains("given_to")) {
 			NbtList given = tag.getList("given_to", NbtElement.COMPOUND_TYPE);
@@ -120,7 +118,6 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 
 	public void setStack(ItemStack stack) {
 		this.stack = stack.copy();
-
 		this.givenTo.clear();
 		this.clearDisplayEntity();
 		this.markDirty();
@@ -135,7 +132,6 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		if (this.displayEntity == null && this.world != null && this.stack.getItem() instanceof SpawnEggItem eggItem) {
 			this.displayEntity = eggItem.getEntityType(this.stack).create(this.world);
 		}
-
 		return this.displayEntity;
 	}
 
@@ -180,16 +176,20 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		markDirty();
 		dispatch();
 	}
-	
+
 	public boolean canGiveTo(PlayerEntity player) {
-		if(!hasItem()) return false;
-		else return switch(this.givesItem) {
-			case YES -> true;
-			case NO -> false;
-			case ONCE -> player.isCreative() || !givenTo.contains(player.getUuid());
-		};
+		if (!hasItem()) {
+			return false;
+		}
+		else {
+			return switch (this.givesItem) {
+				case YES -> true;
+				case NO -> false;
+				case ONCE -> player.isCreative() || !givenTo.contains(player.getUuid());
+			};
+		}
 	}
-	
+
 	public void giveTo(PlayerEntity player, Hand hand) {
 		player.setStackInHand(hand, getDisplayedStack().copy());
 		if (!player.isCreative()) {
@@ -204,10 +204,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		double e = pos.getY() - camera.getEyeY() + 0.5;
 		double f = pos.getZ() - camera.getPos().z + 0.5;
 		double g = MathHelper.sqrt((float) (d * d + f * f));
-
 		float pitch = (float) ((-MathHelper.atan2(e, g)));
 		float yaw = (float) (-MathHelper.atan2(f, d) + Math.PI / 2);
-
 		return new Vec2f(pitch, yaw);
 	}
 
@@ -229,11 +227,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	public enum Offset {
 		CENTER, BACK, FRONT
 	}
-
 	// standard blockentity boilerplate
 
 	public void dispatch() {
-		if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+		if (world instanceof ServerWorld sworld) {
+			sworld.getChunkManager().markForUpdate(pos);
+		}
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 public abstract class GlowcaseScreen extends Screen {
+
 	protected GlowcaseScreen() {
 		super(Text.empty());
 	}

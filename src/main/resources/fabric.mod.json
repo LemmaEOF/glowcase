@@ -16,7 +16,7 @@
       "net.modfest.glowcase.Glowcase"
     ],
     "client": [
-      "net.modfest.glowcase.GlowcaseClient"
+      "net.modfest.glowcase.client.GlowcaseClient"
     ]
   },
   "mixins": [

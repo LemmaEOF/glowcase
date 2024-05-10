@@ -4,16 +4,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.modfest.glowcase.block.HyperlinkBlock;
-import net.modfest.glowcase.block.ItemDisplayBlock;
-import net.modfest.glowcase.block.MailboxBlock;
-import net.modfest.glowcase.block.TextBlock;
-import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
-import net.modfest.glowcase.block.entity.ItemDisplayBlockEntity;
-import net.modfest.glowcase.block.entity.MailboxBlockEntity;
-import net.modfest.glowcase.block.entity.TextBlockEntity;
-import net.modfest.glowcase.compat.PolydexCompatibility;
-import net.modfest.glowcase.networking.GlowcaseCommonNetworking;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.BlockPosArgumentType;
@@ -32,16 +25,23 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.modfest.glowcase.block.HyperlinkBlock;
+import net.modfest.glowcase.block.ItemDisplayBlock;
+import net.modfest.glowcase.block.MailboxBlock;
+import net.modfest.glowcase.block.TextBlock;
+import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
+import net.modfest.glowcase.block.entity.ItemDisplayBlockEntity;
+import net.modfest.glowcase.block.entity.MailboxBlockEntity;
+import net.modfest.glowcase.block.entity.TextBlockEntity;
+import net.modfest.glowcase.compat.PolydexCompatibility;
+import net.modfest.glowcase.networking.GlowcaseCommonNetworking;
 
 public class Glowcase implements ModInitializer {
+
 	public static final String MODID = "glowcase";
 
 	public static GlowcaseCommonProxy proxy = new GlowcaseCommonProxy(); //Overridden in GlowcaseClient
-	
+
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
 
@@ -62,15 +62,15 @@ public class Glowcase implements ModInitializer {
 	public static final BlockEntityType<TextBlockEntity> TEXT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("text_block"), BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK).build());
 
 	public static final ItemGroup ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, id("items"), FabricItemGroup.builder()
-		.displayName(Text.translatable("itemGroup.glowcase.items"))
-		.icon(() -> new ItemStack(Items.GLOWSTONE))
-		.entries((displayContext, entries) -> {
-			entries.add(HYPERLINK_BLOCK_ITEM);
-			entries.add(ITEM_DISPLAY_BLOCK_ITEM);
-			entries.add(MAILBOX_ITEM);
-			entries.add(TEXT_BLOCK_ITEM);
-		})
-		.build()
+			.displayName(Text.translatable("itemGroup.glowcase.items"))
+			.icon(() -> new ItemStack(Items.GLOWSTONE))
+			.entries((displayContext, entries) -> {
+				entries.add(HYPERLINK_BLOCK_ITEM);
+				entries.add(ITEM_DISPLAY_BLOCK_ITEM);
+				entries.add(MAILBOX_ITEM);
+				entries.add(TEXT_BLOCK_ITEM);
+			})
+			.build()
 	);
 
 	public static Identifier id(String... path) {
@@ -80,15 +80,13 @@ public class Glowcase implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		GlowcaseCommonNetworking.onInitialize();
-
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(
 					LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
-						.then(CommandManager.argument("pos", new BlockPosArgumentType())
-								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
+							.then(CommandManager.argument("pos", new BlockPosArgumentType())
+									.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
 			);
 		});
-
 		if (FabricLoader.getInstance().isModLoaded("polydex2")) {
 			PolydexCompatibility.onInitialize();
 		}
@@ -98,17 +96,18 @@ public class Glowcase implements ModInitializer {
 		BlockPos pos = BlockPosArgumentType.getBlockPos(ctx, "pos");
 		String message = ctx.getArgument("message", String.class);
 		PlayerEntity sender = ctx.getSource().getPlayer();
-
 		if (sender != null) {
 			if (sender.getWorld().getBlockEntity(pos) instanceof MailboxBlockEntity mailbox) {
 				mailbox.addMessage(new MailboxBlockEntity.Message(sender.getUuid(), sender.getNameForScoreboard(), message));
 				ctx.getSource().sendFeedback(() -> Text.translatable("command.glowcase.message_sent"), false);
 				return 0;
-			} else {
+			}
+			else {
 				ctx.getSource().sendError(Text.translatable("command.glowcase.failed.no_mailbox"));
 				return 100;
 			}
-		} else {
+		}
+		else {
 			ctx.getSource().sendError(Text.translatable("command.glowcase.failed.no_world"));
 			return 100;
 		}

@@ -1,7 +1,5 @@
 package net.modfest.glowcase.block;
 
-import net.modfest.glowcase.Glowcase;
-import net.modfest.glowcase.block.entity.ItemDisplayBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -24,9 +22,12 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.modfest.glowcase.Glowcase;
+import net.modfest.glowcase.block.entity.ItemDisplayBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvider {
+
 	private static final VoxelShape OUTLINE = VoxelShapes.cuboid(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
 
 	public ItemDisplayBlock() {
@@ -42,7 +43,7 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double)((ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
+		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double) ((ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
 	}
 
 	@Override
@@ -52,36 +53,45 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 
 	@Override
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ActionResult.CONSUME;
-
+		if (!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) {
+			return ActionResult.CONSUME;
+		}
 		if (be.canGiveTo(player)) {
-			if(!world.isClient) be.giveTo(player, player.getStackInHand(Hand.MAIN_HAND).isEmpty() ? Hand.MAIN_HAND : Hand.OFF_HAND);
+			if (!world.isClient) {
+				be.giveTo(player, player.getStackInHand(Hand.MAIN_HAND).isEmpty() ? Hand.MAIN_HAND : Hand.OFF_HAND);
+			}
 			return ActionResult.SUCCESS;
 		}
-
 		return ActionResult.CONSUME;
 	}
 
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ItemActionResult.CONSUME;
-
-		if(canEditGlowcase(player, pos)) {
+		if (!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) {
+			return ItemActionResult.CONSUME;
+		}
+		if (canPlayerEdit(player, pos)) {
 			boolean holdingGlowcaseItem = stack.isIn(Glowcase.ITEM_TAG);
 			boolean holdingSameAsDisplay = ItemStack.areItemsEqual(be.getDisplayedStack(), stack);
-
-			if(!be.hasItem()) {
-				if(!world.isClient) be.setStack(stack);
+			if (!be.hasItem()) {
+				if (!world.isClient) {
+					be.setStack(stack);
+				}
 				return ItemActionResult.SUCCESS;
-			} else if(holdingSameAsDisplay) {
-				if(world.isClient) Glowcase.proxy.openItemDisplayBlockEditScreen(pos);
+			}
+			else if (holdingSameAsDisplay) {
+				if (world.isClient) {
+					Glowcase.proxy.openItemDisplayBlockEditScreen(pos);
+				}
 				return ItemActionResult.SUCCESS;
-			} else if(holdingGlowcaseItem) {
-				if(!world.isClient) be.setStack(ItemStack.EMPTY);
+			}
+			else if (holdingGlowcaseItem) {
+				if (!world.isClient) {
+					be.setStack(ItemStack.EMPTY);
+				}
 				return ItemActionResult.SUCCESS;
 			}
 		}
-
 		return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 

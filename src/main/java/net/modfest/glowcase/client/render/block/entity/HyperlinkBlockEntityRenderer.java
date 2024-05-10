@@ -1,7 +1,5 @@
 package net.modfest.glowcase.client.render.block.entity;
 
-import net.modfest.glowcase.Glowcase;
-import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.Camera;
@@ -16,8 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.RotationAxis;
+import net.modfest.glowcase.Glowcase;
+import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
 
-public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<HyperlinkBlockEntity> {
+public record HyperlinkBlockEntityRenderer(
+		BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<HyperlinkBlockEntity> {
+
 	private static final MinecraftClient mc = MinecraftClient.getInstance();
 
 	public static final ItemStack STACK = new ItemStack(Glowcase.HYPERLINK_BLOCK);
@@ -32,7 +34,6 @@ public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context co
 		matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 		matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 		context.getItemRenderer().renderItem(STACK, ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
-
 		HitResult hitResult = mc.crosshairTarget;
 		if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
 			float scale = 0.025F;

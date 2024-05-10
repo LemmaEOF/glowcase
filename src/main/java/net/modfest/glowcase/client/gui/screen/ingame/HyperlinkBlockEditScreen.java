@@ -1,15 +1,16 @@
 package net.modfest.glowcase.client.gui.screen.ingame;
 
-import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
-import net.modfest.glowcase.networking.GlowcaseClientNetworking;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
+import net.modfest.glowcase.networking.GlowcaseClientNetworking;
+import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class HyperlinkBlockEditScreen extends GlowcaseScreen {
+
 	private final HyperlinkBlockEntity hyperlinkBlockEntity;
 
 	private TextFieldWidget urlEntryWidget;
@@ -21,15 +22,13 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 	@Override
 	public void init() {
 		super.init();
-
-		if (this.client == null) return;
-
+		if (this.client == null) {
+			return;
+		}
 		// this.client.keyboard.setRepeatEvents(true);
-
 		this.urlEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, height / 2 - 10, 8 * width / 10, 20, Text.empty());
 		this.urlEntryWidget.setText(this.hyperlinkBlockEntity.getUrl());
 		this.urlEntryWidget.setMaxLength(Integer.MAX_VALUE);
-
 		this.addDrawableChild(this.urlEntryWidget);
 	}
 
@@ -38,9 +37,11 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 		if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER || keyCode == GLFW.GLFW_KEY_ESCAPE) {
 			this.close();
 			return true;
-		} else if (this.urlEntryWidget.isActive()) {
+		}
+		else if (this.urlEntryWidget.isActive()) {
 			return this.urlEntryWidget.keyPressed(keyCode, scanCode, modifiers);
-		}else {
+		}
+		else {
 			return false;
 		}
 	}

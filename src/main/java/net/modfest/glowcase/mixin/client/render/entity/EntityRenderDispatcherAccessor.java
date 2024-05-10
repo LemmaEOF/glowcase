@@ -13,6 +13,7 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 @Mixin(EntityRenderDispatcher.class)
 public interface EntityRenderDispatcherAccessor {
+
 	@Accessor
 	Map<EntityType<?>, EntityRenderer<?>> getRenderers();
 }

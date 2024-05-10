@@ -1,17 +1,18 @@
 package net.modfest.glowcase.networking;
 
-import net.modfest.glowcase.block.entity.ItemDisplayBlockEntity;
-import net.modfest.glowcase.block.entity.TextBlockEntity;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
+import net.modfest.glowcase.block.entity.ItemDisplayBlockEntity;
+import net.modfest.glowcase.block.entity.TextBlockEntity;
 
 import java.util.ArrayList;
 
 public class GlowcaseClientNetworking {
+
 	public static void editHyperlinkBlock(BlockPos pos, String url) {
 		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditHyperlinkBlock(pos, url));
 	}
@@ -47,7 +48,6 @@ public class GlowcaseClientNetworking {
 				new GlowcaseCommonNetworking.TextBlockValues(
 						be.scale,
 						be.lines.size(),
-						be.color,
 						(ArrayList<Text>) (Object) be.lines
 				)
 		));

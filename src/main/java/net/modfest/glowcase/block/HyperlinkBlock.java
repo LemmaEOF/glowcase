@@ -1,7 +1,5 @@
 package net.modfest.glowcase.block;
 
-import net.modfest.glowcase.Glowcase;
-import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -20,9 +18,12 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.modfest.glowcase.Glowcase;
+import net.modfest.glowcase.block.entity.HyperlinkBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider {
+
 	private static final VoxelShape OUTLINE = VoxelShapes.cuboid(0.25, 0.25, 0.25, 0.75, 0.75, 0.75);
 
 	@Override
@@ -38,20 +39,21 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-		if (world.isClient && placer instanceof PlayerEntity player && canEditGlowcase(player, pos)) {
+		if (world.isClient && placer instanceof PlayerEntity player && canPlayerEdit(player, pos)) {
 			//load any ctrl-picked NBT clientside
 			NbtComponent blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
-			if(blockEntityTag != null && world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be) {
+			if (blockEntityTag != null && world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be) {
 				blockEntityTag.applyToBlockEntity(be, world.getRegistryManager());
 			}
-			
 			Glowcase.proxy.openHyperlinkBlockEditScreen(pos);
 		}
 	}
 
 	@Override
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) return ActionResult.CONSUME;
+		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) {
+			return ActionResult.CONSUME;
+		}
 		if (world.isClient) {
 			Glowcase.proxy.openUrlWithConfirmation(be.getUrl());
 		}
@@ -60,8 +62,10 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) return ItemActionResult.CONSUME;
-		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
+		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) {
+			return ItemActionResult.CONSUME;
+		}
+		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canPlayerEdit(player, pos)) {
 			Glowcase.proxy.openHyperlinkBlockEditScreen(pos);
 		}
 		return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

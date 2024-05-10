@@ -1,13 +1,15 @@
 {
   "required": true,
-  "package": "dev.hephaestus.glowcase.mixin",
+  "package": "net.modfest.glowcase.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [],
+  "mixins": [
+    "client.SpruceSliderWidgetAccessor"
+  ],
   "client": [
-    "net.modfest.glowcase.mixin.client.MinecraftClientAccessor",
-    "net.modfest.glowcase.mixin.client.render.BufferBuilderAccessor",
-    "net.modfest.glowcase.mixin.client.render.ber.WorldRendererMixin",
-    "net.modfest.glowcase.mixin.client.render.entity.EntityRenderDispatcherAccessor"
+    "client.MinecraftClientAccessor",
+    "client.render.BufferBuilderAccessor",
+    "client.render.ber.WorldRendererMixin",
+    "client.render.entity.EntityRenderDispatcherAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,8 +1,9 @@
 package net.modfest.glowcase.block;
 
-import net.modfest.glowcase.Glowcase;
-import net.modfest.glowcase.block.entity.MailboxBlockEntity;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,11 +20,14 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.modfest.glowcase.Glowcase;
+import net.modfest.glowcase.block.entity.MailboxBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public class MailboxBlock extends Block implements BlockEntityProvider {
+
 	public static final BooleanProperty HAS_MAIL = BooleanProperty.of("has_mail");
 
 	private static final VoxelShape SHAPE_NS = VoxelShapes.cuboid(0.3125, 0, 0.0625, 0.6875, 0.5, 0.9375);
@@ -73,18 +77,21 @@ public class MailboxBlock extends Block implements BlockEntityProvider {
 
 	@Override
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if(!(world.getBlockEntity(pos) instanceof MailboxBlockEntity be)) return ActionResult.CONSUME;
+		if (!(world.getBlockEntity(pos) instanceof MailboxBlockEntity be)) {
+			return ActionResult.CONSUME;
+		}
 		boolean mine = Objects.equals(player.getUuid(), be.owner());
-
-		if(world.isClient && !mine) {
+		if (world.isClient && !mine) {
 			Glowcase.proxy.prefillMailboxChat(pos);
 		}
-
-		if(!world.isClient && mine) {
-			if(player.isSneaking()) be.removeAllMessagesFromMostRecentSender();
-			else be.removeMessage();
+		if (!world.isClient && mine) {
+			if (player.isSneaking()) {
+				be.removeAllMessagesFromMostRecentSender();
+			}
+			else {
+				be.removeMessage();
+			}
 		}
-
 		return ActionResult.SUCCESS;
 	}
 }

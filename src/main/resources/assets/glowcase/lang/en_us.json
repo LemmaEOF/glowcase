@@ -19,5 +19,13 @@
   "command.glowcase.failed.no_world": "Failed to send message; sender must be in a world",
   "glowcase.mailbox.sender": "From %s",
   "glowcase.mailbox.reminder1": "Right click to delete this message",
-  "glowcase.mailbox.reminder2": "Sneak+Right click to delete all messages from this sender"
+  "glowcase.mailbox.reminder2": "Sneak+Right click to delete all messages from this sender",
+  "gui.glowcase.text_block_editor.title": "Text Block Editor",
+  "gui.glowcase.text_block_editor.text_scale": "Text Scale",
+  "gui.glowcase.text_block_editor.alignment.0": "Left",
+  "gui.glowcase.text_block_editor.alignment.1": "Center",
+  "gui.glowcase.text_block_editor.alignment.2": "Right",
+  "gui.glowcase.text_block_editor.shadow.0": "Drop Shadow",
+  "gui.glowcase.text_block_editor.shadow.1": "Plate",
+  "gui.glowcase.text_block_editor.shadow.2": "No Shadow"
 }

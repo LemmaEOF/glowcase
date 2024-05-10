@@ -3,6 +3,7 @@ package net.modfest.glowcase;
 import net.minecraft.util.math.BlockPos;
 
 public class GlowcaseCommonProxy {
+
 	public void openHyperlinkBlockEditScreen(BlockPos pos) {
 		//No-op
 	}
