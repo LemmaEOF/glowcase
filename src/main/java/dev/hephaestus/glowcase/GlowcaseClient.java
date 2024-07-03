@@ -2,10 +2,10 @@ package dev.hephaestus.glowcase;
 
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
 import dev.hephaestus.glowcase.client.GlowcaseClientProxy;
+import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.HyperlinkBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
-import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

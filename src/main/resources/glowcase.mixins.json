@@ -5,8 +5,7 @@
   "mixins": [],
   "client": [
     "client.MinecraftClientAccessor",
-    "client.render.ber.WorldRendererMixin",
-    "client.render.entity.EntityRenderDispatcherAccessor"
+    "client.render.ber.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

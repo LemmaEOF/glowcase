@@ -1,18 +1,10 @@
 package dev.hephaestus.glowcase.block.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
-
 import eu.pb4.placeholders.api.ParserContext;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.TagParser;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.text.Style;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -22,14 +14,19 @@ import net.minecraft.nbt.NbtString;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TextBlockEntity extends BlockEntity {
 	public static final NodeParser PARSER = TagParser.DEFAULT;
-	public List<MutableText> lines = new ArrayList<>();
+	public List<Text> lines = new ArrayList<>();
 	public TextAlignment textAlignment = TextAlignment.CENTER;
 	public ZOffset zOffset = ZOffset.CENTER;
 	public ShadowType shadowType = ShadowType.DROP;
@@ -39,7 +36,7 @@ public class TextBlockEntity extends BlockEntity {
 
 	public TextBlockEntity(BlockPos pos, BlockState state) {
 		super(Glowcase.TEXT_BLOCK_ENTITY, pos, state);
-		lines.add((MutableText) Text.empty());
+		lines.add(Text.empty());
 	}
 
 	@Override
@@ -54,7 +51,7 @@ public class TextBlockEntity extends BlockEntity {
 		tag.putString("shadow_type", this.shadowType.name());
 
 		NbtList lines = tag.getList("lines", 8);
-		for (MutableText text : this.lines) {
+		for (var text : this.lines) {
 			lines.add(NbtString.of(Text.Serialization.toJsonString(text, registryLookup)));
 		}
 

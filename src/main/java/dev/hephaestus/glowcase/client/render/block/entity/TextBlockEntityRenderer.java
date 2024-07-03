@@ -1,16 +1,17 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
-import org.joml.Matrix4f;
-
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.client.GlowcaseRenderLayers;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.RotationAxis;
+import org.joml.Matrix4f;
 
 public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockEntity> {
 	public TextBlockEntityRenderer(BlockEntityRendererFactory.Context context) {

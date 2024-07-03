@@ -2,17 +2,11 @@ package dev.hephaestus.glowcase.networking;
 
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
-import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
-
-import java.util.ArrayList;
 
 public class GlowcaseClientNetworking {
 	public static void editHyperlinkBlock(BlockPos pos, String url) {
@@ -49,9 +43,8 @@ public class GlowcaseClientNetworking {
 				be.shadowType,
 				new GlowcaseCommonNetworking.TextBlockValues(
 						be.scale,
-						be.lines.size(),
 						be.color,
-						(ArrayList<Text>) (Object) be.lines
+						be.lines
 				)
 		));
 	}

@@ -1,13 +1,7 @@
 package dev.hephaestus.glowcase.block.entity;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.UUID;
-
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.MailboxBlock;
-import net.minecraft.registry.RegistryWrapper;
-import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -16,9 +10,15 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.UUID;
 
 public class MailboxBlockEntity extends BlockEntity {
     private final Deque<Message> messages = new ArrayDeque<>();
@@ -117,7 +117,7 @@ public class MailboxBlockEntity extends BlockEntity {
         }
     }
 
-    public static record Message(UUID sender, String senderName, String message) {}
+    public record Message(UUID sender, String senderName, String message) {}
 
     // standard blockentity boilerplate
 

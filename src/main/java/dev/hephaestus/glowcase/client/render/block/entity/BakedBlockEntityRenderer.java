@@ -3,13 +3,7 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
-
-import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import it.unimi.dsi.fastutil.objects.*;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -22,7 +16,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.slf4j.Logger;
 
@@ -39,7 +33,8 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 	/**
 	 * Handles invalidation and passing of rendered vertices to the baking system.
-	 * Override renderBaked and renderUnbaked instead of this method.
+	 * Override {@link #renderBaked(BlockEntity, MatrixStack, VertexConsumerProvider, int, int)} and
+	 * {@link #renderBaked(BlockEntity, MatrixStack, VertexConsumerProvider, int, int)} instead of this method.
 	 */
 	@Override
 	public final void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
@@ -49,9 +44,8 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 	/**
 	 * Render vertices to be baked into the render region. This method will be called every time the render region is rebuilt - so
-	 * you should only render vertices that don't move here. You can call invalidateSelf or VertexBufferManager.invalidate to
+	 * you should only render vertices that don't move here. You can call {@link Manager#markForRebuild(BlockPos)} to
 	 * cause the render region to be rebuilt, but do not call this too frequently as it will affect performance.
-	 *
 	 * You must use the provided VertexConsumerProvider and MatrixStack to render your vertices - any use of Tessellator
 	 * or RenderSystem here will not work. If you need custom rendering settings, you can use a custom RenderLayer.
 	 */
@@ -59,14 +53,14 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 	/**
 	 * Render vertices immediately. This works exactly the same way as a normal BER render method, and can be used for dynamic
-	 * rendering that changes every frame. In this method you can also check for render invalidation and call invalidateSelf
+	 * rendering that changes every frame. In this method you can also check for render invalidation and call {@link Manager#markForRebuild(BlockPos)}
 	 * as appropriate.
 	 */
 	public abstract void renderUnbaked(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay);
 
 	public abstract boolean shouldBake(T entity);
 
-	private static record RenderRegionPos(int x, int z, @Nullable BlockPos origin) {
+	private record RenderRegionPos(int x, int z, @NotNull BlockPos origin) {
 		public RenderRegionPos(int x, int z) {
 			this(x, z, new BlockPos(x << Manager.REGION_SHIFT, 0, z << Manager.REGION_SHIFT));
 		}
@@ -201,12 +195,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 				wrc.profiler().push("rebuild");
 
 				// Make builders for regions that are marked for rebuild, render and upload to RegionBuffers
-				Set<RenderRegionPos> rebuilt = Sets.newHashSet();
 				Set<RenderRegionPos> removing = Sets.newHashSet();
 				List<BlockEntity> blockEntities = new ArrayList<>();
 				MatrixStack bakeMatrices = new MatrixStack();
 				for (RenderRegionPos rrp : needsRebuild) {
-					rebuilt.add(rrp);
 					if (isVisiblePos(rrp, cam)) {
 						// For the current region, rebuild each render layer using the buffer builders
 						// Find all block entities in this region
@@ -248,7 +240,9 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 						}
 					}
 				}
-				rebuilt.forEach(needsRebuild::remove);
+				// We've processed all pending rebuilds now
+				needsRebuild.clear();
+				// These regions no longer contain anything
 				removing.forEach(rrp -> {
 					RegionBuffer buf = regions.get(rrp);
 					if (buf != null) {
@@ -263,10 +257,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 			if (!regions.isEmpty()) {
 				wrc.profiler().push("render");
 
-				/**
-				 * Set the fog end to a extremely high value, this is a total hack but.
+				/*
+				 * Set the fog end to an extremely high value, this is a total hack but.
 				 * It's needed to make fog not bleed into text blocks
-				*/
+				 */
 				float originalFogEnd = RenderSystem.getShaderFogEnd();
 				RenderSystem.setShaderFogEnd(Float.MAX_VALUE);
 				// Iterate over all RegionBuffers, render visible and remove non-visible RegionBuffers

@@ -1,7 +1,6 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -14,7 +13,6 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.state.property.Properties;

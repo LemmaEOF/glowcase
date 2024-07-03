@@ -21,6 +21,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.RotationPropertyHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GlowcaseCommonNetworking {
 
@@ -92,10 +93,9 @@ public class GlowcaseCommonNetworking {
 	}
 
 	// separated for tuple call
-	public record TextBlockValues(float scale, int lineCount, int color, ArrayList<Text> lines) {
+	public record TextBlockValues(float scale, int color, List<Text> lines) {
 		public static final PacketCodec<RegistryByteBuf, TextBlockValues> PACKET_CODEC = PacketCodec.tuple(
 				PacketCodecs.FLOAT, TextBlockValues::scale,
-				PacketCodecs.INTEGER, TextBlockValues::lineCount,
 				PacketCodecs.INTEGER, TextBlockValues::color,
 				PacketCodecs.collection(ArrayList::new, TextCodecs.REGISTRY_PACKET_CODEC), TextBlockValues::lines,
 				TextBlockValues::new
@@ -118,7 +118,7 @@ public class GlowcaseCommonNetworking {
 			context.player().server.execute(() -> {
 				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.TEXT_BLOCK) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof TextBlockEntity be) {
 					be.scale = payload.values().scale();
-					be.lines = payload.values().lines().stream().map(Text::copy).toList();
+					be.lines = payload.values().lines();
 					be.textAlignment = payload.alignment();
 					be.color = payload.values().color();
 					be.zOffset = payload.offset();
