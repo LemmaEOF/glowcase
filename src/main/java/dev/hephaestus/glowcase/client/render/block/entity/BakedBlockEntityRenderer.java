@@ -17,6 +17,7 @@ import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
@@ -104,18 +105,28 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 		private static class CachedVertexConsumerProvider implements VertexConsumerProvider {
 
+			private final Reference2ReferenceMap<RenderLayer, BufferAllocator> allocators = new Reference2ReferenceOpenHashMap<>();
 			private final Reference2ReferenceMap<RenderLayer, BufferBuilder> builders = new Reference2ReferenceOpenHashMap<>();
-			private final Set<RenderLayer> uploadedLayers = new ObjectOpenHashSet<>();
 
 			@Override
 			public VertexConsumer getBuffer(RenderLayer l) {
-				var builder = builders.computeIfAbsent(l, blah -> new BufferBuilder(l.getExpectedBufferSize()));
-				if (!builder.isBuilding()) builder.begin(l.getDrawMode(), l.getVertexFormat());
-				uploadedLayers.add(l);
+				var allocator = allocators.computeIfAbsent(l, l1 -> new BufferAllocator(l.getExpectedBufferSize()));
+                var builder = builders.computeIfAbsent(l, l1 -> new BufferBuilder(
+								allocator,
+								l.getDrawMode(),
+								l.getVertexFormat()));
 				return builder;
 			}
 
+			/**
+			 * Resets the provider so another scene can be rendered
+			 */
+			public void reset() {
+				allocators.forEach((layer, allocator) -> allocator.reset());
+				builders.clear();
+			}
 		}
+
 		private static final CachedVertexConsumerProvider vcp = new CachedVertexConsumerProvider();
 
 		private static ClientWorld currentWorld = null;
@@ -227,10 +238,8 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 							if (bakedAnything) {
 								RegionBuffer buf = regions.computeIfAbsent(rrp, k -> new RegionBuffer());
 								buf.reset();
-								vcp.uploadedLayers.removeIf(l -> {
-									buf.upload(l, vcp.builders.get(l));
-									return true;
-								});
+								vcp.builders.forEach(buf::upload);
+								vcp.reset();
 							} else {
 								removing.add(rrp);
 							}

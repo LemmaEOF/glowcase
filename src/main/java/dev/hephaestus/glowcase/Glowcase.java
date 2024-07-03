@@ -74,7 +74,7 @@ public class Glowcase implements ModInitializer {
 	);
 
 	public static Identifier id(String... path) {
-		return new Identifier(MODID, String.join(".", path));
+		return Identifier.of(MODID, String.join(".", path));
 	}
 
 	@Override

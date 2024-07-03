@@ -89,12 +89,12 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 		VertexConsumer consumer = vcp.getBuffer(GlowcaseRenderLayers.TEXT_PLATE);
 		Matrix4f matrix = matrices.peek().getPositionMatrix();
 		consumer.vertex(matrix, x1, y2, 0.0f)
-			.color(red, green, blue, alpha).next();
+			.color(red, green, blue, alpha);
 		consumer.vertex(matrix, x2, y2, 0.0f)
-			.color(red, green, blue, alpha).next();
+			.color(red, green, blue, alpha);
 		consumer.vertex(matrix, x2, y1, 0.0f)
-			.color(red, green, blue, alpha).next();
+			.color(red, green, blue, alpha);
 		consumer.vertex(matrix, x1, y1, 0.0f)
-			.color(red, green, blue, alpha).next();
+			.color(red, green, blue, alpha);
 	}
 }
