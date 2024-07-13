@@ -9,8 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 
 public class GlowcaseClientNetworking {
-	public static void editHyperlinkBlock(BlockPos pos, String url) {
-		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditHyperlinkBlock(pos, url));
+	public static void editHyperlinkBlock(BlockPos pos, String title, String url) {
+		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditHyperlinkBlock(pos, title, url));
 	}
 
 	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
