@@ -6,6 +6,8 @@ import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.LivingEntity;
@@ -61,8 +63,9 @@ public class HyperlinkBlock extends GlowcaseBlock implements BlockEntityProvider
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!(world.getBlockEntity(pos) instanceof HyperlinkBlockEntity be)) return ItemActionResult.CONSUME;
-		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
-			Glowcase.proxy.openHyperlinkBlockEditScreen(pos);
+		if (player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
+			if (world.isClient) { Glowcase.proxy.openHyperlinkBlockEditScreen(pos); }
+			return ItemActionResult.SUCCESS;
 		}
 		return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
