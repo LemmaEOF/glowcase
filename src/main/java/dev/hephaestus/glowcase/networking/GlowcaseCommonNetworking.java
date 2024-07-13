@@ -25,13 +25,14 @@ import java.util.List;
 
 public class GlowcaseCommonNetworking {
 
-	public record EditHyperlinkBlock(BlockPos pos, String url) implements CustomPayload {
+	public record EditHyperlinkBlock(BlockPos pos, String title, String url) implements CustomPayload {
 		public static final Id<EditHyperlinkBlock> PACKET_ID = new Id<>(Glowcase.id("channel.hyperlink.save"));
-		public static final PacketCodec<RegistryByteBuf, EditHyperlinkBlock> PACKET_CODEC = PacketCodec.tuple(BlockPos.PACKET_CODEC, EditHyperlinkBlock::pos, PacketCodecs.STRING, EditHyperlinkBlock::url, EditHyperlinkBlock::new);
+		public static final PacketCodec<RegistryByteBuf, EditHyperlinkBlock> PACKET_CODEC = PacketCodec.tuple(BlockPos.PACKET_CODEC, EditHyperlinkBlock::pos, PacketCodecs.STRING, EditHyperlinkBlock::title, PacketCodecs.STRING, EditHyperlinkBlock::url, EditHyperlinkBlock::new);
 
 		public static void receive(EditHyperlinkBlock payload, ServerPlayNetworking.Context context) {
 			context.player().server.submit(() -> {
-				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= URL_MAX_LENGTH) {
+				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= URL_MAX_LENGTH && payload.title().length() <= TITLE_MAX_LENGTH) {
+					link.setTitle(payload.title());
 					link.setUrl(payload.url());
 				}
 			});
@@ -136,6 +137,7 @@ public class GlowcaseCommonNetworking {
 		}
 	}
 
+	private static final int TITLE_MAX_LENGTH = 1024;
 	private static final int URL_MAX_LENGTH = 1024;
 
 	public static void onInitialize() {
