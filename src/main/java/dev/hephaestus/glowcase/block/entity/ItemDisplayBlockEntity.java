@@ -147,7 +147,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	// -> yes, that means the setBlockState call is wacky
 	public void cycleRotationType(PlayerEntity playerEntity) {
 		switch (this.rotationType) {
-			case TRACKING -> {
+			case TRACKING -> this.rotationType = RotationType.BILLBOARD;
+			case BILLBOARD -> {
 				this.rotationType = RotationType.HORIZONTAL;
 				if (this.world != null) {
 					this.world.setBlockState(this.pos, this.getCachedState().with(Properties.ROTATION, MathHelper.floor((double) ((playerEntity.getYaw()) * 16.0F / 360.0F) + 0.5D) & 15));
@@ -219,7 +220,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	public enum RotationType {
-		LOCKED, TRACKING, HORIZONTAL
+		LOCKED, TRACKING, HORIZONTAL, BILLBOARD
 	}
 
 	public enum GivesItem {
