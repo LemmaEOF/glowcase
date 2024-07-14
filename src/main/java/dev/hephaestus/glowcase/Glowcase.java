@@ -12,7 +12,8 @@ import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.compat.PolydexCompatibility;
-import dev.hephaestus.glowcase.networking.GlowcaseCommonNetworking;
+import dev.hephaestus.glowcase.networking.RegisterC2SNetworking;
+import dev.hephaestus.glowcase.networking.NetworkPayloads;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -73,7 +74,8 @@ public class Glowcase implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		GlowcaseCommonNetworking.onInitialize();
+		NetworkPayloads.initialize();
+		RegisterC2SNetworking.initialize();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(

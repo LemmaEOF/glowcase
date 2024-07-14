@@ -1,6 +1,7 @@
 package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
+import dev.hephaestus.glowcase.networking.packet.EditItemDisplayBlockSettings;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -114,6 +115,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		}
 	}
 
+	public EditItemDisplayBlockSettings createPacketData() {
+		var itemValues = new EditItemDisplayBlockSettings.ItemDisplayBlockValues(
+				getCachedState().get(Properties.ROTATION), showName, pitch, yaw);
+		return new EditItemDisplayBlockSettings(pos, rotationType, givesItem, offset, itemValues);
+	}
+
 	public boolean hasItem() {
 		return this.stack != null && !this.stack.isEmpty();
 	}
@@ -180,7 +187,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		markDirty();
 		dispatch();
 	}
-	
+
 	public boolean canGiveTo(PlayerEntity player) {
 		if(!hasItem()) return false;
 		else return switch(this.givesItem) {
@@ -189,7 +196,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 			case ONCE -> player.isCreative() || !givenTo.contains(player.getUuid());
 		};
 	}
-	
+
 	public void giveTo(PlayerEntity player, Hand hand) {
 		player.setStackInHand(hand, getDisplayedStack().copy());
 		if (!player.isCreative()) {

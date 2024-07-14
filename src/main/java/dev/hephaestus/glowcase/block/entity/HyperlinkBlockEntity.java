@@ -1,6 +1,7 @@
 package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
+import dev.hephaestus.glowcase.networking.packet.EditHyperlinkBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -13,48 +14,52 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class HyperlinkBlockEntity extends BlockEntity {
-	private String url = "";
+    private String url = "";
 
-	public HyperlinkBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.HYPERLINK_BLOCK_ENTITY, pos, state);
-	}
+    public HyperlinkBlockEntity(BlockPos pos, BlockState state) {
+        super(Glowcase.HYPERLINK_BLOCK_ENTITY, pos, state);
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setUrl(String newUrl) {
-		url = newUrl;
-		markDirty();
-		dispatch();
-	}
+    public void setUrl(String newUrl) {
+        url = newUrl;
+        markDirty();
+        dispatch();
+    }
 
-	@Override
-	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-		super.writeNbt(tag, registryLookup);
-		tag.putString("url", this.url);
-	}
+    @Override
+    public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+        super.writeNbt(tag, registryLookup);
+        tag.putString("url", this.url);
+    }
 
-	@Override
-	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-		super.readNbt(tag, registryLookup);
-		this.url = tag.getString("url");
-	}
+    @Override
+    public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+        super.readNbt(tag, registryLookup);
+        this.url = tag.getString("url");
+    }
 
-	// standard blockentity boilerplate
+    public EditHyperlinkBlock createPacketData() {
+        return new EditHyperlinkBlock(pos, url);
+    }
 
-	public void dispatch() {
-		if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
-	}
+    // standard blockentity boilerplate
 
-	@Override
-	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
-		return createNbt(registryLookup);
-	}
+    public void dispatch() {
+        if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+    }
 
-	@Nullable
-	@Override
-	public Packet<ClientPlayPacketListener> toUpdatePacket() {
-		return BlockEntityUpdateS2CPacket.create(this);
-	}
+    @Override
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+        return createNbt(registryLookup);
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
 }
