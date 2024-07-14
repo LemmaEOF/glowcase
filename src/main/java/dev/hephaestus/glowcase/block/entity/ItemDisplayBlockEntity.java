@@ -199,10 +199,10 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos) {
-		double d = pos.getX() - camera.getPos().x + 0.5;
+	public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos, float delta) {
+		double d = pos.getX() - camera.getLerpedPos(delta).x + 0.5;
 		double e = pos.getY() - camera.getEyeY() + 0.5;
-		double f = pos.getZ() - camera.getPos().z + 0.5;
+		double f = pos.getZ() - camera.getLerpedPos(delta).z + 0.5;
 		double g = MathHelper.sqrt((float) (d * d + f * f));
 
 		float pitch = (float) ((-MathHelper.atan2(e, g)));
