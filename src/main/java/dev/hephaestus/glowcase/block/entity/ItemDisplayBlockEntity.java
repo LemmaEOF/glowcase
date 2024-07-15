@@ -191,18 +191,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		};
 	}
 	
-	public void giveTo(PlayerEntity player) {
-		ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
-		boolean holdingSameAsDisplay = ItemStack.areItemsEqual(getDisplayedStack(), itemStack);
-
-		if (itemStack.isEmpty()) {
-			player.setStackInHand(Hand.MAIN_HAND, getDisplayedStack().copy());
-		} else if (holdingSameAsDisplay) {
-			itemStack.increment(getDisplayedStack().getCount());
-			itemStack.capCount(itemStack.getMaxCount());
-			player.setStackInHand(Hand.MAIN_HAND, itemStack);
-		}
-
+	public void giveTo(PlayerEntity player, Hand hand) {
+		player.setStackInHand(hand, getDisplayedStack().copy());
 		if (!player.isCreative()) {
 			givenTo.add(player.getUuid());
 			markDirty();
