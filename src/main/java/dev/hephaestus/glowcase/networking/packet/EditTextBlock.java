@@ -21,8 +21,6 @@ public record EditTextBlock(BlockPos pos, TextBlockEntity.TextAlignment alignmen
                             TextBlockEntity.ShadowType shadowType,
                             TextBlockValues values) implements CustomPayload {
 
-    public static final Id<EditTextBlock> PACKET_ID = new Id<>(Glowcase.id("channel.text_block"));
-
     public static final PacketCodec<RegistryByteBuf, EditTextBlock> PACKET_CODEC = PacketCodec.tuple(
             BlockPos.PACKET_CODEC, EditTextBlock::pos,
             PacketCodecs.SHORT.xmap(index -> TextBlockEntity.TextAlignment.values()[index], textAlignment -> (short) textAlignment.ordinal()), EditTextBlock::alignment,
@@ -31,6 +29,13 @@ public record EditTextBlock(BlockPos pos, TextBlockEntity.TextAlignment alignmen
             TextBlockValues.PACKET_CODEC, EditTextBlock::values,
             EditTextBlock::new
     );
+
+    public static final Id<EditTextBlock> PACKET_ID = new Id<>(Glowcase.id("channel.text_block"));
+
+    @Override
+    public Id<? extends CustomPayload> getId() {
+        return PACKET_ID;
+    }
 
     public void send() {
         ClientPlayNetworking.send(this);
@@ -50,11 +55,6 @@ public record EditTextBlock(BlockPos pos, TextBlockEntity.TextAlignment alignmen
 
         be.markDirty();
         be.dispatch();
-    }
-
-    @Override
-    public Id<? extends CustomPayload> getId() {
-        return PACKET_ID;
     }
 
     // separated for tuple call

@@ -44,7 +44,7 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 
     @Override
     public void close() {
-        this.hyperlinkBlockEntity.setUrl(urlEntryWidget.getText());
+        hyperlinkBlockEntity.setUrl(urlEntryWidget.getText());
         hyperlinkBlockEntity.createPacketData().send();
         super.close();
     }

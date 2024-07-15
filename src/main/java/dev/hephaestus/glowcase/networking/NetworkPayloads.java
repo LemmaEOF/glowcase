@@ -14,7 +14,6 @@ public class NetworkPayloads {
         registerC2S(EditHyperlinkBlock.PACKET_ID, EditHyperlinkBlock.PACKET_CODEC);
         registerC2S(EditItemDisplayBlockSettings.PACKET_ID, EditItemDisplayBlockSettings.PACKET_CODEC);
         registerC2S(EditTextBlock.PACKET_ID, EditTextBlock.PACKET_CODEC);
-
     }
 
     private static <T extends CustomPayload> void registerS2C(CustomPayload.Id<T> packetIdentifier, PacketCodec<RegistryByteBuf, T> codec) {

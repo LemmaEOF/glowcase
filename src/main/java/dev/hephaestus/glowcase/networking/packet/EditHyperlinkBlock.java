@@ -15,13 +15,18 @@ import net.minecraft.util.math.BlockPos;
 public record EditHyperlinkBlock(BlockPos pos, String url) implements CustomPayload {
     private static final int URL_MAX_LENGTH = 1024;
 
-    public static final Id<EditHyperlinkBlock> PACKET_ID = new Id<>(Glowcase.id("channel.hyperlink.save"));
-
     public static final PacketCodec<RegistryByteBuf, EditHyperlinkBlock> PACKET_CODEC = PacketCodec.tuple(
             BlockPos.PACKET_CODEC, EditHyperlinkBlock::pos,
             PacketCodecs.STRING, EditHyperlinkBlock::url,
             EditHyperlinkBlock::new
     );
+
+    public static final Id<EditHyperlinkBlock> PACKET_ID = new Id<>(Glowcase.id("channel.hyperlink.save"));
+
+    @Override
+    public Id<? extends CustomPayload> getId() {
+        return PACKET_ID;
+    }
 
     public void send() {
         ClientPlayNetworking.send(this);
@@ -34,10 +39,5 @@ public record EditHyperlinkBlock(BlockPos pos, String url) implements CustomPayl
         if (this.url().length() <= URL_MAX_LENGTH) {
             link.setUrl(this.url());
         }
-    }
-
-    @Override
-    public Id<? extends CustomPayload> getId() {
-        return PACKET_ID;
     }
 }

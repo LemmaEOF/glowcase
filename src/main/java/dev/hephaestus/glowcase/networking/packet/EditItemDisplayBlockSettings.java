@@ -18,7 +18,6 @@ public record EditItemDisplayBlockSettings(BlockPos pos, ItemDisplayBlockEntity.
                                            ItemDisplayBlockEntity.GivesItem givesItem,
                                            ItemDisplayBlockEntity.Offset offset,
                                            ItemDisplayBlockValues values) implements CustomPayload {
-    public static final Id<EditItemDisplayBlockSettings> PACKET_ID = new Id<>(Glowcase.id("channel.item_display"));
 
     public static final PacketCodec<RegistryByteBuf, EditItemDisplayBlockSettings> PACKET_CODEC = PacketCodec.tuple(
             BlockPos.PACKET_CODEC, EditItemDisplayBlockSettings::pos,
@@ -28,6 +27,13 @@ public record EditItemDisplayBlockSettings(BlockPos pos, ItemDisplayBlockEntity.
             ItemDisplayBlockValues.PACKET_CODEC, EditItemDisplayBlockSettings::values,
             EditItemDisplayBlockSettings::new
     );
+
+    public static final Id<EditItemDisplayBlockSettings> PACKET_ID = new Id<>(Glowcase.id("channel.item_display"));
+
+    @Override
+    public Id<? extends CustomPayload> getId() {
+        return PACKET_ID;
+    }
 
     public void send() {
         ClientPlayNetworking.send(this);
@@ -51,11 +57,6 @@ public record EditItemDisplayBlockSettings(BlockPos pos, ItemDisplayBlockEntity.
 
         be.markDirty();
         be.dispatch();
-    }
-
-    @Override
-    public Id<? extends CustomPayload> getId() {
-        return PACKET_ID;
     }
 
     // separated for tuple call
