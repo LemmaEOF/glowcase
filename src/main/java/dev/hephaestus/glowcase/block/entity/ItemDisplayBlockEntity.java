@@ -193,7 +193,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	
 	public void giveTo(PlayerEntity player) {
 		ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
-		boolean holdingSameAsDisplay = ItemStack.areItemsEqual(getDisplayedStack(), itemStack);
+		boolean holdingSameAsDisplay = ItemStack.areItemsAndComponentsEqual(getDisplayedStack(), itemStack);
 
 		if (itemStack.isEmpty()) {
 			player.setStackInHand(Hand.MAIN_HAND, getDisplayedStack().copy());
