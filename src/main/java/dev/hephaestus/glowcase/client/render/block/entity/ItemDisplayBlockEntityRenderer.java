@@ -39,7 +39,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 		switch (entity.rotationType) {
 			case TRACKING -> {
-				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(camera, entity.getPos(), tickDelta);
+				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(camera, entity.getPos());
 				pitch = pitchAndYaw.x;
 				yaw = pitchAndYaw.y;
 				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
