@@ -13,25 +13,10 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class HyperlinkBlockEntity extends BlockEntity {
-	private String title = "";
 	private String url = "";
 
 	public HyperlinkBlockEntity(BlockPos pos, BlockState state) {
 		super(Glowcase.HYPERLINK_BLOCK_ENTITY, pos, state);
-	}
-
-	public String getText() {
-		return !title.isEmpty() ? title : url;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String newTitle) {
-		title = newTitle;
-		markDirty();
-		dispatch();
 	}
 
 	public String getUrl() {
@@ -47,14 +32,12 @@ public class HyperlinkBlockEntity extends BlockEntity {
 	@Override
 	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		super.writeNbt(tag, registryLookup);
-		tag.putString("title", this.title);
 		tag.putString("url", this.url);
 	}
 
 	@Override
 	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		super.readNbt(tag, registryLookup);
-		this.title = tag.getString("title");
 		this.url = tag.getString("url");
 	}
 
