@@ -225,7 +225,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 				));
 				this.textBlockEntity.renderDirty = true;
 				++this.currentRow;
-				this.selectionManager.moveCursorToEnd(false);
+				this.selectionManager.moveCursorToStart(false);
 				return true;
 			} else if (keyCode == GLFW.GLFW_KEY_UP) {
 				this.currentRow = Math.max(this.currentRow - 1, 0);
@@ -245,7 +245,28 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 				return true;
 			} else {
 				try {
-					return this.selectionManager.handleSpecialKey(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
+					boolean val = this.selectionManager.handleSpecialKey(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
+					int selectionOffset = this.textBlockEntity.getRawLine(this.currentRow).length() - this.selectionManager.getSelectionStart();
+
+					// Find line feed characters and create proper newlines
+					for (int i = 0; i < this.textBlockEntity.lines.size(); ++i) {
+						int lineFeedIndex = this.textBlockEntity.getRawLine(i).indexOf("\n");
+
+						if (lineFeedIndex >= 0) {
+							this.textBlockEntity.addRawLine(i + 1,
+									this.textBlockEntity.getRawLine(i).substring(
+											MathHelper.clamp(lineFeedIndex + 1, 0, this.textBlockEntity.getRawLine(i).length())
+							));
+							this.textBlockEntity.setRawLine(i,
+									this.textBlockEntity.getRawLine(i).substring(0, MathHelper.clamp(lineFeedIndex, 0, this.textBlockEntity.getRawLine(i).length())
+							));
+							this.textBlockEntity.renderDirty = true;
+							++this.currentRow;
+							this.selectionManager.moveCursorToEnd(false);
+							this.selectionManager.moveCursor(-selectionOffset);
+						}
+					}
+					return val;
 				} catch (StringIndexOutOfBoundsException e) {
 					e.printStackTrace();
 					MinecraftClient.getInstance().setScreen(null);
