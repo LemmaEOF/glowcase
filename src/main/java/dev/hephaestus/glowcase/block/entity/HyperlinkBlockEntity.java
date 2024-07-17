@@ -42,7 +42,7 @@ public class HyperlinkBlockEntity extends BlockEntity {
         this.url = tag.getString("url");
     }
 
-    public EditHyperlinkBlock createPacketData() {
+    public EditHyperlinkBlock createEditPacket() {
         return new EditHyperlinkBlock(pos, url);
     }
 

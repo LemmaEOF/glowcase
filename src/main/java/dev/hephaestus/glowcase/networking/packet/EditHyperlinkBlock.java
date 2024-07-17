@@ -34,7 +34,7 @@ public record EditHyperlinkBlock(BlockPos pos, String url) implements CustomPayl
 
     public void receive(ServerPlayNetworking.Context context) {
         ServerWorld serverWorld = context.player().getServerWorld();
-        if (NetworkingUtil.cantEditGlowcase(context.player(), this.pos(), Glowcase.HYPERLINK_BLOCK)) return;
+        if (!NetworkingUtil.canEditGlowcase(context.player(), this.pos(), Glowcase.HYPERLINK_BLOCK)) return;
         if (!(serverWorld.getBlockEntity(this.pos()) instanceof HyperlinkBlockEntity link)) return;
         if (this.url().length() <= URL_MAX_LENGTH) {
             link.setUrl(this.url());

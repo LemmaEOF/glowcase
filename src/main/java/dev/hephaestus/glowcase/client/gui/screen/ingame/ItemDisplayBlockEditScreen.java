@@ -68,6 +68,6 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
             displayBlock.pitch = pitchAndYaw.x;
             displayBlock.yaw = pitchAndYaw.y;
         }
-        displayBlock.createPacketData().send();
+        displayBlock.createEditPacket().send();
     }
 }

@@ -81,7 +81,7 @@ public class TextBlockEntity extends BlockEntity {
         this.renderDirty = true;
     }
 
-    public EditTextBlock createPacketData() {
+    public EditTextBlock createEditPacket() {
         var textValues = new EditTextBlock.TextBlockValues(scale, color, lines);
         return new EditTextBlock(pos, textAlignment, zOffset, shadowType, textValues);
     }

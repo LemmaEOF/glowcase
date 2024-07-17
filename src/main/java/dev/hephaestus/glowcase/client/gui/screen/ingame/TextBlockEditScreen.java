@@ -121,7 +121,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 
     @Override
     public void close() {
-        textBlockEntity.createPacketData().send();
+        textBlockEntity.createEditPacket().send();
         super.close();
     }
 

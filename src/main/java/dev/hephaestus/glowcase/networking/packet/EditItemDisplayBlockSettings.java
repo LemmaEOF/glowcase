@@ -21,9 +21,9 @@ public record EditItemDisplayBlockSettings(BlockPos pos, ItemDisplayBlockEntity.
 
     public static final PacketCodec<RegistryByteBuf, EditItemDisplayBlockSettings> PACKET_CODEC = PacketCodec.tuple(
             BlockPos.PACKET_CODEC, EditItemDisplayBlockSettings::pos,
-            PacketCodecs.SHORT.xmap(index -> ItemDisplayBlockEntity.RotationType.values()[index], rotation -> (short) rotation.ordinal()), EditItemDisplayBlockSettings::rotationType,
-            PacketCodecs.SHORT.xmap(index -> ItemDisplayBlockEntity.GivesItem.values()[index], givesItem -> (short) givesItem.ordinal()), EditItemDisplayBlockSettings::givesItem,
-            PacketCodecs.SHORT.xmap(index -> ItemDisplayBlockEntity.Offset.values()[index], offset -> (short) offset.ordinal()), EditItemDisplayBlockSettings::offset,
+            PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.RotationType.values()[index], rotation -> (byte) rotation.ordinal()), EditItemDisplayBlockSettings::rotationType,
+            PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.GivesItem.values()[index], givesItem -> (byte) givesItem.ordinal()), EditItemDisplayBlockSettings::givesItem,
+            PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.Offset.values()[index], offset -> (byte) offset.ordinal()), EditItemDisplayBlockSettings::offset,
             ItemDisplayBlockValues.PACKET_CODEC, EditItemDisplayBlockSettings::values,
             EditItemDisplayBlockSettings::new
     );
@@ -42,7 +42,7 @@ public record EditItemDisplayBlockSettings(BlockPos pos, ItemDisplayBlockEntity.
     public void receive(ServerPlayNetworking.Context context) {
         ServerWorld serverWorld = context.player().getServerWorld();
         if (this.values().rotation() < 0 || this.values().rotation() >= RotationPropertyHelper.getMax()) return;
-        if (NetworkingUtil.cantEditGlowcase(context.player(), this.pos(), Glowcase.ITEM_DISPLAY_BLOCK)) return;
+        if (!NetworkingUtil.canEditGlowcase(context.player(), this.pos(), Glowcase.ITEM_DISPLAY_BLOCK)) return;
         if (!(serverWorld.getBlockEntity(this.pos()) instanceof ItemDisplayBlockEntity be)) return;
 
         be.givesItem = this.givesItem();

@@ -23,9 +23,9 @@ public record EditTextBlock(BlockPos pos, TextBlockEntity.TextAlignment alignmen
 
     public static final PacketCodec<RegistryByteBuf, EditTextBlock> PACKET_CODEC = PacketCodec.tuple(
             BlockPos.PACKET_CODEC, EditTextBlock::pos,
-            PacketCodecs.SHORT.xmap(index -> TextBlockEntity.TextAlignment.values()[index], textAlignment -> (short) textAlignment.ordinal()), EditTextBlock::alignment,
-            PacketCodecs.SHORT.xmap(index -> TextBlockEntity.ZOffset.values()[index], zOffset -> (short) zOffset.ordinal()), EditTextBlock::offset,
-            PacketCodecs.SHORT.xmap(index -> TextBlockEntity.ShadowType.values()[index], shadow -> (short) shadow.ordinal()), EditTextBlock::shadowType,
+            PacketCodecs.BYTE.xmap(index -> TextBlockEntity.TextAlignment.values()[index], textAlignment -> (byte) textAlignment.ordinal()), EditTextBlock::alignment,
+            PacketCodecs.BYTE.xmap(index -> TextBlockEntity.ZOffset.values()[index], zOffset -> (byte) zOffset.ordinal()), EditTextBlock::offset,
+            PacketCodecs.BYTE.xmap(index -> TextBlockEntity.ShadowType.values()[index], shadow -> (byte) shadow.ordinal()), EditTextBlock::shadowType,
             TextBlockValues.PACKET_CODEC, EditTextBlock::values,
             EditTextBlock::new
     );
@@ -43,7 +43,7 @@ public record EditTextBlock(BlockPos pos, TextBlockEntity.TextAlignment alignmen
 
     public void receive(ServerPlayNetworking.Context context) {
         ServerWorld serverWorld = context.player().getServerWorld();
-        if (NetworkingUtil.cantEditGlowcase(context.player(), this.pos(), Glowcase.TEXT_BLOCK)) return;
+        if (!NetworkingUtil.canEditGlowcase(context.player(), this.pos(), Glowcase.TEXT_BLOCK)) return;
         if (!(serverWorld.getBlockEntity(this.pos()) instanceof TextBlockEntity be)) return;
 
         be.scale = this.values().scale();
