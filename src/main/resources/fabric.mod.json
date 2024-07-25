@@ -3,14 +3,28 @@
   "id": "glowcase",
   "version": "${version}",
   "name": "Glowcase",
-  "description": "A small collection of blocks to make showcasing things easier",
-  "license": "Apache-2.0",
-  "icon": "assets/glowcase/icon.png",
+  "description": "Blocks for showcasing mods!",
   "authors": [
     "HavenKing",
-    "LemmaEOF"
+    "ModFest"
   ],
-  "environment": "*",
+  "contributors": [
+    "quaternary",
+    "maximumpower55",
+    "LemmaEOF",
+    "TheEpicBlock",
+    "acikek",
+    "comp500",
+    "Patbox",
+    "AmyMialee"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/glowcase",
+    "issues": "https://github.com/modfest/glowcase/issues",
+    "sources": "https://github.com/modfest/glowcase"
+  },
+  "icon": "assets/glowcase/icon.png",
+  "license": "CC0-1.0",
   "entrypoints": {
     "main": [
       "dev.hephaestus.glowcase.Glowcase"
@@ -24,7 +38,15 @@
   ],
   "accessWidener": "glowcase.accesswidener",
   "depends": {
-    "fabricloader": ">=0.8.8+build.202",
-    "fabric-rendering-v1": ">=1.5.0"
+    "minecraft": ">=${mc}",
+    "fabricloader": ">=${fl}",
+    "fabric-api": ">=${fapi}",
+    "placeholder-api": ">=${placeholder}"
+  },
+  "suggests": {
+    "polydex": ">=${polydex}"
+  },
+  "breaks": {
+    "polydex": "<${polydex}"
   }
 }
