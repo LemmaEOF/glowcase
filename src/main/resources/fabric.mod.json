@@ -1,30 +1,22 @@
 {
   "schemaVersion": 1,
-  "id": "glowcase",
+  "id": "${id}",
   "version": "${version}",
-  "name": "Glowcase",
-  "description": "Blocks for showcasing mods!",
+  "name": "${name}",
+  "description": "${description}",
   "authors": [
-    "HavenKing",
-    "ModFest"
+    "${authors}"
   ],
   "contributors": [
-    "quaternary",
-    "maximumpower55",
-    "LemmaEOF",
-    "TheEpicBlock",
-    "acikek",
-    "comp500",
-    "Patbox",
-    "AmyMialee"
+    "${contributors}"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/glowcase",
-    "issues": "https://github.com/modfest/glowcase/issues",
-    "sources": "https://github.com/modfest/glowcase"
+    "homepage": "${homepage}",
+    "issues": "${issues}",
+    "sources": "${sources}"
   },
   "icon": "assets/glowcase/icon.png",
-  "license": "CC0-1.0",
+  "license": "${license}",
   "entrypoints": {
     "main": [
       "dev.hephaestus.glowcase.Glowcase"
