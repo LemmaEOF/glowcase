@@ -31,21 +31,21 @@ loom {
 
 processResources {
     final Map<String, String> meta = [
-            version     : version,
-            id          : id,
-            name        : name,
-            homepage    : homepage,
-            issues      : issues,
-            sources     : sources,
-            license     : license,
-            authors     : authors.split(", ").join("\",\n    \""),
-            contributors: contributors.split(", ").join("\",\n    \""),
-            description : description,
-            mc          : libs.versions.mc.get(),
-            fl          : libs.versions.fl.get(),
-            fapi        : libs.versions.fapi.get(),
-            placeholder : libs.versions.placeholder.get(),
-            polydex     : libs.versions.polydex.get()
+            version       : version,
+            modId         : modId,
+            modName       : modName,
+            modDescription: modDescription,
+            homepage      : homepage,
+            issues        : issues,
+            sources       : sources,
+            license       : license,
+            authors       : authors.split(", ").join("\",\n    \""),
+            contributors  : contributors.split(", ").join("\",\n    \""),
+            mc            : libs.versions.mc.get(),
+            fl            : libs.versions.fl.get(),
+            fapi          : libs.versions.fapi.get(),
+            placeholder   : libs.versions.placeholder.get(),
+            polydex       : libs.versions.polydex.get()
     ]
     inputs.properties meta
     filesMatching("fabric.mod.json") { expand meta }

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
+  "id": "${modId}",
   "version": "${version}",
-  "name": "${name}",
-  "description": "${description}",
+  "name": "${modName}",
+  "description": "${modDescription}",
   "authors": [
     "${authors}"
   ],
