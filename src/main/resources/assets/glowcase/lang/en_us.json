@@ -7,7 +7,7 @@
   "gui.glowcase.scale": "Scale: %d",
   "gui.glowcase.alignment": "Alignment: %s",
   "gui.glowcase.gives_item": "Gives Item: %s",
-  "gui.glowcase.shadow_type": "Shadow Type",
+  "gui.glowcase.shadow_type": "Shadow Type: %s",
   "gui.glowcase.rotation_type": "Rotation Type: %s",
   "gui.glowcase.show_name": "Show Name: %s",
   "gui.glowcase.offset": "Offset: %s",
