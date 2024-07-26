@@ -14,8 +14,10 @@ repositories {
 dependencies {
     minecraft libs.mc
     mappings variantOf(libs.yarn) { classifier "v2" }
+
     modImplementation libs.fl
     modImplementation libs.fapi
+
     modImplementation libs.placeholder
     modCompileOnly libs.polydex
 
