@@ -41,19 +41,19 @@ public class Glowcase implements ModInitializer {
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
 	public static final Supplier<HyperlinkBlock> HYPERLINK_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("hyperlink_block"), new HyperlinkBlock()));
-	public static final Supplier<Item> HYPERLINK_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("hyperlink_block"), new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockItem> HYPERLINK_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("hyperlink_block"), new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings())));
 	public static final Supplier<BlockEntityType<HyperlinkBlockEntity>> HYPERLINK_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("hyperlink_block"), BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK.get()).build(null)));
 
 	public static final Supplier<ItemDisplayBlock> ITEM_DISPLAY_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("item_display_block"), new ItemDisplayBlock()));
-	public static final Supplier<Item> ITEM_DISPLAY_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("item_display_block"), new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockItem> ITEM_DISPLAY_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("item_display_block"), new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings())));
 	public static final Supplier<BlockEntityType<ItemDisplayBlockEntity>> ITEM_DISPLAY_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("item_display_block"), BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK.get()).build(null)));
 
 	public static final Supplier<MailboxBlock> MAILBOX_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("mailbox"), new MailboxBlock()));
-	public static final Supplier<Item> MAILBOX_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("mailbox"), new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockItem> MAILBOX_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("mailbox"), new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings())));
 	public static final Supplier<BlockEntityType<MailboxBlockEntity>> MAILBOX_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("mailbox"), BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK.get()).build(null)));
 
 	public static final Supplier<TextBlock> TEXT_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("text_block"), new TextBlock()));
-	public static final Supplier<Item> TEXT_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("text_block"), new BlockItem(TEXT_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("text_block"), new BlockItem(TEXT_BLOCK.get(), new Item.Settings())));
 	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("text_block"), BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null)));
 
 	public static final Supplier<ItemGroup> ITEM_GROUP = Suppliers.ofInstance(Registry.register(Registries.ITEM_GROUP, id("items"), FabricItemGroup.builder()
