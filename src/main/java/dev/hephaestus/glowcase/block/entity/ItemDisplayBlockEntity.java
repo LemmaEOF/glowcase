@@ -40,7 +40,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	public Set<UUID> givenTo = new HashSet<>();
 
 	public ItemDisplayBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, pos, state);
+		super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	@Override

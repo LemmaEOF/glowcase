@@ -20,7 +20,7 @@ import net.minecraft.util.math.RotationAxis;
 public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<HyperlinkBlockEntity> {
 	private static final MinecraftClient mc = MinecraftClient.getInstance();
 
-	public static final ItemStack STACK = new ItemStack(Glowcase.HYPERLINK_BLOCK);
+	public static final ItemStack STACK = new ItemStack(Glowcase.HYPERLINK_BLOCK.get());
 
 	public void render(HyperlinkBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		Camera camera = context.getRenderDispatcher().camera;

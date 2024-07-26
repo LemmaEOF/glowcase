@@ -1,5 +1,7 @@
 package dev.hephaestus.glowcase;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -38,34 +40,33 @@ public class Glowcase implements ModInitializer {
 	
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
+	public static final Supplier<HyperlinkBlock> HYPERLINK_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("hyperlink_block"), new HyperlinkBlock()));
+	public static final Supplier<Item> HYPERLINK_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("hyperlink_block"), new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockEntityType<HyperlinkBlockEntity>> HYPERLINK_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("hyperlink_block"), BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK.get()).build(null)));
 
-	public static final HyperlinkBlock HYPERLINK_BLOCK = Registry.register(Registries.BLOCK, id("hyperlink_block"), new HyperlinkBlock());
-	public static final Item HYPERLINK_BLOCK_ITEM = Registry.register(Registries.ITEM, id("hyperlink_block"), new BlockItem(HYPERLINK_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<HyperlinkBlockEntity> HYPERLINK_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("hyperlink_block"), BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK).build());
+	public static final Supplier<ItemDisplayBlock> ITEM_DISPLAY_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("item_display_block"), new ItemDisplayBlock()));
+	public static final Supplier<Item> ITEM_DISPLAY_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("item_display_block"), new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockEntityType<ItemDisplayBlockEntity>> ITEM_DISPLAY_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("item_display_block"), BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK.get()).build(null)));
 
-	public static final ItemDisplayBlock ITEM_DISPLAY_BLOCK = Registry.register(Registries.BLOCK, id("item_display_block"), new ItemDisplayBlock());
-	public static final Item ITEM_DISPLAY_BLOCK_ITEM = Registry.register(Registries.ITEM, id("item_display_block"), new BlockItem(ITEM_DISPLAY_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<ItemDisplayBlockEntity> ITEM_DISPLAY_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("item_display_block"), BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK).build());
+	public static final Supplier<MailboxBlock> MAILBOX_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("mailbox"), new MailboxBlock()));
+	public static final Supplier<Item> MAILBOX_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("mailbox"), new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockEntityType<MailboxBlockEntity>> MAILBOX_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("mailbox"), BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK.get()).build(null)));
 
-	public static final MailboxBlock MAILBOX_BLOCK = Registry.register(Registries.BLOCK, id("mailbox"), new MailboxBlock());
-	public static final Item MAILBOX_ITEM = Registry.register(Registries.ITEM, id("mailbox"), new BlockItem(MAILBOX_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<MailboxBlockEntity> MAILBOX_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("mailbox"), BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK).build());
+	public static final Supplier<TextBlock> TEXT_BLOCK = Suppliers.ofInstance(Registry.register(Registries.BLOCK, id("text_block"), new TextBlock()));
+	public static final Supplier<Item> TEXT_BLOCK_ITEM = Suppliers.ofInstance(Registry.register(Registries.ITEM, id("text_block"), new BlockItem(TEXT_BLOCK.get(), new Item.Settings())));
+	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = Suppliers.ofInstance(Registry.register(Registries.BLOCK_ENTITY_TYPE, id("text_block"), BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null)));
 
-	public static final TextBlock TEXT_BLOCK = Registry.register(Registries.BLOCK, id("text_block"), new TextBlock());
-	public static final Item TEXT_BLOCK_ITEM = Registry.register(Registries.ITEM, id("text_block"), new BlockItem(TEXT_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<TextBlockEntity> TEXT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("text_block"), BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK).build());
-
-	public static final ItemGroup ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, id("items"), FabricItemGroup.builder()
+	public static final Supplier<ItemGroup> ITEM_GROUP = Suppliers.ofInstance(Registry.register(Registries.ITEM_GROUP, id("items"), FabricItemGroup.builder()
 		.displayName(Text.translatable("itemGroup.glowcase.items"))
 		.icon(() -> new ItemStack(Items.GLOWSTONE))
 		.entries((displayContext, entries) -> {
-			entries.add(HYPERLINK_BLOCK_ITEM);
-			entries.add(ITEM_DISPLAY_BLOCK_ITEM);
-			entries.add(MAILBOX_ITEM);
-			entries.add(TEXT_BLOCK_ITEM);
+			entries.add(HYPERLINK_BLOCK_ITEM.get());
+			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
+			entries.add(MAILBOX_ITEM.get());
+			entries.add(TEXT_BLOCK_ITEM.get());
 		})
 		.build()
-	);
+	));
 
 	public static Identifier id(String... path) {
 		return Identifier.of(MODID, String.join(".", path));

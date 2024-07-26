@@ -94,6 +94,6 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, ItemDisplayBlockEntity::tick);
+		return checkType(type, Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), ItemDisplayBlockEntity::tick);
 	}
 }

@@ -25,7 +25,7 @@ public class MailboxBlockEntity extends BlockEntity {
     private UUID owner;
 
     public MailboxBlockEntity(BlockPos pos, BlockState state) {
-        super(Glowcase.MAILBOX_BLOCK_ENTITY, pos, state);
+        super(Glowcase.MAILBOX_BLOCK_ENTITY.get(), pos, state);
     }
 
     public void setOwner(ServerPlayerEntity player) {

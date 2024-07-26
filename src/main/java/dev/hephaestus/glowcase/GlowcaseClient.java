@@ -26,9 +26,9 @@ public class GlowcaseClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		Glowcase.proxy = new GlowcaseClientProxy();
 
-		BlockEntityRendererFactories.register(Glowcase.TEXT_BLOCK_ENTITY, TextBlockEntityRenderer::new);
-		BlockEntityRendererFactories.register(Glowcase.HYPERLINK_BLOCK_ENTITY, HyperlinkBlockEntityRenderer::new);
-		BlockEntityRendererFactories.register(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, ItemDisplayBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(Glowcase.TEXT_BLOCK_ENTITY.get(), TextBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(Glowcase.HYPERLINK_BLOCK_ENTITY.get(), HyperlinkBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), ItemDisplayBlockEntityRenderer::new);
 
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(BakedBlockEntityRenderer.Manager::render);
 		InvalidateRenderStateCallback.EVENT.register(BakedBlockEntityRenderer.Manager::reset);
