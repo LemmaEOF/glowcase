@@ -14,6 +14,8 @@ import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.networking.GlowcaseCommonNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -54,23 +56,23 @@ public class Glowcase {
 
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
-	public static final Supplier<HyperlinkBlock> HYPERLINK_BLOCK = BLOCKS.register("hyperlink_block", HyperlinkBlock::new);
-	public static final Supplier<BlockItem> HYPERLINK_BLOCK_ITEM = ITEMS.register("hyperlink_block", i -> new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings()));
-	public static final Supplier<BlockEntityType<HyperlinkBlockEntity>> HYPERLINK_BLOCK_ENTITY = BLOCK_ENTITIES.register("hyperlink_block", i -> BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK.get()).build(null));
+	public static final Supplier<HyperlinkBlock> HYPERLINK_BLOCK = registerBlock("hyperlink_block", HyperlinkBlock::new);
+	public static final Supplier<BlockItem> HYPERLINK_BLOCK_ITEM = registerItem("hyperlink_block", () -> new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<HyperlinkBlockEntity>> HYPERLINK_BLOCK_ENTITY = registerBlockEntity("hyperlink_block", () -> BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK.get()).build(null));
 
-	public static final Supplier<ItemDisplayBlock> ITEM_DISPLAY_BLOCK = BLOCKS.register("item_display_block", ItemDisplayBlock::new);
-	public static final Supplier<BlockItem> ITEM_DISPLAY_BLOCK_ITEM = ITEMS.register("item_display_block", i -> new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings()));
-	public static final Supplier<BlockEntityType<ItemDisplayBlockEntity>> ITEM_DISPLAY_BLOCK_ENTITY = BLOCK_ENTITIES.register("item_display_block", i -> BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK.get()).build(null));
+	public static final Supplier<ItemDisplayBlock> ITEM_DISPLAY_BLOCK = registerBlock("item_display_block", ItemDisplayBlock::new);
+	public static final Supplier<BlockItem> ITEM_DISPLAY_BLOCK_ITEM = registerItem("item_display_block", () -> new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<ItemDisplayBlockEntity>> ITEM_DISPLAY_BLOCK_ENTITY = registerBlockEntity("item_display_block", () -> BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK.get()).build(null));
 
-	public static final Supplier<MailboxBlock> MAILBOX_BLOCK = BLOCKS.register("mailbox", MailboxBlock::new);
-	public static final Supplier<BlockItem> MAILBOX_ITEM = ITEMS.register("mailbox", i -> new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings()));
-	public static final Supplier<BlockEntityType<MailboxBlockEntity>> MAILBOX_BLOCK_ENTITY = BLOCK_ENTITIES.register("mailbox", i -> BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK.get()).build(null));
+	public static final Supplier<MailboxBlock> MAILBOX_BLOCK = registerBlock("mailbox", MailboxBlock::new);
+	public static final Supplier<BlockItem> MAILBOX_ITEM = registerItem("mailbox", () -> new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<MailboxBlockEntity>> MAILBOX_BLOCK_ENTITY = registerBlockEntity("mailbox", () -> BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK.get()).build(null));
 
-	public static final Supplier<TextBlock> TEXT_BLOCK = BLOCKS.register("text_block", i -> new TextBlock());
-	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = ITEMS.register("text_block", i -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
-	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = BLOCK_ENTITIES.register("text_block", i -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
+	public static final Supplier<TextBlock> TEXT_BLOCK = registerBlock("text_block", TextBlock::new);
+	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = registerItem("text_block", () -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = registerBlockEntity("text_block", () -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
 
-	public static final Supplier<ItemGroup> ITEM_GROUP = ITEM_GROUPS.register("items", i -> FabricItemGroup.builder()
+	public static final Supplier<ItemGroup> ITEM_GROUP = registerItemGroup("items", () -> FabricItemGroup.builder()
 		.displayName(Text.translatable("itemGroup.glowcase.items"))
 		.icon(() -> new ItemStack(Items.GLOWSTONE))
 		.entries((displayContext, entries) -> {
@@ -86,7 +88,23 @@ public class Glowcase {
 		return Identifier.of(MODID, String.join(".", path));
 	}
 
-	public void onInitialize(FMLCommonSetupEvent event) {
+	public static <T extends Block> Supplier<T> registerBlock(String path, Supplier<T> supplier) {
+		return BLOCKS.register(path, supplier);
+	}
+
+	public static <T extends Item> Supplier<T> registerItem(String path, Supplier<T> supplier) {
+		return ITEMS.register(path, supplier);
+	}
+
+	public static <T extends ItemGroup> Supplier<T> registerItemGroup(String path, Supplier<T> supplier) {
+		return ITEM_GROUPS.register(path, supplier);
+	}
+
+	public static <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntity(String path, Supplier<BlockEntityType<T>> supplier) {
+		return BLOCK_ENTITIES.register(path, supplier);
+	}
+
+    public void onInitialize(FMLCommonSetupEvent event) {
 		GlowcaseCommonNetworking.onInitialize();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
