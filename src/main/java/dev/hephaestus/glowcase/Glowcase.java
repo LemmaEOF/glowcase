@@ -11,18 +11,14 @@ import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
-import dev.hephaestus.glowcase.compat.PolydexCompatibility;
 import dev.hephaestus.glowcase.networking.GlowcaseCommonNetworking;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.command.CommandManager;
@@ -30,39 +26,57 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class Glowcase implements ModInitializer {
+@Mod(Glowcase.MODID)
+public class Glowcase {
 	public static final String MODID = "glowcase";
 
+	public Glowcase(IEventBus modBus) {
+		modBus.addListener(Glowcase::onInitialize);
+		BLOCKS.register(modBus);
+		ITEMS.register(modBus);
+		BLOCK_ENTITIES.register(modBus);
+		ITEM_GROUPS.register(modBus);
+	}
+
+	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.createItems(MODID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
+	public static final DeferredRegister<ItemGroup> ITEM_GROUPS = DeferredRegister.create(Registries.ITEM_GROUP, MODID);
+
 	public static GlowcaseCommonProxy proxy = new GlowcaseCommonProxy(); //Overridden in GlowcaseClient
-	
+
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
+	public static final DeferredBlock<HyperlinkBlock> HYPERLINK_BLOCK = BLOCKS.register("hyperlink_block", HyperlinkBlock::new);
+	public static final DeferredBlock<ItemDisplayBlock> ITEM_DISPLAY_BLOCK = BLOCKS.register("item_display_block", ItemDisplayBlock::new);
+	public static final DeferredBlock<MailboxBlock> MAILBOX_BLOCK = BLOCKS.register("mailbox", MailboxBlock::new);
+	public static final DeferredBlock<TextBlock> TEXT_BLOCK = BLOCKS.register("text_block", i -> new TextBlock());
 
-	public static final HyperlinkBlock HYPERLINK_BLOCK = Registry.register(Registries.BLOCK, id("hyperlink_block"), new HyperlinkBlock());
-	public static final Item HYPERLINK_BLOCK_ITEM = Registry.register(Registries.ITEM, id("hyperlink_block"), new BlockItem(HYPERLINK_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<HyperlinkBlockEntity> HYPERLINK_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("hyperlink_block"), BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK).build());
+	public static final DeferredHolder<Item, BlockItem> HYPERLINK_BLOCK_ITEM = ITEMS.register("hyperlink_block", i -> new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings()));
+	public static final DeferredHolder<Item, BlockItem> ITEM_DISPLAY_BLOCK_ITEM = ITEMS.register("item_display_block", i -> new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings()));
+	public static final DeferredHolder<Item, BlockItem> MAILBOX_ITEM = ITEMS.register("mailbox", i -> new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings()));
+	public static final DeferredHolder<Item, BlockItem> TEXT_BLOCK_ITEM = ITEMS.register("text_block", i -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
 
-	public static final ItemDisplayBlock ITEM_DISPLAY_BLOCK = Registry.register(Registries.BLOCK, id("item_display_block"), new ItemDisplayBlock());
-	public static final Item ITEM_DISPLAY_BLOCK_ITEM = Registry.register(Registries.ITEM, id("item_display_block"), new BlockItem(ITEM_DISPLAY_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<ItemDisplayBlockEntity> ITEM_DISPLAY_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("item_display_block"), BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK).build());
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HyperlinkBlockEntity>> HYPERLINK_BLOCK_ENTITY = BLOCK_ENTITIES.register("hyperlink_block", i -> BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemDisplayBlockEntity>> ITEM_DISPLAY_BLOCK_ENTITY = BLOCK_ENTITIES.register("item_display_block", i -> BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MailboxBlockEntity>> MAILBOX_BLOCK_ENTITY = BLOCK_ENTITIES.register("mailbox", i -> BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = BLOCK_ENTITIES.register("text_block", i -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
 
-	public static final MailboxBlock MAILBOX_BLOCK = Registry.register(Registries.BLOCK, id("mailbox"), new MailboxBlock());
-	public static final Item MAILBOX_ITEM = Registry.register(Registries.ITEM, id("mailbox"), new BlockItem(MAILBOX_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<MailboxBlockEntity> MAILBOX_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("mailbox"), BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK).build());
-
-	public static final TextBlock TEXT_BLOCK = Registry.register(Registries.BLOCK, id("text_block"), new TextBlock());
-	public static final Item TEXT_BLOCK_ITEM = Registry.register(Registries.ITEM, id("text_block"), new BlockItem(TEXT_BLOCK, new Item.Settings()));
-	public static final BlockEntityType<TextBlockEntity> TEXT_BLOCK_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE, id("text_block"), BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK).build());
-
-	public static final ItemGroup ITEM_GROUP = Registry.register(Registries.ITEM_GROUP, id("items"), FabricItemGroup.builder()
+	public static final DeferredHolder<ItemGroup, ItemGroup> ITEM_GROUP = ITEM_GROUPS.register("items", i -> FabricItemGroup.builder()
 		.displayName(Text.translatable("itemGroup.glowcase.items"))
 		.icon(() -> new ItemStack(Items.GLOWSTONE))
 		.entries((displayContext, entries) -> {
-			entries.add(HYPERLINK_BLOCK_ITEM);
-			entries.add(ITEM_DISPLAY_BLOCK_ITEM);
-			entries.add(MAILBOX_ITEM);
-			entries.add(TEXT_BLOCK_ITEM);
+			entries.add(HYPERLINK_BLOCK_ITEM.get());
+			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
+			entries.add(MAILBOX_ITEM.get());
+			entries.add(TEXT_BLOCK_ITEM.get());
 		})
 		.build()
 	);
@@ -71,24 +85,19 @@ public class Glowcase implements ModInitializer {
 		return Identifier.of(MODID, String.join(".", path));
 	}
 
-	@Override
-	public void onInitialize() {
+	public static void onInitialize(FMLCommonSetupEvent event) {
 		GlowcaseCommonNetworking.onInitialize();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(
 					LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
 						.then(CommandManager.argument("pos", new BlockPosArgumentType())
-								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
+								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(Glowcase::sendMessage)))
 			);
 		});
-
-		if (FabricLoader.getInstance().isModLoaded("polydex2")) {
-			PolydexCompatibility.onInitialize();
-		}
 	}
 
-	private int sendMessage(CommandContext<ServerCommandSource> ctx) {
+	private static int sendMessage(CommandContext<ServerCommandSource> ctx) {
 		BlockPos pos = BlockPosArgumentType.getBlockPos(ctx, "pos");
 		String message = ctx.getArgument("message", String.class);
 		PlayerEntity sender = ctx.getSource().getPlayer();

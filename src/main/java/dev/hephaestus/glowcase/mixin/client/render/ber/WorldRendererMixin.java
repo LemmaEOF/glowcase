@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
-	@Inject(method = "setWorld", at = @At("RETURN"))
+	@Inject(method = "setWorld", at = @At("HEAD"))
 	public void onSetWorld(ClientWorld clientWorld, CallbackInfo ci) {
 		BakedBlockEntityRenderer.Manager.setWorld(clientWorld);
 	}

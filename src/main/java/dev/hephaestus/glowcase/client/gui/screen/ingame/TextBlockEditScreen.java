@@ -73,7 +73,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			this.changeAlignment.setMessage(Text.stringifiedTranslatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment));
 		}).dimensions(120 + innerPadding, 0, 160, 20).build();
 
-		this.shadowToggle = ButtonWidget.builder(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType), action -> {
+		this.shadowToggle = ButtonWidget.builder(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType.toString()), action -> {
 			switch (textBlockEntity.shadowType) {
 				case DROP -> textBlockEntity.shadowType = TextBlockEntity.ShadowType.PLATE;
 				case PLATE -> textBlockEntity.shadowType = TextBlockEntity.ShadowType.NONE;
@@ -81,7 +81,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			}
 			this.textBlockEntity.renderDirty = true;
 
-			this.shadowToggle.setMessage(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType));
+			this.shadowToggle.setMessage(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType.toString()));
 		}).dimensions(120 + innerPadding, 20 + innerPadding, 160, 20).build();
 
 		this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 0, 50, 20, Text.empty());
