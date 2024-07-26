@@ -2,12 +2,9 @@ package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.networking.GlowcaseClientNetworking;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 
-@Environment(EnvType.CLIENT)
 public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 	private final ItemDisplayBlockEntity displayBlock;
 

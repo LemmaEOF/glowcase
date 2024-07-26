@@ -7,8 +7,6 @@ import dev.hephaestus.glowcase.client.render.block.entity.HyperlinkBlockEntityRe
 import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -23,7 +21,6 @@ import net.minecraft.util.hit.BlockHitResult;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public class GlowcaseClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
