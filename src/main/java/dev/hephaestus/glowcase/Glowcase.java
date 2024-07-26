@@ -29,9 +29,9 @@ import net.minecraft.util.math.BlockPos;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 @Mod(Glowcase.MODID)
 public class Glowcase {
@@ -54,22 +54,22 @@ public class Glowcase {
 
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
-	public static final DeferredBlock<HyperlinkBlock> HYPERLINK_BLOCK = BLOCKS.register("hyperlink_block", HyperlinkBlock::new);
-	public static final DeferredBlock<ItemDisplayBlock> ITEM_DISPLAY_BLOCK = BLOCKS.register("item_display_block", ItemDisplayBlock::new);
-	public static final DeferredBlock<MailboxBlock> MAILBOX_BLOCK = BLOCKS.register("mailbox", MailboxBlock::new);
-	public static final DeferredBlock<TextBlock> TEXT_BLOCK = BLOCKS.register("text_block", i -> new TextBlock());
+	public static final Supplier<HyperlinkBlock> HYPERLINK_BLOCK = BLOCKS.register("hyperlink_block", HyperlinkBlock::new);
+	public static final Supplier<ItemDisplayBlock> ITEM_DISPLAY_BLOCK = BLOCKS.register("item_display_block", ItemDisplayBlock::new);
+	public static final Supplier<MailboxBlock> MAILBOX_BLOCK = BLOCKS.register("mailbox", MailboxBlock::new);
+	public static final Supplier<TextBlock> TEXT_BLOCK = BLOCKS.register("text_block", i -> new TextBlock());
 
-	public static final DeferredHolder<Item, BlockItem> HYPERLINK_BLOCK_ITEM = ITEMS.register("hyperlink_block", i -> new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings()));
-	public static final DeferredHolder<Item, BlockItem> ITEM_DISPLAY_BLOCK_ITEM = ITEMS.register("item_display_block", i -> new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings()));
-	public static final DeferredHolder<Item, BlockItem> MAILBOX_ITEM = ITEMS.register("mailbox", i -> new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings()));
-	public static final DeferredHolder<Item, BlockItem> TEXT_BLOCK_ITEM = ITEMS.register("text_block", i -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockItem> HYPERLINK_BLOCK_ITEM = ITEMS.register("hyperlink_block", i -> new BlockItem(HYPERLINK_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockItem> ITEM_DISPLAY_BLOCK_ITEM = ITEMS.register("item_display_block", i -> new BlockItem(ITEM_DISPLAY_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockItem> MAILBOX_ITEM = ITEMS.register("mailbox", i -> new BlockItem(MAILBOX_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = ITEMS.register("text_block", i -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
 
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HyperlinkBlockEntity>> HYPERLINK_BLOCK_ENTITY = BLOCK_ENTITIES.register("hyperlink_block", i -> BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemDisplayBlockEntity>> ITEM_DISPLAY_BLOCK_ENTITY = BLOCK_ENTITIES.register("item_display_block", i -> BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MailboxBlockEntity>> MAILBOX_BLOCK_ENTITY = BLOCK_ENTITIES.register("mailbox", i -> BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = BLOCK_ENTITIES.register("text_block", i -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
+	public static final Supplier<BlockEntityType<HyperlinkBlockEntity>> HYPERLINK_BLOCK_ENTITY = BLOCK_ENTITIES.register("hyperlink_block", i -> BlockEntityType.Builder.create(HyperlinkBlockEntity::new, HYPERLINK_BLOCK.get()).build(null));
+	public static final Supplier<BlockEntityType<ItemDisplayBlockEntity>> ITEM_DISPLAY_BLOCK_ENTITY = BLOCK_ENTITIES.register("item_display_block", i -> BlockEntityType.Builder.create(ItemDisplayBlockEntity::new, ITEM_DISPLAY_BLOCK.get()).build(null));
+	public static final Supplier<BlockEntityType<MailboxBlockEntity>> MAILBOX_BLOCK_ENTITY = BLOCK_ENTITIES.register("mailbox", i -> BlockEntityType.Builder.create(MailboxBlockEntity::new, MAILBOX_BLOCK.get()).build(null));
+	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = BLOCK_ENTITIES.register("text_block", i -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
 
-	public static final DeferredHolder<ItemGroup, ItemGroup> ITEM_GROUP = ITEM_GROUPS.register("items", i -> FabricItemGroup.builder()
+	public static final Supplier<ItemGroup> ITEM_GROUP = ITEM_GROUPS.register("items", i -> FabricItemGroup.builder()
 		.displayName(Text.translatable("itemGroup.glowcase.items"))
 		.icon(() -> new ItemStack(Items.GLOWSTONE))
 		.entries((displayContext, entries) -> {
