@@ -38,7 +38,7 @@ public class Glowcase {
 	public static final String MODID = "glowcase";
 
 	public Glowcase(IEventBus modBus) {
-		modBus.addListener(Glowcase::onInitialize);
+		modBus.addListener(this::onInitialize);
 		BLOCKS.register(modBus);
 		ITEMS.register(modBus);
 		BLOCK_ENTITIES.register(modBus);
@@ -86,19 +86,19 @@ public class Glowcase {
 		return Identifier.of(MODID, String.join(".", path));
 	}
 
-	public static void onInitialize(FMLCommonSetupEvent event) {
+	public void onInitialize(FMLCommonSetupEvent event) {
 		GlowcaseCommonNetworking.onInitialize();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(
 					LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
 						.then(CommandManager.argument("pos", new BlockPosArgumentType())
-								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(Glowcase::sendMessage)))
+								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
 			);
 		});
 	}
 
-	private static int sendMessage(CommandContext<ServerCommandSource> ctx) {
+	private int sendMessage(CommandContext<ServerCommandSource> ctx) {
 		BlockPos pos = BlockPosArgumentType.getBlockPos(ctx, "pos");
 		String message = ctx.getArgument("message", String.class);
 		PlayerEntity sender = ctx.getSource().getPlayer();
