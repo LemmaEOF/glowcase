@@ -78,9 +78,9 @@ modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = 'glowcase'
     dependencies {
-        required.version "fabric-api", project.fabric_version
-        embedded.version "placeholder-api", project.placeholder_api_version
-        optional.version "polydex", project.polydex_version
+        required.version "fabric-api", libs.versions.fapi.get()
+        embedded.version "placeholder-api", libs.versions.placeholder.get()
+        optional.version "polydex", libs.versions.polydex.get()
     }
     changelog = System.getenv("CHANGELOG")
     syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
