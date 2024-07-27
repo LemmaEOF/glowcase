@@ -4,4 +4,5 @@ Right now Glowcase adds three blocks: the Text Block, the Hyperlink Block, and t
 
 ## Credits
 
-Originally created by [Haven King](https://github.com/Haven-King) for [ModFest 1.16](https://legacy.modfest.net/1.16/). Now maintained by the ModFest team for use in ModFest events.
+Originally created by [Haven King](https://github.com/Haven-King) for [ModFest 1.16](https://legacy.modfest.net/1.16/).
+Now maintained by the ModFest team for use in ModFest events.

@@ -1,5 +1,6 @@
 [versions]
 loom = "1.7.+"
+minotaur = "2.+"
 
 mc = "1.21"
 yarn = "1.21+build.9"
@@ -12,6 +13,7 @@ polydex = "1.2.2+1.21"
 
 [plugins]
 loom = { id = "fabric-loom", version.ref = "loom" }
+minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 
 [libraries]
 mc = { group = "mojang", name = "minecraft", version.ref = "mc" }
