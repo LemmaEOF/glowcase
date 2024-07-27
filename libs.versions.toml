@@ -7,7 +7,7 @@ yarn = "1.21+build.9"
 neoYarn = "1.21+build.4"
 neo = "21.0.133-beta"
 fapi = "0.100.7+1.21"
-ffapi = "0.100.7+2.0.7+1.21"
+ffapi = "0.100.7+2.0.8+1.21"
 
 placeholder = "2.4.1+1.21-neo"
 
@@ -22,4 +22,4 @@ neoYarn = { group = "dev.architectury", name = "yarn-mappings-patch-neoforge", v
 neo = { group = "net.neoforged", name = "neoforge", version.ref = "neo" }
 ffapi = { group = "org.sinytra.forgified-fabric-api", name = "forgified-fabric-api", version.ref = "ffapi" }
 
-placeholder = { group = "eu.pb4", name = "placeholder-api", version.ref = "placeholder" }
+placeholder = { group = "folk.sisby", name = "TextPlaceholderAPI", version.ref = "placeholder" }

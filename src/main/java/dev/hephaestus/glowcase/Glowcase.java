@@ -12,6 +12,7 @@ import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.MailboxBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.networking.GlowcaseCommonNetworking;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.block.Block;
@@ -36,11 +37,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 @Mod(Glowcase.MODID)
-public class Glowcase {
+public class Glowcase implements ModInitializer {
 	public static final String MODID = "glowcase";
 
 	public Glowcase(IEventBus modBus) {
-		modBus.addListener(this::onInitialize);
+		modBus.addListener((FMLCommonSetupEvent e) -> onInitialize());
 		BLOCKS.register(modBus);
 		ITEMS.register(modBus);
 		BLOCK_ENTITIES.register(modBus);
@@ -104,7 +105,8 @@ public class Glowcase {
 		return BLOCK_ENTITIES.register(path, supplier);
 	}
 
-    public void onInitialize(FMLCommonSetupEvent event) {
+	@Override
+    public void onInitialize() {
 		GlowcaseCommonNetworking.onInitialize();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {

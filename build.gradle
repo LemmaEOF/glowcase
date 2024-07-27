@@ -11,7 +11,7 @@ repositories {
     maven { url "https://maven.nucleoid.xyz/" }
     maven { url "https://maven.neoforged.net/releases/" }
     maven { url "https://maven.su5ed.dev/releases" }
-    mavenLocal()
+    maven { url "https://repo.sleeping.town/" }
 }
 
 dependencies {

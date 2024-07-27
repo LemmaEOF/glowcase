@@ -6,6 +6,7 @@ import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRender
 import dev.hephaestus.glowcase.client.render.block.entity.HyperlinkBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -25,12 +26,13 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import java.util.List;
 
 @Mod(value = Glowcase.MODID, dist = Dist.CLIENT)
-public class GlowcaseClient {
+public class GlowcaseClient implements ClientModInitializer {
 	public GlowcaseClient(IEventBus modBus) {
-		modBus.addListener(GlowcaseClient::onInitializeClient);
+		modBus.addListener((FMLClientSetupEvent e) -> onInitializeClient());
 	}
 
-	public static void onInitializeClient(FMLClientSetupEvent event) {
+	@Override
+	public void onInitializeClient() {
 		Glowcase.proxy = new GlowcaseClientProxy();
 
 		BlockEntityRendererFactories.register(Glowcase.TEXT_BLOCK_ENTITY.get(), TextBlockEntityRenderer::new);
