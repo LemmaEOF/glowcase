@@ -22,7 +22,7 @@
 			"dev.hephaestus.glowcase.Glowcase"
 		],
 		"client": [
-			"dev.hephaestus.glowcase.GlowcaseClient"
+			"dev.hephaestus.glowcase.client.GlowcaseClient"
 		]
 	},
 	"mixins": [

@@ -1,6 +1,7 @@
 package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.packet.C2SEditItemDisplayBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
@@ -9,7 +10,7 @@ import net.minecraft.util.math.Vec2f;
 public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 	private final ItemDisplayBlockEntity displayBlock;
 
-	private ButtonWidget givesItemButtom;
+	private ButtonWidget givesItemButton;
 	private ButtonWidget rotationTypeButton;
 	private ButtonWidget showNameButton;
 	private ButtonWidget offsetButton;
@@ -28,9 +29,9 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 			int centerW = width / 2;
 			int centerH = height / 2;
 
-			this.givesItemButtom = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.gives_item", this.displayBlock.givesItem), (action) -> {
+			this.givesItemButton = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.gives_item", this.displayBlock.givesItem), (action) -> {
 				this.displayBlock.cycleGiveType();
-				this.givesItemButtom.setMessage(Text.stringifiedTranslatable("gui.glowcase.gives_item", this.displayBlock.givesItem));
+				this.givesItemButton.setMessage(Text.stringifiedTranslatable("gui.glowcase.gives_item", this.displayBlock.givesItem));
 				editItemDisplayBlock(true);
 			}).dimensions(centerW - 75, centerH - 40 - individualPadding, 150, 20).build();
 
@@ -52,7 +53,7 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 				editItemDisplayBlock(true);
 			}).dimensions(centerW - 75, centerH + 20 + padding, 150, 20).build();
 
-			this.addDrawableChild(this.givesItemButtom);
+			this.addDrawableChild(this.givesItemButton);
 			this.addDrawableChild(this.rotationTypeButton);
 			this.addDrawableChild(this.showNameButton);
 			this.addDrawableChild(this.offsetButton);
@@ -65,6 +66,6 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 			displayBlock.pitch = pitchAndYaw.x;
 			displayBlock.yaw = pitchAndYaw.y;
 		}
-		displayBlock.createEditPacket().send();
+		C2SEditItemDisplayBlock.of(displayBlock).send();
 	}
 }

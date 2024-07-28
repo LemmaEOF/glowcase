@@ -1,7 +1,6 @@
 package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
-import dev.hephaestus.glowcase.networking.packet.EditItemDisplayBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -111,12 +110,6 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 				givenTo.add(comp.getUuid("id"));
 			}
 		}
-	}
-
-	public EditItemDisplayBlockSettings createEditPacket() {
-		var itemValues = new EditItemDisplayBlockSettings.ItemDisplayBlockValues(
-			getCachedState().get(Properties.ROTATION), showName, pitch, yaw);
-		return new EditItemDisplayBlockSettings(pos, rotationType, givesItem, offset, itemValues);
 	}
 
 	public boolean hasItem() {
