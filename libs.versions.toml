@@ -1,5 +1,6 @@
 [versions]
 loom = "1.7.+"
+minotaur = "2.+"
 
 mc = "1.21"
 yarn = "1.21+build.9"
@@ -13,6 +14,7 @@ placeholder = "2.4.1+1.21-neo"
 
 [plugins]
 loom = { id = "dev.architectury.loom", version.ref = "loom" }
+minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 
 [libraries]
 mc = { group = "mojang", name = "minecraft", version.ref = "mc" }

@@ -20,7 +20,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -111,9 +115,9 @@ public class Glowcase implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(
-					LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
-						.then(CommandManager.argument("pos", new BlockPosArgumentType())
-								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
+				LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
+					.then(CommandManager.argument("pos", new BlockPosArgumentType())
+						.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
 			);
 		});
 	}

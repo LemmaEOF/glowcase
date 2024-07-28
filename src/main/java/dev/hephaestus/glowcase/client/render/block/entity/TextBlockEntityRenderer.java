@@ -55,7 +55,7 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 			minLength = Math.min(minLength, textRenderer.getWidth(blockEntity.lines.get(i)));
 		}
 
-		matrices.translate(0,  -((blockEntity.lines.size() - 0.25) * 12) / 2D, 0D);
+		matrices.translate(0, -((blockEntity.lines.size() - 0.25) * 12) / 2D, 0D);
 		for (int i = 0; i < blockEntity.lines.size(); ++i) {
 			double width = textRenderer.getWidth(blockEntity.lines.get(i));
 			double dX = switch (blockEntity.textAlignment) {
@@ -83,10 +83,10 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 
 	@SuppressWarnings("SameParameterValue")
 	private void drawFillRect(MatrixStack matrices, VertexConsumerProvider vcp, int x1, int y1, int x2, int y2, int color) {
-		float red = (float)(color >> 16 & 255) / 255.0F;
-		float green = (float)(color >> 8 & 255) / 255.0F;
-		float blue = (float)(color & 255) / 255.0F;
-		float alpha = (float)(color >> 24 & 255) / 255.0F;
+		float red = (float) (color >> 16 & 255) / 255.0F;
+		float green = (float) (color >> 8 & 255) / 255.0F;
+		float blue = (float) (color & 255) / 255.0F;
+		float alpha = (float) (color >> 24 & 255) / 255.0F;
 		VertexConsumer consumer = vcp.getBuffer(GlowcaseRenderLayers.TEXT_PLATE);
 		Matrix4f matrix = matrices.peek().getPositionMatrix();
 		consumer.vertex(matrix, x1, y2, 0.0f)

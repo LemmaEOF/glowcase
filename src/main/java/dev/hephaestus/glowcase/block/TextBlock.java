@@ -36,7 +36,7 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double)((180.0F + ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
+		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double) ((180.0F + ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
 	}
 
 	@Nullable
@@ -44,13 +44,13 @@ public class TextBlock extends GlowcaseBlock implements BlockEntityProvider {
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return new TextBlockEntity(pos, state);
 	}
-	
+
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (world.isClient && placer instanceof PlayerEntity player && canEditGlowcase(player, pos)) {
 			//load any ctrl-picked NBT clientside
 			NbtComponent blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
-			if(blockEntityTag != null && world.getBlockEntity(pos) instanceof TextBlockEntity be) {
+			if (blockEntityTag != null && world.getBlockEntity(pos) instanceof TextBlockEntity be) {
 				blockEntityTag.applyToBlockEntity(be, world.getRegistryManager());
 			}
 

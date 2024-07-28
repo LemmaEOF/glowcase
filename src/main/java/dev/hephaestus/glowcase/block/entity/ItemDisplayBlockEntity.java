@@ -69,8 +69,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		super.readNbt(tag, registryLookup);
 
 		this.stack = tag.contains("item", NbtElement.COMPOUND_TYPE)
-				? ItemStack.fromNbt(registryLookup, tag.getCompound("item")).orElse(ItemStack.EMPTY)
-				: ItemStack.EMPTY;
+			? ItemStack.fromNbt(registryLookup, tag.getCompound("item")).orElse(ItemStack.EMPTY)
+			: ItemStack.EMPTY;
 		this.clearDisplayEntity();
 
 		if (tag.contains("tracking")) {
@@ -145,7 +145,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	// -> yes, that means the setBlockState call is wacky
 	public void cycleRotationType(PlayerEntity playerEntity) {
 		switch (this.rotationType) {
-			case TRACKING -> {
+			case TRACKING -> this.rotationType = RotationType.BILLBOARD;
+			case BILLBOARD -> {
 				this.rotationType = RotationType.HORIZONTAL;
 				if (this.world != null) {
 					this.world.setBlockState(this.pos, this.getCachedState().with(Properties.ROTATION, MathHelper.floor((double) ((playerEntity.getYaw()) * 16.0F / 360.0F) + 0.5D) & 15));
@@ -178,28 +179,38 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		markDirty();
 		dispatch();
 	}
-	
+
 	public boolean canGiveTo(PlayerEntity player) {
-		if(!hasItem()) return false;
-		else return switch(this.givesItem) {
+		if (!hasItem()) return false;
+		else return switch (this.givesItem) {
 			case YES -> true;
 			case NO -> false;
 			case ONCE -> player.isCreative() || !givenTo.contains(player.getUuid());
 		};
 	}
-	
-	public void giveTo(PlayerEntity player, Hand hand) {
-		player.setStackInHand(hand, getDisplayedStack().copy());
+
+	public void giveTo(PlayerEntity player) {
+		ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
+		boolean holdingSameAsDisplay = ItemStack.areItemsAndComponentsEqual(getDisplayedStack(), itemStack);
+
+		if (itemStack.isEmpty()) {
+			player.setStackInHand(Hand.MAIN_HAND, getDisplayedStack().copy());
+		} else if (holdingSameAsDisplay) {
+			itemStack.increment(getDisplayedStack().getCount());
+			itemStack.capCount(itemStack.getMaxCount());
+			player.setStackInHand(Hand.MAIN_HAND, itemStack);
+		}
+
 		if (!player.isCreative()) {
 			givenTo.add(player.getUuid());
 			markDirty();
 		}
 	}
 
-		public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos) {
-		double d = pos.getX() - camera.getPos().x + 0.5;
+	public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos, float delta) {
+		double d = pos.getX() - camera.getLerpedPos(delta).x + 0.5;
 		double e = pos.getY() - camera.getEyeY() + 0.5;
-		double f = pos.getZ() - camera.getPos().z + 0.5;
+		double f = pos.getZ() - camera.getLerpedPos(delta).z + 0.5;
 		double g = MathHelper.sqrt((float) (d * d + f * f));
 
 		float pitch = (float) ((-MathHelper.atan2(e, g)));
@@ -216,7 +227,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	}
 
 	public enum RotationType {
-		LOCKED, TRACKING, HORIZONTAL
+		LOCKED, TRACKING, HORIZONTAL, BILLBOARD
 	}
 
 	public enum GivesItem {
