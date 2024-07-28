@@ -11,6 +11,7 @@ indent_style = space
 ij_java_block_brace_style = end_of_line
 ij_java_lambda_brace_style = end_of_line
 ij_java_method_brace_style = end_of_line
+ij_java_names_count_to_use_import_on_demand = 999
 
 [{*.gant,*.groovy,*.gy,*.gradle}]
 ij_groovy_block_brace_style = end_of_line
