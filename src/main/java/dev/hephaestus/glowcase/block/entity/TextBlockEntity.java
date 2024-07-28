@@ -2,6 +2,7 @@ package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
+import dev.hephaestus.glowcase.networking.packet.EditTextBlock;
 import eu.pb4.placeholders.api.ParserContext;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.TagParser;
@@ -78,6 +79,11 @@ public class TextBlockEntity extends BlockEntity {
 		}
 
 		this.renderDirty = true;
+	}
+
+	public EditTextBlock createEditPacket() {
+		var textValues = new EditTextBlock.TextBlockValues(scale, color, lines);
+		return new EditTextBlock(pos, textAlignment, zOffset, shadowType, textValues);
 	}
 
 	public String getRawLine(int i) {

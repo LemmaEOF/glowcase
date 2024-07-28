@@ -1,6 +1,7 @@
 package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
+import dev.hephaestus.glowcase.networking.packet.EditHyperlinkBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -58,6 +59,10 @@ public class HyperlinkBlockEntity extends BlockEntity {
 		super.readNbt(tag, registryLookup);
 		this.title = tag.getString("title");
 		this.url = tag.getString("url");
+	}
+
+	public EditHyperlinkBlock createEditPacket() {
+		return new EditHyperlinkBlock(pos, url);
 	}
 
 	// standard blockentity boilerplate

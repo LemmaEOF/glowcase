@@ -1,6 +1,7 @@
 package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
+import dev.hephaestus.glowcase.networking.packet.EditItemDisplayBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -112,6 +113,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		}
 	}
 
+	public EditItemDisplayBlockSettings createEditPacket() {
+		var itemValues = new EditItemDisplayBlockSettings.ItemDisplayBlockValues(
+			getCachedState().get(Properties.ROTATION), showName, pitch, yaw);
+		return new EditItemDisplayBlockSettings(pos, rotationType, givesItem, offset, itemValues);
+	}
+
 	public boolean hasItem() {
 		return this.stack != null && !this.stack.isEmpty();
 	}
@@ -200,12 +207,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 			itemStack.capCount(itemStack.getMaxCount());
 			player.setStackInHand(Hand.MAIN_HAND, itemStack);
 		}
-
 		if (!player.isCreative()) {
 			givenTo.add(player.getUuid());
 			markDirty();
 		}
 	}
+
 
 	public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos, float delta) {
 		double d = pos.getX() - camera.getLerpedPos(delta).x + 0.5;
