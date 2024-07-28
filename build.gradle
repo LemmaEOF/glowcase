@@ -7,6 +7,7 @@ plugins {
 }
 
 version = "$baseVersion+$branch"
+archivesBaseName = project.archivesName
 
 repositories {
 	maven { url "https://maven.nucleoid.xyz/" }
