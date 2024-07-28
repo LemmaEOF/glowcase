@@ -1,8 +1,6 @@
 package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -42,7 +40,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	public Set<UUID> givenTo = new HashSet<>();
 
 	public ItemDisplayBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, pos, state);
+		super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	@Override
@@ -209,7 +207,6 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		}
 	}
 
-	@Environment(EnvType.CLIENT)
 	public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos, float delta) {
 		double d = pos.getX() - camera.getLerpedPos(delta).x + 0.5;
 		double e = pos.getY() - camera.getEyeY() + 0.5;

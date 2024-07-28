@@ -15,8 +15,8 @@ import net.minecraft.text.Text;
  */
 public class PolydexCompatibility {
     public static void onInitialize() {
-        HoverDisplayBuilder.register(Glowcase.ITEM_DISPLAY_BLOCK, PolydexCompatibility::setupItemDisplayBlock);
-        HoverDisplayBuilder.register(Glowcase.HYPERLINK_BLOCK, PolydexCompatibility::setupHyperlinkBlock);
+        HoverDisplayBuilder.register(Glowcase.ITEM_DISPLAY_BLOCK.get(), PolydexCompatibility::setupItemDisplayBlock);
+        HoverDisplayBuilder.register(Glowcase.HYPERLINK_BLOCK.get(), PolydexCompatibility::setupHyperlinkBlock);
     }
 
     private static void setupHyperlinkBlock(HoverDisplayBuilder hoverDisplayBuilder) {

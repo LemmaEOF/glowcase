@@ -1,65 +1,88 @@
+//file:noinspection GroovyAssignabilityCheck
+//file:noinspection GroovyAccessibility
 plugins {
-    id 'fabric-loom' version '1.6-SNAPSHOT'
-    id 'maven-publish'
+    id "maven-publish"
+    alias libs.plugins.loom
+    alias libs.plugins.minotaur
 }
 
-version = "${project.mod_version}+${project.minecraft_version}"
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
-}
+version = "$baseVersion+$branch"
 
 repositories {
-    maven {
-        url "https://maven.nucleoid.xyz/"
-        name "Nucleoid"
-    }
+    maven { url "https://maven.nucleoid.xyz/" }
+}
+
+dependencies {
+    minecraft libs.mc
+    mappings variantOf(libs.yarn) { classifier "v2" }
+
+    modImplementation libs.fl
+    modImplementation libs.fapi
+
+    modImplementation libs.placeholder
+    modCompileOnly libs.polydex
+
+    include libs.placeholder
+    modLocalRuntime libs.polydex
 }
 
 loom {
     accessWidenerPath = file("src/main/resources/glowcase.accesswidener")
 }
 
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
-    modCompileOnly modLocalRuntime("eu.pb4:polydex:${project.polydex_version}")
-}
-
 processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+    final Map<String, String> meta = [
+            version       : version,
+            modId         : modId,
+            modName       : modName,
+            modDescription: modDescription,
+            homepage      : homepage,
+            issues        : issues,
+            sources       : sources,
+            license       : license,
+            authors       : authors.split(", ").join("\",\n    \""),
+            contributors  : contributors.split(", ").join("\",\n    \""),
+            mc            : libs.versions.mc.get(),
+            fl            : libs.versions.fl.get(),
+            fapi          : libs.versions.fapi.get(),
+            placeholder   : libs.versions.placeholder.get(),
+            polydex       : libs.versions.polydex.get()
+    ]
+    inputs.properties meta
+    filesMatching("fabric.mod.json") { expand meta }
 }
 
 tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
     it.options.release = 21
 }
 
 java {
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
     from "LICENSE"
 }
 
-// configure the maven publication
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
         }
     }
+}
 
-    repositories {}
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = 'glowcase'
+    dependencies {
+        required.version "fabric-api", libs.versions.fapi.get()
+        embedded.version "placeholder-api", libs.versions.placeholder.get()
+        optional.version "polydex", libs.versions.polydex.get()
+    }
+    changelog = System.getenv("CHANGELOG")
+    syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
+    uploadFile = remapJar
 }

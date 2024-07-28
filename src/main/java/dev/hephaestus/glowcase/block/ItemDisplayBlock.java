@@ -54,8 +54,8 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ActionResult.CONSUME;
 
-		if (be.canGiveTo(player)) {
-			if (!world.isClient) be.giveTo(player);
+		if (be.canGiveTo(player) && player.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
+			if(!world.isClient) be.giveTo(player, Hand.MAIN_HAND);
 			return ActionResult.SUCCESS;
 		}
 
@@ -94,6 +94,6 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, ItemDisplayBlockEntity::tick);
+		return checkType(type, Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), ItemDisplayBlockEntity::tick);
 	}
 }

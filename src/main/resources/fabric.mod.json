@@ -1,16 +1,22 @@
 {
   "schemaVersion": 1,
-  "id": "glowcase",
+  "id": "${modId}",
   "version": "${version}",
-  "name": "Glowcase",
-  "description": "A small collection of blocks to make showcasing things easier",
-  "license": "Apache-2.0",
-  "icon": "assets/glowcase/icon.png",
+  "name": "${modName}",
+  "description": "${modDescription}",
   "authors": [
-    "HavenKing",
-    "LemmaEOF"
+    "${authors}"
   ],
-  "environment": "*",
+  "contributors": [
+    "${contributors}"
+  ],
+  "contact": {
+    "homepage": "${homepage}",
+    "issues": "${issues}",
+    "sources": "${sources}"
+  },
+  "icon": "assets/glowcase/icon.png",
+  "license": "${license}",
   "entrypoints": {
     "main": [
       "dev.hephaestus.glowcase.Glowcase"
@@ -24,7 +30,15 @@
   ],
   "accessWidener": "glowcase.accesswidener",
   "depends": {
-    "fabricloader": ">=0.8.8+build.202",
-    "fabric-rendering-v1": ">=1.5.0"
+    "minecraft": ">=${mc}",
+    "fabricloader": ">=${fl}",
+    "fabric-api": ">=${fapi}",
+    "placeholder-api": ">=${placeholder}"
+  },
+  "suggests": {
+    "polydex": ">=${polydex}"
+  },
+  "breaks": {
+    "polydex": "<${polydex}"
   }
 }

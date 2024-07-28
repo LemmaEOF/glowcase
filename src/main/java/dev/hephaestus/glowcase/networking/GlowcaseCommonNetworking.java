@@ -31,7 +31,7 @@ public class GlowcaseCommonNetworking {
 
 		public static void receive(EditHyperlinkBlock payload, ServerPlayNetworking.Context context) {
 			context.player().server.submit(() -> {
-				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= URL_MAX_LENGTH && payload.title().length() <= TITLE_MAX_LENGTH) {
+				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= URL_MAX_LENGTH && payload.title().length() <= TITLE_MAX_LENGTH) {
 					link.setTitle(payload.title());
 					link.setUrl(payload.url());
 				}
@@ -71,7 +71,7 @@ public class GlowcaseCommonNetworking {
 			if(payload.values().rotation() < 0 || payload.values().rotation() >= RotationPropertyHelper.getMax()) return;
 
 			context.player().server.execute(() -> {
-				if (canEditGlowcase(context.player(), payload.pos(), Glowcase.ITEM_DISPLAY_BLOCK) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof ItemDisplayBlockEntity be) {
+				if (canEditGlowcase(context.player(), payload.pos(), Glowcase.ITEM_DISPLAY_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof ItemDisplayBlockEntity be) {
 					be.givesItem = payload.givesItem();
 					be.rotationType = payload.rotationType();
 					be.offset = payload.offset();
@@ -117,7 +117,7 @@ public class GlowcaseCommonNetworking {
 
 		public static void receive(EditTextBlock payload, ServerPlayNetworking.Context context) {
 			context.player().server.execute(() -> {
-				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.TEXT_BLOCK) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof TextBlockEntity be) {
+				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.TEXT_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof TextBlockEntity be) {
 					be.scale = payload.values().scale();
 					be.lines = payload.values().lines();
 					be.textAlignment = payload.alignment();

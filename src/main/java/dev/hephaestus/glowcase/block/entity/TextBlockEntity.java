@@ -35,7 +35,7 @@ public class TextBlockEntity extends BlockEntity {
 	public boolean renderDirty = true;
 
 	public TextBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.TEXT_BLOCK_ENTITY, pos, state);
+		super(Glowcase.TEXT_BLOCK_ENTITY.get(), pos, state);
 		lines.add(Text.empty());
 	}
 

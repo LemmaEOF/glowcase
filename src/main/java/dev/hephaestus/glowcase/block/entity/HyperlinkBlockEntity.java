@@ -17,7 +17,7 @@ public class HyperlinkBlockEntity extends BlockEntity {
 	private String url = "";
 
 	public HyperlinkBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.HYPERLINK_BLOCK_ENTITY, pos, state);
+		super(Glowcase.HYPERLINK_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	public String getText() {
