@@ -21,49 +21,49 @@ public record EditTextBlock(BlockPos pos, TextBlockEntity.TextAlignment alignmen
                             TextBlockEntity.ShadowType shadowType,
                             TextBlockValues values) implements CustomPayload {
 
-    public static final PacketCodec<RegistryByteBuf, EditTextBlock> PACKET_CODEC = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, EditTextBlock::pos,
-            PacketCodecs.BYTE.xmap(index -> TextBlockEntity.TextAlignment.values()[index], textAlignment -> (byte) textAlignment.ordinal()), EditTextBlock::alignment,
-            PacketCodecs.BYTE.xmap(index -> TextBlockEntity.ZOffset.values()[index], zOffset -> (byte) zOffset.ordinal()), EditTextBlock::offset,
-            PacketCodecs.BYTE.xmap(index -> TextBlockEntity.ShadowType.values()[index], shadow -> (byte) shadow.ordinal()), EditTextBlock::shadowType,
-            TextBlockValues.PACKET_CODEC, EditTextBlock::values,
-            EditTextBlock::new
-    );
+	public static final PacketCodec<RegistryByteBuf, EditTextBlock> PACKET_CODEC = PacketCodec.tuple(
+		BlockPos.PACKET_CODEC, EditTextBlock::pos,
+		PacketCodecs.BYTE.xmap(index -> TextBlockEntity.TextAlignment.values()[index], textAlignment -> (byte) textAlignment.ordinal()), EditTextBlock::alignment,
+		PacketCodecs.BYTE.xmap(index -> TextBlockEntity.ZOffset.values()[index], zOffset -> (byte) zOffset.ordinal()), EditTextBlock::offset,
+		PacketCodecs.BYTE.xmap(index -> TextBlockEntity.ShadowType.values()[index], shadow -> (byte) shadow.ordinal()), EditTextBlock::shadowType,
+		TextBlockValues.PACKET_CODEC, EditTextBlock::values,
+		EditTextBlock::new
+	);
 
-    public static final Id<EditTextBlock> PACKET_ID = new Id<>(Glowcase.id("channel.text_block"));
+	public static final Id<EditTextBlock> PACKET_ID = new Id<>(Glowcase.id("channel.text_block"));
 
-    @Override
-    public Id<? extends CustomPayload> getId() {
-        return PACKET_ID;
-    }
+	@Override
+	public Id<? extends CustomPayload> getId() {
+		return PACKET_ID;
+	}
 
-    public void send() {
-        ClientPlayNetworking.send(this);
-    }
+	public void send() {
+		ClientPlayNetworking.send(this);
+	}
 
-    public void receive(ServerPlayNetworking.Context context) {
-        ServerWorld serverWorld = context.player().getServerWorld();
-        if (!NetworkingUtil.canEditGlowcase(context.player(), this.pos(), Glowcase.TEXT_BLOCK)) return;
-        if (!(serverWorld.getBlockEntity(this.pos()) instanceof TextBlockEntity be)) return;
+	public void receive(ServerPlayNetworking.Context context) {
+		ServerWorld serverWorld = context.player().getServerWorld();
+		if (!NetworkingUtil.canEditGlowcase(context.player(), this.pos(), Glowcase.TEXT_BLOCK.get())) return;
+		if (!(serverWorld.getBlockEntity(this.pos()) instanceof TextBlockEntity be)) return;
 
-        be.scale = this.values().scale();
-        be.lines = this.values().lines();
-        be.textAlignment = this.alignment();
-        be.color = this.values().color();
-        be.zOffset = this.offset();
-        be.shadowType = this.shadowType();
+		be.scale = this.values().scale();
+		be.lines = this.values().lines();
+		be.textAlignment = this.alignment();
+		be.color = this.values().color();
+		be.zOffset = this.offset();
+		be.shadowType = this.shadowType();
 
-        be.markDirty();
-        be.dispatch();
-    }
+		be.markDirty();
+		be.dispatch();
+	}
 
-    // separated for tuple call
-    public record TextBlockValues(float scale, int color, List<Text> lines) {
-        public static final PacketCodec<RegistryByteBuf, TextBlockValues> PACKET_CODEC = PacketCodec.tuple(
-                PacketCodecs.FLOAT, TextBlockValues::scale,
-                PacketCodecs.INTEGER, TextBlockValues::color,
-                PacketCodecs.collection(ArrayList::new, TextCodecs.REGISTRY_PACKET_CODEC), TextBlockValues::lines,
-                TextBlockValues::new
-        );
-    }
+	// separated for tuple call
+	public record TextBlockValues(float scale, int color, List<Text> lines) {
+		public static final PacketCodec<RegistryByteBuf, TextBlockValues> PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.FLOAT, TextBlockValues::scale,
+			PacketCodecs.INTEGER, TextBlockValues::color,
+			PacketCodecs.collection(ArrayList::new, TextCodecs.REGISTRY_PACKET_CODEC), TextBlockValues::lines,
+			TextBlockValues::new
+		);
+	}
 }

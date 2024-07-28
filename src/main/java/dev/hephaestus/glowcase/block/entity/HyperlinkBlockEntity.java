@@ -14,14 +14,14 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class HyperlinkBlockEntity extends BlockEntity {
-    public static final int TITLE_MAX_LENGTH = 1024;
+	public static final int TITLE_MAX_LENGTH = 1024;
 	public static final int URL_MAX_LENGTH = 1024;
 	private String title = "";
 	private String url = "";
 
-    public HyperlinkBlockEntity(BlockPos pos, BlockState state) {
-        super(Glowcase.HYPERLINK_BLOCK_ENTITY.get(), pos, state);
-    }
+	public HyperlinkBlockEntity(BlockPos pos, BlockState state) {
+		super(Glowcase.HYPERLINK_BLOCK_ENTITY.get(), pos, state);
+	}
 
 	public String getText() {
 		return !title.isEmpty() ? title : url;
@@ -37,46 +37,48 @@ public class HyperlinkBlockEntity extends BlockEntity {
 		dispatch();
 	}
 
-    public String getUrl() {
-        return url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void setUrl(String newUrl) {
-        url = newUrl;
-        markDirty();
-        dispatch();
-    }
+	public void setUrl(String newUrl) {
+		url = newUrl;
+		markDirty();
+		dispatch();
+	}
 
-    @Override
-    public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        super.writeNbt(tag, registryLookup);
-        tag.putString("title", this.title);tag.putString("url", this.url);
-    }
+	@Override
+	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+		super.writeNbt(tag, registryLookup);
+		tag.putString("title", this.title);
+		tag.putString("url", this.url);
+	}
 
-    @Override
-    public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        super.readNbt(tag, registryLookup);
-        this.title = tag.getString("title");this.url = tag.getString("url");
-    }
+	@Override
+	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+		super.readNbt(tag, registryLookup);
+		this.title = tag.getString("title");
+		this.url = tag.getString("url");
+	}
 
-    public EditHyperlinkBlock createEditPacket() {
-        return new EditHyperlinkBlock(pos, url);
-    }
+	public EditHyperlinkBlock createEditPacket() {
+		return new EditHyperlinkBlock(pos, url);
+	}
 
-    // standard blockentity boilerplate
+	// standard blockentity boilerplate
 
-    public void dispatch() {
-        if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
-    }
+	public void dispatch() {
+		if (world instanceof ServerWorld sworld) sworld.getChunkManager().markForUpdate(pos);
+	}
 
-    @Override
-    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
-        return createNbt(registryLookup);
-    }
+	@Override
+	public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+		return createNbt(registryLookup);
+	}
 
-    @Nullable
-    @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
-    }
+	@Nullable
+	@Override
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this);
+	}
 }

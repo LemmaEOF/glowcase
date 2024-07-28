@@ -19,54 +19,54 @@ public record EditItemDisplayBlockSettings(BlockPos pos, ItemDisplayBlockEntity.
                                            ItemDisplayBlockEntity.Offset offset,
                                            ItemDisplayBlockValues values) implements CustomPayload {
 
-    public static final PacketCodec<RegistryByteBuf, EditItemDisplayBlockSettings> PACKET_CODEC = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, EditItemDisplayBlockSettings::pos,
-            PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.RotationType.values()[index], rotation -> (byte) rotation.ordinal()), EditItemDisplayBlockSettings::rotationType,
-            PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.GivesItem.values()[index], givesItem -> (byte) givesItem.ordinal()), EditItemDisplayBlockSettings::givesItem,
-            PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.Offset.values()[index], offset -> (byte) offset.ordinal()), EditItemDisplayBlockSettings::offset,
-            ItemDisplayBlockValues.PACKET_CODEC, EditItemDisplayBlockSettings::values,
-            EditItemDisplayBlockSettings::new
-    );
+	public static final PacketCodec<RegistryByteBuf, EditItemDisplayBlockSettings> PACKET_CODEC = PacketCodec.tuple(
+		BlockPos.PACKET_CODEC, EditItemDisplayBlockSettings::pos,
+		PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.RotationType.values()[index], rotation -> (byte) rotation.ordinal()), EditItemDisplayBlockSettings::rotationType,
+		PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.GivesItem.values()[index], givesItem -> (byte) givesItem.ordinal()), EditItemDisplayBlockSettings::givesItem,
+		PacketCodecs.BYTE.xmap(index -> ItemDisplayBlockEntity.Offset.values()[index], offset -> (byte) offset.ordinal()), EditItemDisplayBlockSettings::offset,
+		ItemDisplayBlockValues.PACKET_CODEC, EditItemDisplayBlockSettings::values,
+		EditItemDisplayBlockSettings::new
+	);
 
-    public static final Id<EditItemDisplayBlockSettings> PACKET_ID = new Id<>(Glowcase.id("channel.item_display"));
+	public static final Id<EditItemDisplayBlockSettings> PACKET_ID = new Id<>(Glowcase.id("channel.item_display"));
 
-    @Override
-    public Id<? extends CustomPayload> getId() {
-        return PACKET_ID;
-    }
+	@Override
+	public Id<? extends CustomPayload> getId() {
+		return PACKET_ID;
+	}
 
-    public void send() {
-        ClientPlayNetworking.send(this);
-    }
+	public void send() {
+		ClientPlayNetworking.send(this);
+	}
 
-    public void receive(ServerPlayNetworking.Context context) {
-        ServerWorld serverWorld = context.player().getServerWorld();
-        if (this.values().rotation() < 0 || this.values().rotation() >= RotationPropertyHelper.getMax()) return;
-        if (!NetworkingUtil.canEditGlowcase(context.player(), this.pos(), Glowcase.ITEM_DISPLAY_BLOCK)) return;
-        if (!(serverWorld.getBlockEntity(this.pos()) instanceof ItemDisplayBlockEntity be)) return;
+	public void receive(ServerPlayNetworking.Context context) {
+		ServerWorld serverWorld = context.player().getServerWorld();
+		if (this.values().rotation() < 0 || this.values().rotation() >= RotationPropertyHelper.getMax()) return;
+		if (!NetworkingUtil.canEditGlowcase(context.player(), this.pos(), Glowcase.ITEM_DISPLAY_BLOCK.get())) return;
+		if (!(serverWorld.getBlockEntity(this.pos()) instanceof ItemDisplayBlockEntity be)) return;
 
-        be.givesItem = this.givesItem();
-        be.rotationType = this.rotationType();
-        be.offset = this.offset();
-        be.pitch = this.values().pitch();
-        be.yaw = this.values().yaw();
-        be.showName = this.values().showName();
+		be.givesItem = this.givesItem();
+		be.rotationType = this.rotationType();
+		be.offset = this.offset();
+		be.pitch = this.values().pitch();
+		be.yaw = this.values().yaw();
+		be.showName = this.values().showName();
 
-        serverWorld.setBlockState(this.pos(), context.player().getWorld()
-                .getBlockState(this.pos()).with(Properties.ROTATION, this.values().rotation()));
+		serverWorld.setBlockState(this.pos(), context.player().getWorld()
+			.getBlockState(this.pos()).with(Properties.ROTATION, this.values().rotation()));
 
-        be.markDirty();
-        be.dispatch();
-    }
+		be.markDirty();
+		be.dispatch();
+	}
 
-    // separated for tuple call
-    public record ItemDisplayBlockValues(int rotation, boolean showName, float pitch, float yaw) {
-        public static final PacketCodec<RegistryByteBuf, ItemDisplayBlockValues> PACKET_CODEC = PacketCodec.tuple(
-                PacketCodecs.INTEGER, ItemDisplayBlockValues::rotation,
-                PacketCodecs.BOOL, ItemDisplayBlockValues::showName,
-                PacketCodecs.FLOAT, ItemDisplayBlockValues::pitch,
-                PacketCodecs.FLOAT, ItemDisplayBlockValues::yaw,
-                ItemDisplayBlockValues::new
-        );
-    }
+	// separated for tuple call
+	public record ItemDisplayBlockValues(int rotation, boolean showName, float pitch, float yaw) {
+		public static final PacketCodec<RegistryByteBuf, ItemDisplayBlockValues> PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.INTEGER, ItemDisplayBlockValues::rotation,
+			PacketCodecs.BOOL, ItemDisplayBlockValues::showName,
+			PacketCodecs.FLOAT, ItemDisplayBlockValues::pitch,
+			PacketCodecs.FLOAT, ItemDisplayBlockValues::yaw,
+			ItemDisplayBlockValues::new
+		);
+	}
 }
