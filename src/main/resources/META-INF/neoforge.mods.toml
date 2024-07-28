@@ -1,44 +1,44 @@
-modLoader="javafml"
-loaderVersion="[4,)"
-license="${license}"
-issueTrackerURL="${issues}"
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "${license}"
+issueTrackerURL = "${issues}"
 
 [[mods]]
-modId="${modId}"
-version="${version}"
-displayName="${modName}"
-displayURL="${homepage}"
-logoFile="assets/glowcase/icon.png"
-authors="${authors}"
-description='''${modDescription}'''
+modId = "${modId}"
+version = "${version}"
+displayName = "${modName}"
+displayURL = "${homepage}"
+logoFile = "assets/glowcase/icon.png"
+authors = "${authors}"
+description = '''${modDescription}'''
 
 [[mixins]]
-config="glowcase.mixins.json"
+config = "glowcase.mixins.json"
 
-[[dependencies.${modId}]]
-    modId="neoforge"
-    type="required"
-    versionRange="[${neo},)"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.${ modId }]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neo},)"
+ordering = "NONE"
+side = "BOTH"
 
-[[dependencies.${modId}]]
-    modId="minecraft"
-    type="required"
-    versionRange="[${mc},)"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.${ modId }]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${mc},)"
+ordering = "NONE"
+side = "BOTH"
 
-[[dependencies.${modId}]]
-    modId="fabric_api"
-    type="required"
-    versionRange="[${fapi},)"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.${ modId }]]
+modId = "fabric_api"
+type = "required"
+versionRange = "[${fapi},)"
+ordering = "NONE"
+side = "BOTH"
 
-[[dependencies.${modId}]]
-    modId="placeholder_api"
-    type="required"
-    versionRange="[${placeholder},)"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.${ modId }]]
+modId = "placeholder_api"
+type = "required"
+versionRange = "[${placeholder},)"
+ordering = "NONE"
+side = "BOTH"

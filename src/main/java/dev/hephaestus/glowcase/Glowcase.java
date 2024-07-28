@@ -110,7 +110,7 @@ public class Glowcase implements ModInitializer {
 	}
 
 	@Override
-    public void onInitialize() {
+	public void onInitialize() {
 		GlowcaseCommonNetworking.onInitialize();
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {

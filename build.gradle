@@ -10,24 +10,24 @@ version = "$baseVersion+$branch"
 
 repositories {
 	maven { url "https://maven.nucleoid.xyz/" }
-    maven { url "https://maven.neoforged.net/releases/" }
-    maven { url "https://maven.su5ed.dev/releases" }
-    maven { url "https://repo.sleeping.town/" }
+	maven { url "https://maven.neoforged.net/releases/" }
+	maven { url "https://maven.su5ed.dev/releases" }
+	maven { url "https://repo.sleeping.town/" }
 }
 
 dependencies {
 	minecraft libs.mc
 	mappings loom.layered {
-        it.mappings variantOf(libs.yarn) { classifier "v2" }
-        it.mappings libs.neoYarn
-    }
+		it.mappings variantOf(libs.yarn) { classifier "v2" }
+		it.mappings libs.neoYarn
+	}
 
 	neoForge libs.neo
 	modImplementation libs.ffapi
 
-    modImplementation libs.placeholder
+	modImplementation libs.placeholder
 
-    include libs.placeholder
+	include libs.placeholder
 }
 
 loom {
