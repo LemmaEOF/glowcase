@@ -69,8 +69,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		super.readNbt(tag, registryLookup);
 
 		this.stack = tag.contains("item", NbtElement.COMPOUND_TYPE)
-				? ItemStack.fromNbt(registryLookup, tag.getCompound("item")).orElse(ItemStack.EMPTY)
-				: ItemStack.EMPTY;
+			? ItemStack.fromNbt(registryLookup, tag.getCompound("item")).orElse(ItemStack.EMPTY)
+			: ItemStack.EMPTY;
 		this.clearDisplayEntity();
 
 		if (tag.contains("tracking")) {
@@ -179,16 +179,16 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 		markDirty();
 		dispatch();
 	}
-	
+
 	public boolean canGiveTo(PlayerEntity player) {
-		if(!hasItem()) return false;
-		else return switch(this.givesItem) {
+		if (!hasItem()) return false;
+		else return switch (this.givesItem) {
 			case YES -> true;
 			case NO -> false;
 			case ONCE -> player.isCreative() || !givenTo.contains(player.getUuid());
 		};
 	}
-	
+
 	public void giveTo(PlayerEntity player) {
 		ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
 		boolean holdingSameAsDisplay = ItemStack.areItemsAndComponentsEqual(getDisplayedStack(), itemStack);

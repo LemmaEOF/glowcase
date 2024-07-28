@@ -51,7 +51,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 			}
 			case HORIZONTAL -> {
 				var rotation = -(entity.getCachedState().get(Properties.ROTATION) * 2 * Math.PI) / 16.0F;
-				matrices.multiply(RotationAxis.POSITIVE_Y.rotation((float)rotation));
+				matrices.multiply(RotationAxis.POSITIVE_Y.rotation((float) rotation));
 			}
 			case LOCKED -> {
 				pitch = entity.pitch;

@@ -24,7 +24,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
@@ -39,7 +43,7 @@ public class Glowcase implements ModInitializer {
 	public static final String MODID = "glowcase";
 
 	public static GlowcaseCommonProxy proxy = new GlowcaseCommonProxy(); //Overridden in GlowcaseClient
-	
+
 	public static final TagKey<Item> ITEM_TAG = TagKey.of(RegistryKeys.ITEM, id("items"));
 
 	public static final Supplier<HyperlinkBlock> HYPERLINK_BLOCK = registerBlock("hyperlink_block", HyperlinkBlock::new);
@@ -96,9 +100,9 @@ public class Glowcase implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
 			dispatcher.register(
-					LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
-						.then(CommandManager.argument("pos", new BlockPosArgumentType())
-								.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
+				LiteralArgumentBuilder.<ServerCommandSource>literal("mail")
+					.then(CommandManager.argument("pos", new BlockPosArgumentType())
+						.then(CommandManager.argument("message", StringArgumentType.greedyString()).executes(this::sendMessage)))
 			);
 		});
 

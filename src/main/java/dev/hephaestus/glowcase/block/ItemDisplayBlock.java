@@ -42,7 +42,7 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double)((ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
+		return this.getDefaultState().with(Properties.ROTATION, MathHelper.floor((double) ((ctx.getPlayerYaw()) * 16.0F / 360.0F) + 0.5D) & 15);
 	}
 
 	@Override
@@ -52,10 +52,10 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 
 	@Override
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ActionResult.CONSUME;
+		if (!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ActionResult.CONSUME;
 
 		if (be.canGiveTo(player)) {
-			if(!world.isClient) be.giveTo(player);
+			if (!world.isClient) be.giveTo(player);
 			return ActionResult.SUCCESS;
 		}
 
@@ -64,20 +64,20 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ItemActionResult.CONSUME;
+		if (!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ItemActionResult.CONSUME;
 
-		if(canEditGlowcase(player, pos)) {
+		if (canEditGlowcase(player, pos)) {
 			boolean holdingGlowcaseItem = stack.isIn(Glowcase.ITEM_TAG);
 			boolean holdingSameAsDisplay = ItemStack.areItemsEqual(be.getDisplayedStack(), stack);
 
-			if(!be.hasItem()) {
-				if(!world.isClient) be.setStack(stack);
+			if (!be.hasItem()) {
+				if (!world.isClient) be.setStack(stack);
 				return ItemActionResult.SUCCESS;
-			} else if(holdingSameAsDisplay) {
-				if(world.isClient) Glowcase.proxy.openItemDisplayBlockEditScreen(pos);
+			} else if (holdingSameAsDisplay) {
+				if (world.isClient) Glowcase.proxy.openItemDisplayBlockEditScreen(pos);
 				return ItemActionResult.SUCCESS;
-			} else if(holdingGlowcaseItem) {
-				if(!world.isClient) be.setStack(ItemStack.EMPTY);
+			} else if (holdingGlowcaseItem) {
+				if (!world.isClient) be.setStack(ItemStack.EMPTY);
 				return ItemActionResult.SUCCESS;
 			}
 		}

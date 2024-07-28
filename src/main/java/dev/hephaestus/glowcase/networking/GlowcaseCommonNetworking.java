@@ -31,7 +31,7 @@ public class GlowcaseCommonNetworking {
 
 		public static void receive(EditHyperlinkBlock payload, ServerPlayNetworking.Context context) {
 			context.player().server.submit(() -> {
-				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= HyperlinkBlockEntity.URL_MAX_LENGTH && payload.title().length() <= HyperlinkBlockEntity.TITLE_MAX_LENGTH) {
+				if (canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= HyperlinkBlockEntity.URL_MAX_LENGTH && payload.title().length() <= HyperlinkBlockEntity.TITLE_MAX_LENGTH) {
 					link.setTitle(payload.title());
 					link.setUrl(payload.url());
 				}
@@ -47,11 +47,11 @@ public class GlowcaseCommonNetworking {
 	// separated for tuple call
 	public record ItemDisplayBlockValues(int rotation, boolean showName, float pitch, float yaw) {
 		public static final PacketCodec<RegistryByteBuf, ItemDisplayBlockValues> PACKET_CODEC = PacketCodec.tuple(
-				PacketCodecs.INTEGER, ItemDisplayBlockValues::rotation,
-				PacketCodecs.BOOL, ItemDisplayBlockValues::showName,
-				PacketCodecs.FLOAT, ItemDisplayBlockValues::pitch,
-				PacketCodecs.FLOAT, ItemDisplayBlockValues::yaw,
-				ItemDisplayBlockValues::new
+			PacketCodecs.INTEGER, ItemDisplayBlockValues::rotation,
+			PacketCodecs.BOOL, ItemDisplayBlockValues::showName,
+			PacketCodecs.FLOAT, ItemDisplayBlockValues::pitch,
+			PacketCodecs.FLOAT, ItemDisplayBlockValues::yaw,
+			ItemDisplayBlockValues::new
 		);
 	}
 
@@ -59,16 +59,16 @@ public class GlowcaseCommonNetworking {
 		public static final Id<EditItemDisplayBlockSettings> PACKET_ID = new Id<>(Glowcase.id("channel.item_display"));
 
 		public static final PacketCodec<RegistryByteBuf, EditItemDisplayBlockSettings> PACKET_CODEC = PacketCodec.tuple(
-				BlockPos.PACKET_CODEC, EditItemDisplayBlockSettings::pos,
-				PacketCodecs.INTEGER.xmap(index -> ItemDisplayBlockEntity.RotationType.values()[index], ItemDisplayBlockEntity.RotationType::ordinal), EditItemDisplayBlockSettings::rotationType,
-				PacketCodecs.INTEGER.xmap(index -> ItemDisplayBlockEntity.GivesItem.values()[index], ItemDisplayBlockEntity.GivesItem::ordinal), EditItemDisplayBlockSettings::givesItem,
-				PacketCodecs.INTEGER.xmap(index -> ItemDisplayBlockEntity.Offset.values()[index], ItemDisplayBlockEntity.Offset::ordinal), EditItemDisplayBlockSettings::offset,
-				ItemDisplayBlockValues.PACKET_CODEC, EditItemDisplayBlockSettings::values,
-				EditItemDisplayBlockSettings::new
+			BlockPos.PACKET_CODEC, EditItemDisplayBlockSettings::pos,
+			PacketCodecs.INTEGER.xmap(index -> ItemDisplayBlockEntity.RotationType.values()[index], ItemDisplayBlockEntity.RotationType::ordinal), EditItemDisplayBlockSettings::rotationType,
+			PacketCodecs.INTEGER.xmap(index -> ItemDisplayBlockEntity.GivesItem.values()[index], ItemDisplayBlockEntity.GivesItem::ordinal), EditItemDisplayBlockSettings::givesItem,
+			PacketCodecs.INTEGER.xmap(index -> ItemDisplayBlockEntity.Offset.values()[index], ItemDisplayBlockEntity.Offset::ordinal), EditItemDisplayBlockSettings::offset,
+			ItemDisplayBlockValues.PACKET_CODEC, EditItemDisplayBlockSettings::values,
+			EditItemDisplayBlockSettings::new
 		);
 
 		public static void receive(EditItemDisplayBlockSettings payload, ServerPlayNetworking.Context context) {
-			if(payload.values().rotation() < 0 || payload.values().rotation() >= RotationPropertyHelper.getMax()) return;
+			if (payload.values().rotation() < 0 || payload.values().rotation() >= RotationPropertyHelper.getMax()) return;
 
 			context.player().server.execute(() -> {
 				if (canEditGlowcase(context.player(), payload.pos(), Glowcase.ITEM_DISPLAY_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof ItemDisplayBlockEntity be) {
@@ -96,10 +96,10 @@ public class GlowcaseCommonNetworking {
 	// separated for tuple call
 	public record TextBlockValues(float scale, int color, List<Text> lines) {
 		public static final PacketCodec<RegistryByteBuf, TextBlockValues> PACKET_CODEC = PacketCodec.tuple(
-				PacketCodecs.FLOAT, TextBlockValues::scale,
-				PacketCodecs.INTEGER, TextBlockValues::color,
-				PacketCodecs.collection(ArrayList::new, TextCodecs.REGISTRY_PACKET_CODEC), TextBlockValues::lines,
-				TextBlockValues::new
+			PacketCodecs.FLOAT, TextBlockValues::scale,
+			PacketCodecs.INTEGER, TextBlockValues::color,
+			PacketCodecs.collection(ArrayList::new, TextCodecs.REGISTRY_PACKET_CODEC), TextBlockValues::lines,
+			TextBlockValues::new
 		);
 	}
 
@@ -107,17 +107,17 @@ public class GlowcaseCommonNetworking {
 		public static final Id<EditTextBlock> PACKET_ID = new Id<>(Glowcase.id("channel.text_block"));
 
 		public static final PacketCodec<RegistryByteBuf, EditTextBlock> PACKET_CODEC = PacketCodec.tuple(
-				BlockPos.PACKET_CODEC, EditTextBlock::pos,
-				PacketCodecs.INTEGER.xmap(index -> TextBlockEntity.TextAlignment.values()[index], TextBlockEntity.TextAlignment::ordinal), EditTextBlock::alignment,
-				PacketCodecs.INTEGER.xmap(index -> TextBlockEntity.ZOffset.values()[index], TextBlockEntity.ZOffset::ordinal), EditTextBlock::offset,
-				PacketCodecs.INTEGER.xmap(index -> TextBlockEntity.ShadowType.values()[index], TextBlockEntity.ShadowType::ordinal), EditTextBlock::shadowType,
-				TextBlockValues.PACKET_CODEC, EditTextBlock::values,
-				EditTextBlock::new
+			BlockPos.PACKET_CODEC, EditTextBlock::pos,
+			PacketCodecs.INTEGER.xmap(index -> TextBlockEntity.TextAlignment.values()[index], TextBlockEntity.TextAlignment::ordinal), EditTextBlock::alignment,
+			PacketCodecs.INTEGER.xmap(index -> TextBlockEntity.ZOffset.values()[index], TextBlockEntity.ZOffset::ordinal), EditTextBlock::offset,
+			PacketCodecs.INTEGER.xmap(index -> TextBlockEntity.ShadowType.values()[index], TextBlockEntity.ShadowType::ordinal), EditTextBlock::shadowType,
+			TextBlockValues.PACKET_CODEC, EditTextBlock::values,
+			EditTextBlock::new
 		);
 
 		public static void receive(EditTextBlock payload, ServerPlayNetworking.Context context) {
 			context.player().server.execute(() -> {
-				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.TEXT_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof TextBlockEntity be) {
+				if (canEditGlowcase(context.player(), payload.pos(), Glowcase.TEXT_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof TextBlockEntity be) {
 					be.scale = payload.values().scale();
 					be.lines = payload.values().lines();
 					be.textAlignment = payload.alignment();
@@ -150,8 +150,8 @@ public class GlowcaseCommonNetworking {
 
 	private static boolean canEditGlowcase(ServerPlayerEntity player, BlockPos pos, GlowcaseBlock glowcase) {
 		return player.getServerWorld() != null &&
-				player.getServerWorld().isChunkLoaded(ChunkPos.toLong(pos)) &&
-				player.squaredDistanceTo(pos.toCenterPos()) <= 12 * 12 &&
-				glowcase.canEditGlowcase(player, pos);
+			player.getServerWorld().isChunkLoaded(ChunkPos.toLong(pos)) &&
+			player.squaredDistanceTo(pos.toCenterPos()) <= 12 * 12 &&
+			glowcase.canEditGlowcase(player, pos);
 	}
 }

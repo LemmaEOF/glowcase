@@ -76,15 +76,15 @@ public class MailboxBlock extends Block implements BlockEntityProvider {
 
 	@Override
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-		if(!(world.getBlockEntity(pos) instanceof MailboxBlockEntity be)) return ActionResult.CONSUME;
+		if (!(world.getBlockEntity(pos) instanceof MailboxBlockEntity be)) return ActionResult.CONSUME;
 		boolean mine = Objects.equals(player.getUuid(), be.owner());
 
-		if(world.isClient && !mine) {
+		if (world.isClient && !mine) {
 			Glowcase.proxy.prefillMailboxChat(pos);
 		}
 
-		if(!world.isClient && mine) {
-			if(player.isSneaking()) be.removeAllMessagesFromMostRecentSender();
+		if (!world.isClient && mine) {
+			if (player.isSneaking()) be.removeAllMessagesFromMostRecentSender();
 			else be.removeMessage();
 		}
 

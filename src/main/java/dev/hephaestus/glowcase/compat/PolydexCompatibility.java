@@ -14,34 +14,34 @@ import net.minecraft.text.Text;
  * @author Patbox
  */
 public class PolydexCompatibility {
-    public static void onInitialize() {
-        HoverDisplayBuilder.register(Glowcase.ITEM_DISPLAY_BLOCK.get(), PolydexCompatibility::setupItemDisplayBlock);
-        HoverDisplayBuilder.register(Glowcase.HYPERLINK_BLOCK.get(), PolydexCompatibility::setupHyperlinkBlock);
-    }
+	public static void onInitialize() {
+		HoverDisplayBuilder.register(Glowcase.ITEM_DISPLAY_BLOCK.get(), PolydexCompatibility::setupItemDisplayBlock);
+		HoverDisplayBuilder.register(Glowcase.HYPERLINK_BLOCK.get(), PolydexCompatibility::setupHyperlinkBlock);
+	}
 
-    private static void setupHyperlinkBlock(HoverDisplayBuilder hoverDisplayBuilder) {
-        var target = hoverDisplayBuilder.getTarget();
-        if (target.player().isCreative()) {
-            return;
-        }
+	private static void setupHyperlinkBlock(HoverDisplayBuilder hoverDisplayBuilder) {
+		var target = hoverDisplayBuilder.getTarget();
+		if (target.player().isCreative()) {
+			return;
+		}
 
-        if (target.blockEntity() instanceof HyperlinkBlockEntity blockEntity && !blockEntity.getUrl().isEmpty()) {
-            hoverDisplayBuilder.setComponent(HoverDisplayBuilder.NAME, Text.literal(blockEntity.getUrl()));
-            hoverDisplayBuilder.setComponent(HoverDisplayBuilder.MOD_SOURCE, Text.literal("Internet"));
-        }
-    }
+		if (target.blockEntity() instanceof HyperlinkBlockEntity blockEntity && !blockEntity.getUrl().isEmpty()) {
+			hoverDisplayBuilder.setComponent(HoverDisplayBuilder.NAME, Text.literal(blockEntity.getUrl()));
+			hoverDisplayBuilder.setComponent(HoverDisplayBuilder.MOD_SOURCE, Text.literal("Internet"));
+		}
+	}
 
-    private static void setupItemDisplayBlock(HoverDisplayBuilder hoverDisplayBuilder) {
-        var target = hoverDisplayBuilder.getTarget();
-        if (target.player().isCreative()) {
-            return;
-        }
+	private static void setupItemDisplayBlock(HoverDisplayBuilder hoverDisplayBuilder) {
+		var target = hoverDisplayBuilder.getTarget();
+		if (target.player().isCreative()) {
+			return;
+		}
 
-        if (target.blockEntity() instanceof ItemDisplayBlockEntity blockEntity && blockEntity.hasItem()) {
-            var item = blockEntity.getDisplayedStack();
-            hoverDisplayBuilder.setComponent(HoverDisplayBuilder.NAME, item.getName());
-            // I won't break this I promise
-            hoverDisplayBuilder.setComponent(HoverDisplayBuilder.MOD_SOURCE, PolydexImpl.getMod(Registries.ITEM.getId(item.getItem())));
-        }
-    }
+		if (target.blockEntity() instanceof ItemDisplayBlockEntity blockEntity && blockEntity.hasItem()) {
+			var item = blockEntity.getDisplayedStack();
+			hoverDisplayBuilder.setComponent(HoverDisplayBuilder.NAME, item.getName());
+			// I won't break this I promise
+			hoverDisplayBuilder.setComponent(HoverDisplayBuilder.MOD_SOURCE, PolydexImpl.getMod(Registries.ITEM.getId(item.getItem())));
+		}
+	}
 }

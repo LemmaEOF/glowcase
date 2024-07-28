@@ -45,7 +45,7 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 			return this.titleEntryWidget.keyPressed(keyCode, scanCode, modifiers);
 		} else if (this.urlEntryWidget.isActive()) {
 			return this.urlEntryWidget.keyPressed(keyCode, scanCode, modifiers);
-		}else {
+		} else {
 			return false;
 		}
 	}

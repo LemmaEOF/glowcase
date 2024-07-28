@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "": { "model": "glowcase:block/glowcase_block" }
-  }
+	"variants": {
+		"": {
+			"model": "glowcase:block/glowcase_block"
+		}
+	}
 }

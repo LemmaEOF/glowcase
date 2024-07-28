@@ -1,90 +1,90 @@
 //file:noinspection GroovyAssignabilityCheck
 //file:noinspection GroovyAccessibility
 plugins {
-    id "maven-publish"
-    alias libs.plugins.loom
-    alias libs.plugins.minotaur
+	id "maven-publish"
+	alias libs.plugins.loom
+	alias libs.plugins.minotaur
 }
 
 version = "$baseVersion+$branch"
 
 repositories {
-    maven { url "https://maven.nucleoid.xyz/" }
+	maven { url "https://maven.nucleoid.xyz/" }
 }
 
 dependencies {
-    minecraft libs.mc
-    mappings variantOf(libs.yarn) { classifier "v2" }
+	minecraft libs.mc
+	mappings variantOf(libs.yarn) { classifier "v2" }
 
-    modImplementation libs.fl
-    modImplementation libs.fapi
+	modImplementation libs.fl
+	modImplementation libs.fapi
 
-    modImplementation libs.placeholder
-    modCompileOnly libs.polydex
+	modImplementation libs.placeholder
+	modCompileOnly libs.polydex
 
-    include libs.placeholder
-    modLocalRuntime libs.polydex
+	include libs.placeholder
+	modLocalRuntime libs.polydex
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/glowcase.accesswidener")
+	accessWidenerPath = file("src/main/resources/glowcase.accesswidener")
 }
 
 processResources {
-    final Map<String, String> meta = [
-            version       : version,
-            modId         : modId,
-            modName       : modName,
-            modDescription: modDescription,
-            homepage      : homepage,
-            issues        : issues,
-            sources       : sources,
-            license       : license,
-            authors       : authors.split(", ").join("\",\n    \""),
-            contributors  : contributors.split(", ").join("\",\n    \""),
-            mc            : libs.versions.mc.get(),
-            fl            : libs.versions.fl.get(),
-            fapi          : libs.versions.fapi.get(),
-            placeholder   : libs.versions.placeholder.get(),
-            polydex       : libs.versions.polydex.get()
-    ]
-    inputs.properties meta
-    filesMatching("fabric.mod.json") { expand meta }
+	final Map<String, String> meta = [
+		version       : version,
+		modId         : modId,
+		modName       : modName,
+		modDescription: modDescription,
+		homepage      : homepage,
+		issues        : issues,
+		sources       : sources,
+		license       : license,
+		authors       : authors.split(", ").join("\",\n    \""),
+		contributors  : contributors.split(", ").join("\",\n    \""),
+		mc            : libs.versions.mc.get(),
+		fl            : libs.versions.fl.get(),
+		fapi          : libs.versions.fapi.get(),
+		placeholder   : libs.versions.placeholder.get(),
+		polydex       : libs.versions.polydex.get()
+	]
+	inputs.properties meta
+	filesMatching("fabric.mod.json") { expand meta }
 }
 
 tasks.withType(JavaCompile).configureEach {
-    it.options.encoding = "UTF-8"
-    it.options.release = 21
+	it.options.encoding = "UTF-8"
+	it.options.release = 21
 }
 
 java {
-    withSourcesJar()
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+	withSourcesJar()
+	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
-    from("LICENSE") {
-        rename { "${it}_${archivesBaseName}" }
-    }
+	from("LICENSE") {
+		rename { "${it}_${archivesBaseName}" }
+	}
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
 }
 
 modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = 'glowcase'
-    dependencies {
-        required.version "fabric-api", libs.versions.fapi.get()
-        embedded.version "placeholder-api", libs.versions.placeholder.get()
-        optional.version "polydex", libs.versions.polydex.get()
-    }
-    changelog = System.getenv("CHANGELOG")
-    syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
-    uploadFile = remapJar
+	token = System.getenv("MODRINTH_TOKEN")
+	projectId = 'glowcase'
+	dependencies {
+		required.version "fabric-api", libs.versions.fapi.get()
+		embedded.version "placeholder-api", libs.versions.placeholder.get()
+		optional.version "polydex", libs.versions.polydex.get()
+	}
+	changelog = System.getenv("CHANGELOG")
+	syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
+	uploadFile = remapJar
 }

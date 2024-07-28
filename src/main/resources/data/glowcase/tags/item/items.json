@@ -1,9 +1,9 @@
 {
-  "replace": false,
-  "values": [
-    "glowcase:hyperlink_block",
-    "glowcase:item_display_block",
-    "glowcase:text_block",
-    "glowcase:mailbox"
-  ]
+	"replace": false,
+	"values": [
+		"glowcase:hyperlink_block",
+		"glowcase:item_display_block",
+		"glowcase:text_block",
+		"glowcase:mailbox"
+	]
 }

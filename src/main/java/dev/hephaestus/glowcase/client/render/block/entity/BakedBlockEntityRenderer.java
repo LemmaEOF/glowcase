@@ -3,12 +3,22 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.VertexBuffer;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.BufferAllocator;
@@ -20,7 +30,11 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
 	protected static final MinecraftClient mc = MinecraftClient.getInstance();
@@ -105,10 +119,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 			@Override
 			public VertexConsumer getBuffer(RenderLayer l) {
 				var allocator = allocators.computeIfAbsent(l, l1 -> new BufferAllocator(l.getExpectedBufferSize()));
-                var builder = builders.computeIfAbsent(l, l1 -> new BufferBuilder(
-								allocator,
-								l.getDrawMode(),
-								l.getVertexFormat()));
+				var builder = builders.computeIfAbsent(l, l1 -> new BufferBuilder(
+					allocator,
+					l.getDrawMode(),
+					l.getVertexFormat()));
 				return builder;
 			}
 
@@ -182,7 +196,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 		// TODO: move chunk baking off-thread?
 
 		private static boolean isVisiblePos(RenderRegionPos rrp, Vec3d cam) {
-			return Math.abs(rrp.x - ((int)cam.getX() >> REGION_SHIFT)) <= VIEW_RADIUS && Math.abs(rrp.z - ((int)cam.getZ() >> REGION_SHIFT)) <= VIEW_RADIUS;
+			return Math.abs(rrp.x - ((int) cam.getX() >> REGION_SHIFT)) <= VIEW_RADIUS && Math.abs(rrp.z - ((int) cam.getZ() >> REGION_SHIFT)) <= VIEW_RADIUS;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -210,7 +224,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 						if (!blockEntities.isEmpty()) {
 							boolean bakedAnything = false;
-							
+
 							for (BlockEntity be : blockEntities) {
 								if (mc.getBlockEntityRenderDispatcher().get(be) instanceof BakedBlockEntityRenderer renderer && renderer.shouldBake(be)) {
 									BlockPos pos = be.getPos();

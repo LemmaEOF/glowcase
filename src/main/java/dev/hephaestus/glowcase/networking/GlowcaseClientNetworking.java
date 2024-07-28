@@ -21,31 +21,31 @@ public class GlowcaseClientNetworking {
 			be.yaw = pitchAndYaw.y;
 		}
 		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditItemDisplayBlockSettings(
-				be.getPos(),
-				be.rotationType,
-				be.givesItem,
-				be.offset,
-				new GlowcaseCommonNetworking.ItemDisplayBlockValues(
-						be.getCachedState().get(Properties.ROTATION),
-						be.showName,
-						be.pitch,
-						be.yaw
-				)
+			be.getPos(),
+			be.rotationType,
+			be.givesItem,
+			be.offset,
+			new GlowcaseCommonNetworking.ItemDisplayBlockValues(
+				be.getCachedState().get(Properties.ROTATION),
+				be.showName,
+				be.pitch,
+				be.yaw
+			)
 		));
 	}
 
 	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
 	public static void editTextBlock(TextBlockEntity be) {
 		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditTextBlock(
-				be.getPos(),
-				be.textAlignment,
-				be.zOffset,
-				be.shadowType,
-				new GlowcaseCommonNetworking.TextBlockValues(
-						be.scale,
-						be.color,
-						be.lines
-				)
+			be.getPos(),
+			be.textAlignment,
+			be.zOffset,
+			be.shadowType,
+			new GlowcaseCommonNetworking.TextBlockValues(
+				be.scale,
+				be.color,
+				be.lines
+			)
 		));
 	}
 }

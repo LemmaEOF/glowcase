@@ -8,7 +8,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.SelectionManager;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -43,14 +47,14 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		int innerPadding = width / 100;
 
 		this.selectionManager = new SelectionManager(
-				() -> this.textBlockEntity.getRawLine(this.currentRow),
-				(string) -> {
-					textBlockEntity.setRawLine(this.currentRow, string);
-					this.textBlockEntity.renderDirty = true;
-				},
-				SelectionManager.makeClipboardGetter(this.client),
-				SelectionManager.makeClipboardSetter(this.client),
-				(string) -> true);
+			() -> this.textBlockEntity.getRawLine(this.currentRow),
+			(string) -> {
+				textBlockEntity.setRawLine(this.currentRow, string);
+				this.textBlockEntity.renderDirty = true;
+			},
+			SelectionManager.makeClipboardGetter(this.client),
+			SelectionManager.makeClipboardSetter(this.client),
+			(string) -> true);
 
 		ButtonWidget decreaseSize = ButtonWidget.builder(Text.literal("-"), action -> {
 			this.textBlockEntity.scale -= (float) Math.max(0, 0.125);
@@ -191,7 +195,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		}
 	}
 
-    @Override
+	@Override
 	public boolean charTyped(char chr, int keyCode) {
 		if (this.colorEntryWidget.isActive()) {
 			return this.colorEntryWidget.charTyped(chr, keyCode);
@@ -214,12 +218,12 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			setFocused(null);
 			if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
 				this.textBlockEntity.addRawLine(this.currentRow + 1,
-						this.textBlockEntity.getRawLine(this.currentRow).substring(
-								MathHelper.clamp(this.selectionManager.getSelectionStart(), 0, this.textBlockEntity.getRawLine(this.currentRow).length())
-				));
+					this.textBlockEntity.getRawLine(this.currentRow).substring(
+						MathHelper.clamp(this.selectionManager.getSelectionStart(), 0, this.textBlockEntity.getRawLine(this.currentRow).length())
+					));
 				this.textBlockEntity.setRawLine(this.currentRow,
-						this.textBlockEntity.getRawLine(this.currentRow).substring(0, MathHelper.clamp(this.selectionManager.getSelectionStart(), 0, this.textBlockEntity.getRawLine(this.currentRow).length())
-				));
+					this.textBlockEntity.getRawLine(this.currentRow).substring(0, MathHelper.clamp(this.selectionManager.getSelectionStart(), 0, this.textBlockEntity.getRawLine(this.currentRow).length())
+					));
 				this.textBlockEntity.renderDirty = true;
 				++this.currentRow;
 				this.selectionManager.moveCursorToStart(false);
@@ -251,12 +255,12 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 
 						if (lineFeedIndex >= 0) {
 							this.textBlockEntity.addRawLine(i + 1,
-									this.textBlockEntity.getRawLine(i).substring(
-											MathHelper.clamp(lineFeedIndex + 1, 0, this.textBlockEntity.getRawLine(i).length())
-							));
+								this.textBlockEntity.getRawLine(i).substring(
+									MathHelper.clamp(lineFeedIndex + 1, 0, this.textBlockEntity.getRawLine(i).length())
+								));
 							this.textBlockEntity.setRawLine(i,
-									this.textBlockEntity.getRawLine(i).substring(0, MathHelper.clamp(lineFeedIndex, 0, this.textBlockEntity.getRawLine(i).length())
-							));
+								this.textBlockEntity.getRawLine(i).substring(0, MathHelper.clamp(lineFeedIndex, 0, this.textBlockEntity.getRawLine(i).length())
+								));
 							this.textBlockEntity.renderDirty = true;
 							++this.currentRow;
 							this.selectionManager.moveCursorToEnd(false);
@@ -275,7 +279,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 
 	private void deleteLine() {
 		this.textBlockEntity.setRawLine(this.currentRow,
-				this.textBlockEntity.getRawLine(this.currentRow) + this.textBlockEntity.getRawLine(this.currentRow + 1)
+			this.textBlockEntity.getRawLine(this.currentRow) + this.textBlockEntity.getRawLine(this.currentRow + 1)
 		);
 
 		this.textBlockEntity.lines.remove(this.currentRow + 1);
@@ -326,7 +330,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 					int width = this.textRenderer.getWidth(testContents);
 					int midpointWidth = (width + lastWidth) / 2;
 					if (mouseX < contentsStart + midpointWidth) {
-						this.selectionManager.moveCursorTo(i-1, false);
+						this.selectionManager.moveCursorTo(i - 1, false);
 						break;
 					} else if (mouseX <= contentsStart + width) {
 						this.selectionManager.moveCursorTo(i, false);
