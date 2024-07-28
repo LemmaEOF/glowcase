@@ -63,7 +63,9 @@ java {
 }
 
 jar {
-    from "LICENSE"
+    from("LICENSE") {
+        rename { "${it}_${archivesBaseName}" }
+    }
 }
 
 publishing {

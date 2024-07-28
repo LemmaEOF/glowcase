@@ -9,14 +9,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 
 public class GlowcaseClientNetworking {
-	public static void editHyperlinkBlock(BlockPos pos, String url) {
-		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditHyperlinkBlock(pos, url));
+	public static void editHyperlinkBlock(BlockPos pos, String title, String url) {
+		ClientPlayNetworking.send(new GlowcaseCommonNetworking.EditHyperlinkBlock(pos, title, url));
 	}
 
 	//TODO: Pretty spicy, copied from the old code. Should maybe break this into more packets, or dispatch off the type of property I'm setting.
 	public static void editItemDisplayBlock(ItemDisplayBlockEntity be, boolean updatePitchAndYaw) {
 		if (updatePitchAndYaw && MinecraftClient.getInstance().getCameraEntity() != null) {
-			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().getCameraEntity(), be.getPos());
+			Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(MinecraftClient.getInstance().getCameraEntity(), be.getPos(), 0);
 			be.pitch = pitchAndYaw.x;
 			be.yaw = pitchAndYaw.y;
 		}

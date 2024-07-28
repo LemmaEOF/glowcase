@@ -19,5 +19,7 @@
   "command.glowcase.failed.no_world": "Failed to send message; sender must be in a world",
   "glowcase.mailbox.sender": "From %s",
   "glowcase.mailbox.reminder1": "Right click to delete this message",
-  "glowcase.mailbox.reminder2": "Sneak+Right click to delete all messages from this sender"
+  "glowcase.mailbox.reminder2": "Sneak+Right click to delete all messages from this sender",
+  "gui.glowcase.title": "Title",
+  "gui.glowcase.url": "URL"
 }

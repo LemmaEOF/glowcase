@@ -39,9 +39,14 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 		switch (entity.rotationType) {
 			case TRACKING -> {
-				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(camera, entity.getPos());
+				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(camera, entity.getPos(), tickDelta);
 				pitch = pitchAndYaw.x;
 				yaw = pitchAndYaw.y;
+				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
+			}
+			case BILLBOARD -> {
+				pitch = (float) Math.toRadians(camera.getPitch());
+				yaw = (float) Math.toRadians(-camera.getYaw());
 				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
 			}
 			case HORIZONTAL -> {
