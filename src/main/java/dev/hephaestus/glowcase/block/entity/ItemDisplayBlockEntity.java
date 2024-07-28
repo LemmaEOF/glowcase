@@ -2,8 +2,6 @@ package dev.hephaestus.glowcase.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.networking.packet.EditItemDisplayBlockSettings;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -43,7 +41,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
     public Set<UUID> givenTo = new HashSet<>();
 
     public ItemDisplayBlockEntity(BlockPos pos, BlockState state) {
-        super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY, pos, state);
+        super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), pos, state);
     }
 
     @Override
@@ -154,7 +152,8 @@ public class ItemDisplayBlockEntity extends BlockEntity {
     // -> yes, that means the setBlockState call is wacky
     public void cycleRotationType(PlayerEntity playerEntity) {
         switch (this.rotationType) {
-            case TRACKING -> {
+            case TRACKING -> this.rotationType = RotationType.BILLBOARD;
+			case BILLBOARD -> {
                 this.rotationType = RotationType.HORIZONTAL;
                 if (this.world != null) {
                     this.world.setBlockState(this.pos, this.getCachedState().with(Properties.ROTATION, MathHelper.floor((double) ((playerEntity.getYaw()) * 16.0F / 360.0F) + 0.5D) & 15));
@@ -197,19 +196,28 @@ public class ItemDisplayBlockEntity extends BlockEntity {
         };
     }
 
-    public void giveTo(PlayerEntity player, Hand hand) {
-        player.setStackInHand(hand, getDisplayedStack().copy());
+    public void giveTo(PlayerEntity player) {
+		ItemStack itemStack = player.getStackInHand(Hand.MAIN_HAND);
+		boolean holdingSameAsDisplay = ItemStack.areItemsAndComponentsEqual(getDisplayedStack(), itemStack);
+
+		if (itemStack.isEmpty()) {
+        player.setStackInHand(Hand.MAIN_HAND, getDisplayedStack().copy());
+		} else if (holdingSameAsDisplay) {
+			itemStack.increment(getDisplayedStack().getCount());
+			itemStack.capCount(itemStack.getMaxCount());
+			player.setStackInHand(Hand.MAIN_HAND, itemStack);
+		}
         if (!player.isCreative()) {
             givenTo.add(player.getUuid());
             markDirty();
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos) {
-        double d = pos.getX() - camera.getPos().x + 0.5;
+
+    public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos, float delta) {
+        double d = pos.getX() - camera.getLerpedPos(delta).x + 0.5;
         double e = pos.getY() - camera.getEyeY() + 0.5;
-        double f = pos.getZ() - camera.getPos().z + 0.5;
+        double f = pos.getZ() - camera.getLerpedPos(delta).z + 0.5;
         double g = MathHelper.sqrt((float) (d * d + f * f));
 
         float pitch = (float) ((-MathHelper.atan2(e, g)));
@@ -226,7 +234,7 @@ public class ItemDisplayBlockEntity extends BlockEntity {
     }
 
     public enum RotationType {
-        LOCKED, TRACKING, HORIZONTAL
+        LOCKED, TRACKING, HORIZONTAL, BILLBOARD
     }
 
     public enum GivesItem {

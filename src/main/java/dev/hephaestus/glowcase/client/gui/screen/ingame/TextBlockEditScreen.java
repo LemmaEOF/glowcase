@@ -3,13 +3,16 @@ package dev.hephaestus.glowcase.client.gui.screen.ingame;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import dev.hephaestus.glowcase.networking.GlowcaseClientNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.SelectionManager;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -17,7 +20,6 @@ import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
 //TODO: multi-character selection at some point? it may be a bit complex but it'd be nice
-@Environment(EnvType.CLIENT)
 public class TextBlockEditScreen extends GlowcaseScreen {
     private final TextBlockEntity textBlockEntity;
 
@@ -75,7 +77,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
             this.changeAlignment.setMessage(Text.stringifiedTranslatable("gui.glowcase.alignment", this.textBlockEntity.textAlignment));
         }).dimensions(120 + innerPadding, 0, 160, 20).build();
 
-        this.shadowToggle = ButtonWidget.builder(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType), action -> {
+        this.shadowToggle = ButtonWidget.builder(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType.toString()), action -> {
             switch (textBlockEntity.shadowType) {
                 case DROP -> textBlockEntity.shadowType = TextBlockEntity.ShadowType.PLATE;
                 case PLATE -> textBlockEntity.shadowType = TextBlockEntity.ShadowType.NONE;
@@ -83,7 +85,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
             }
             this.textBlockEntity.renderDirty = true;
 
-            this.shadowToggle.setMessage(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType));
+            this.shadowToggle.setMessage(Text.translatable("gui.glowcase.shadow_type", this.textBlockEntity.shadowType.toString()));
         }).dimensions(120 + innerPadding, 20 + innerPadding, 160, 20).build();
 
         this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 0, 50, 20, Text.empty());
@@ -196,7 +198,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
         }
     }
 
-    @Override
+	@Override
     public boolean charTyped(char chr, int keyCode) {
         if (this.colorEntryWidget.isActive()) {
             return this.colorEntryWidget.charTyped(chr, keyCode);
@@ -227,7 +229,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
                         ));
                 this.textBlockEntity.renderDirty = true;
                 ++this.currentRow;
-                this.selectionManager.moveCursorToEnd(false);
+                this.selectionManager.moveCursorToStart(false);
                 return true;
             } else if (keyCode == GLFW.GLFW_KEY_UP) {
                 this.currentRow = Math.max(this.currentRow - 1, 0);
@@ -247,7 +249,28 @@ public class TextBlockEditScreen extends GlowcaseScreen {
                 return true;
             } else {
                 try {
-                    return this.selectionManager.handleSpecialKey(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
+                    boolean val = this.selectionManager.handleSpecialKey(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
+					int selectionOffset = this.textBlockEntity.getRawLine(this.currentRow).length() - this.selectionManager.getSelectionStart();
+
+					// Find line feed characters and create proper newlines
+					for (int i = 0; i < this.textBlockEntity.lines.size(); ++i) {
+						int lineFeedIndex = this.textBlockEntity.getRawLine(i).indexOf("\n");
+
+						if (lineFeedIndex >= 0) {
+							this.textBlockEntity.addRawLine(i + 1,
+								this.textBlockEntity.getRawLine(i).substring(
+									MathHelper.clamp(lineFeedIndex + 1, 0, this.textBlockEntity.getRawLine(i).length())
+								));
+							this.textBlockEntity.setRawLine(i,
+								this.textBlockEntity.getRawLine(i).substring(0, MathHelper.clamp(lineFeedIndex, 0, this.textBlockEntity.getRawLine(i).length())
+								));
+							this.textBlockEntity.renderDirty = true;
+							++this.currentRow;
+							this.selectionManager.moveCursorToEnd(false);
+							this.selectionManager.moveCursor(-selectionOffset);
+						}
+					}
+					return val;
                 } catch (StringIndexOutOfBoundsException e) {
                     e.printStackTrace();
                     MinecraftClient.getInstance().setScreen(null);

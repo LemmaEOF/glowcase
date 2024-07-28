@@ -1,17 +1,16 @@
 package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
 import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import dev.hephaestus.glowcase.networking.GlowcaseClientNetworking;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
-@Environment(EnvType.CLIENT)
 public class HyperlinkBlockEditScreen extends GlowcaseScreen {
     private final HyperlinkBlockEntity hyperlinkBlockEntity;
 
-    private TextFieldWidget urlEntryWidget;
+    private TextFieldWidget titleEntryWidget;
+	private TextFieldWidget urlEntryWidget;
 
     public HyperlinkBlockEditScreen(HyperlinkBlockEntity hyperlinkBlockEntity) {
         this.hyperlinkBlockEntity = hyperlinkBlockEntity;
@@ -23,11 +22,17 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 
         if (this.client == null) return;
 
-        this.urlEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, height / 2 - 10, 8 * width / 10, 20, Text.empty());
-        this.urlEntryWidget.setText(this.hyperlinkBlockEntity.getUrl());
-        this.urlEntryWidget.setMaxLength(Integer.MAX_VALUE);
+        this.titleEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, height / 2 - 30, 8 * width / 10, 20, Text.empty());
+		this.titleEntryWidget.setMaxLength(HyperlinkBlockEntity.TITLE_MAX_LENGTH);
+		this.titleEntryWidget.setText(this.hyperlinkBlockEntity.getTitle());
+		this.titleEntryWidget.setPlaceholder(Text.translatable("gui.glowcase.title"));
 
-        this.addDrawableChild(this.urlEntryWidget);
+		this.urlEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, height / 2 + 10, 8 * width / 10, 20, Text.empty());
+		this.urlEntryWidget.setMaxLength(HyperlinkBlockEntity.URL_MAX_LENGTH);
+        this.urlEntryWidget.setText(this.hyperlinkBlockEntity.getUrl());
+        this.urlEntryWidget.setPlaceholder(Text.translatable("gui.glowcase.url"));
+
+        this.addDrawableChild(this.titleEntryWidget);this.addDrawableChild(this.urlEntryWidget);
     }
 
     @Override
@@ -35,7 +40,9 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
         if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER || keyCode == GLFW.GLFW_KEY_ESCAPE) {
             this.close();
             return true;
-        } else if (this.urlEntryWidget.isActive()) {
+        } else if (this.titleEntryWidget.isActive()) {
+			return this.titleEntryWidget.keyPressed(keyCode, scanCode, modifiers);
+		} else if (this.urlEntryWidget.isActive()) {
             return this.urlEntryWidget.keyPressed(keyCode, scanCode, modifiers);
         } else {
             return false;
@@ -45,6 +52,7 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
     @Override
     public void close() {
         hyperlinkBlockEntity.setUrl(urlEntryWidget.getText());
+        hyperlinkBlockEntity.setTitle(titleEntryWidget.getText());
         hyperlinkBlockEntity.createEditPacket().send();
         super.close();
     }

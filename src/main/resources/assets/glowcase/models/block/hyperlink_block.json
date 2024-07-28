@@ -1,5 +1,5 @@
 {
-  "textures": {
-    "particle": "glowcase:item/hyperlink_block"
-  }
+	"textures": {
+		"particle": "glowcase:item/hyperlink_block"
+	}
 }
