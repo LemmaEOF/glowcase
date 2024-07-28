@@ -13,6 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class HyperlinkBlockEntity extends BlockEntity {
+	public static final int TITLE_MAX_LENGTH = 1024;
+	public static final int URL_MAX_LENGTH = 1024;
 	private String title = "";
 	private String url = "";
 

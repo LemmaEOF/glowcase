@@ -23,12 +23,12 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 		if (this.client == null) return;
 
 		this.titleEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, height / 2 - 30, 8 * width / 10, 20, Text.empty());
-		this.titleEntryWidget.setMaxLength(Integer.MAX_VALUE);
+		this.titleEntryWidget.setMaxLength(HyperlinkBlockEntity.TITLE_MAX_LENGTH);
 		this.titleEntryWidget.setText(this.hyperlinkBlockEntity.getTitle());
 		this.titleEntryWidget.setPlaceholder(Text.translatable("gui.glowcase.title"));
 
 		this.urlEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, height / 2 + 10, 8 * width / 10, 20, Text.empty());
-		this.urlEntryWidget.setMaxLength(Integer.MAX_VALUE);
+		this.urlEntryWidget.setMaxLength(HyperlinkBlockEntity.URL_MAX_LENGTH);
 		this.urlEntryWidget.setText(this.hyperlinkBlockEntity.getUrl());
 		this.urlEntryWidget.setPlaceholder(Text.translatable("gui.glowcase.url"));
 

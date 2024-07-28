@@ -31,7 +31,7 @@ public class GlowcaseCommonNetworking {
 
 		public static void receive(EditHyperlinkBlock payload, ServerPlayNetworking.Context context) {
 			context.player().server.submit(() -> {
-				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= URL_MAX_LENGTH && payload.title().length() <= TITLE_MAX_LENGTH) {
+				if(canEditGlowcase(context.player(), payload.pos(), Glowcase.HYPERLINK_BLOCK.get()) && context.player().getServerWorld().getBlockEntity(payload.pos()) instanceof HyperlinkBlockEntity link && payload.url().length() <= HyperlinkBlockEntity.URL_MAX_LENGTH && payload.title().length() <= HyperlinkBlockEntity.TITLE_MAX_LENGTH) {
 					link.setTitle(payload.title());
 					link.setUrl(payload.url());
 				}
@@ -136,9 +136,6 @@ public class GlowcaseCommonNetworking {
 			return PACKET_ID;
 		}
 	}
-
-	private static final int TITLE_MAX_LENGTH = 1024;
-	private static final int URL_MAX_LENGTH = 1024;
 
 	public static void onInitialize() {
 		PayloadTypeRegistry.playC2S().register(EditHyperlinkBlock.PACKET_ID, EditHyperlinkBlock.PACKET_CODEC);
