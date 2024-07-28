@@ -54,7 +54,7 @@ public class ItemDisplayBlock extends GlowcaseBlock implements BlockEntityProvid
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if(!(world.getBlockEntity(pos) instanceof ItemDisplayBlockEntity be)) return ActionResult.CONSUME;
 
-		if (be.canGiveTo(player) && player.getStackInHand(Hand.MAIN_HAND).isEmpty()) {
+		if (be.canGiveTo(player)) {
 			if(!world.isClient) be.giveTo(player);
 			return ActionResult.SUCCESS;
 		}
