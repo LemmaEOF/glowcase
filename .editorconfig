@@ -3,6 +3,10 @@ indent_size = 4
 indent_style = tab
 tab_width = 4
 
+[*.yml]
+indent_size = 2
+indent_style = space
+
 [*.java]
 ij_java_block_brace_style = end_of_line
 ij_java_lambda_brace_style = end_of_line
