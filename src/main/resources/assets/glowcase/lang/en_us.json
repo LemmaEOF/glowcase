@@ -3,7 +3,6 @@
 	"block.glowcase.text_block": "Text Block",
 	"block.glowcase.hyperlink_block": "Hyperlink Block",
 	"block.glowcase.item_display_block": "Item Display Block",
-	"block.glowcase.mailbox": "Mailbox",
 	"gui.glowcase.scale": "Scale: %d",
 	"gui.glowcase.alignment": "Alignment: %s",
 	"gui.glowcase.gives_item": "Gives Item: %s",
@@ -14,12 +13,6 @@
 	"gui.glowcase.none": "(None)",
 	"item.glowcase.text_block": "Text Block",
 	"item.glowcase.hyperlink_block": "Hyperlink Block",
-	"command.glowcase.message_sent": "Message sent!",
-	"command.glowcase.failed.no_mailbox": "Failed to send message; no mailbox exists at that location",
-	"command.glowcase.failed.no_world": "Failed to send message; sender must be in a world",
-	"glowcase.mailbox.sender": "From %s",
-	"glowcase.mailbox.reminder1": "Right click to delete this message",
-	"glowcase.mailbox.reminder2": "Sneak+Right click to delete all messages from this sender",
 	"gui.glowcase.title": "Title",
 	"gui.glowcase.url": "URL"
 }

@@ -3,7 +3,6 @@
 	"values": [
 		"glowcase:hyperlink_block",
 		"glowcase:item_display_block",
-		"glowcase:text_block",
-		"glowcase:mailbox"
+		"glowcase:text_block"
 	]
 }
