@@ -16,7 +16,7 @@ All blocks can be found in the glowcase creative tab, and modified by right-clic
 
 ### Text Block
 
-Appears as empty space with floating text, and:
+An empty space with floating text that:
 - Can display large bodies of text over many lines, far beyond the borders of the block
 - Is editable via a multiline text editor with copy+paste support
 - Allows setting an arbitrary text scale, for large signs etc.
@@ -27,7 +27,7 @@ Appears as empty space with floating text, and:
 
 ### Item Display Block
 
-Appears as a floating item stack, and:
+An empty space with a floating item stack that:
 - Displays the stack display name on hover (toggleable)
 - Dispenses a copy of the stack on use (toggleable)
 - Rotates towards the player (toggleable)
@@ -37,7 +37,7 @@ To modify other settings, use the same item on the block again.
 
 ### Hyperlink Block
 
-Appears as a floating 🌐 symbol, and:
+An empty space with a floating 🌐 symbol that:
 - Displays a custom title on hover
 - Requests to open a custom external link on use
 
