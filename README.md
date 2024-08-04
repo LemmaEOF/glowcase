@@ -2,34 +2,32 @@
 <center><img alt="mod preview" src="https://cdn.modrinth.com/data/HPdKhYvx/images/4357be2ef78350e44b50b9cdeacddd2335747ec3.png" /></center>
 
 <center>
-Shiny creative blocks for in-game showcase events!<br/>
-Intended for use in <a href="https://modfest.net">ModFest</a> events.
+Shiny creative blocks for in-game showcases!<br/>
+Maintained for use at <a href="https://modfest.net">ModFest</a> events.
 </center>
 
 ---
 
 **Glowcase** adds creative-only blocks designed for adventure maps, server spawns, and virtual events.<br/>
 
-## Features
+All blocks can be found in the glowcase creative tab, and modified by right-clicking while holding a similar item.
 
-To modify glowcase blocks, use them while holding a similar block in creative mode.
+---
 
 ### Text Block
 
-Appears as floating text, with no backing.
-
+Appears as empty space with floating text, and:
 - Can display large bodies of text over many lines, far beyond the borders of the block
-- Editable via a multiline text editor with copy+paste support
+- Is editable via a multiline text editor with copy+paste support
 - Allows setting an arbitrary text scale, for large signs etc.
 - Allows setting a custom hex color for contained text
 - Displays text with a shadow, no shadow, or a tinted backdrop (toggleable)
-- Support for inline text formatting, including colors, bold, italic, underline, strikethrough, and fonts
+- Has support for inline text formatting, including colors, bold, italic, underline, strikethrough, and fonts
   - See [Text Placeholder API](https://modrinth.com/mod/placeholder-api)'s [QuickText](https://placeholders.pb4.eu/user/quicktext/) format documentation for more details
 
 ### Item Display Block
 
-Appears as a floating item stack. 
-
+Appears as a floating item stack, and:
 - Displays the stack display name on hover (toggleable)
 - Dispenses a copy of the stack on use (toggleable)
 - Rotates towards the player (toggleable)
@@ -39,8 +37,7 @@ To modify other settings, use the same item on the block again.
 
 ### Hyperlink Block
 
-Appears as a floating, billboarded 🌐 symbol.
-
+Appears as a floating 🌐 symbol, and:
 - Displays a custom title on hover
 - Requests to open a custom external link on use
 
