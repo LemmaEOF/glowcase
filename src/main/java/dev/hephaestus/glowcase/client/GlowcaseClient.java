@@ -9,8 +9,17 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
+@Mod(value = Glowcase.MODID, dist = Dist.CLIENT)
 public class GlowcaseClient implements ClientModInitializer {
+	public GlowcaseClient(IEventBus modBus) {
+		modBus.addListener((FMLClientSetupEvent e) -> onInitializeClient());
+	}
+
 	@Override
 	public void onInitializeClient() {
 		Glowcase.proxy = new GlowcaseClientProxy();
