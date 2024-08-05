@@ -32,7 +32,7 @@ An empty space with a floating item stack that:
 - Dispenses a copy of the stack on use (toggleable)
 - Rotates towards the player (toggleable)
 
-To set the item stack, use the desired stack an empty display block.<br/>
+To set the item stack, use the desired stack on an empty display block.<br/>
 To modify other settings, use the same item on the block again.
 
 ### Hyperlink Block
