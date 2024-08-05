@@ -1,7 +1,7 @@
 package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
 import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
-import dev.hephaestus.glowcase.networking.GlowcaseClientNetworking;
+import dev.hephaestus.glowcase.packet.C2SEditHyperlinkBlock;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -52,7 +52,9 @@ public class HyperlinkBlockEditScreen extends GlowcaseScreen {
 
 	@Override
 	public void close() {
-		GlowcaseClientNetworking.editHyperlinkBlock(hyperlinkBlockEntity.getPos(), titleEntryWidget.getText(), urlEntryWidget.getText());
+		hyperlinkBlockEntity.setUrl(urlEntryWidget.getText());
+		hyperlinkBlockEntity.setTitle(titleEntryWidget.getText());
+		C2SEditHyperlinkBlock.of(hyperlinkBlockEntity).send();
 		super.close();
 	}
 }

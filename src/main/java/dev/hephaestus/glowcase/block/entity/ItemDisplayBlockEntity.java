@@ -200,12 +200,12 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 			itemStack.capCount(itemStack.getMaxCount());
 			player.setStackInHand(Hand.MAIN_HAND, itemStack);
 		}
-
 		if (!player.isCreative()) {
 			givenTo.add(player.getUuid());
 			markDirty();
 		}
 	}
+
 
 	public static Vec2f getPitchAndYaw(Entity camera, BlockPos pos, float delta) {
 		double d = pos.getX() - camera.getLerpedPos(delta).x + 0.5;

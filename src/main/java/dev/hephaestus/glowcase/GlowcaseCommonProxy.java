@@ -15,10 +15,6 @@ public class GlowcaseCommonProxy {
 		//No-op
 	}
 
-	public void prefillMailboxChat(BlockPos pos) {
-		//No-op
-	}
-
 	public void openTextBlockEditScreen(BlockPos pos) {
 		//No-op
 	}
