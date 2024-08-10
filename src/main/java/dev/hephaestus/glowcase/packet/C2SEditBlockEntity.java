@@ -27,7 +27,7 @@ public interface C2SEditBlockEntity extends CustomPayload {
 
 	default boolean canEdit(ServerPlayerEntity player) {
 		if (!player.getServerWorld().isChunkLoaded(ChunkPos.toLong(pos()))) return false;
-		if (!(player.squaredDistanceTo(pos().toCenterPos()) > 12 * 12)) return false;
+		if (player.squaredDistanceTo(pos().toCenterPos()) > (12 * 12)) return false;
 		return player.getServerWorld().getBlockState(pos()).getBlock() instanceof GlowcaseBlock block && block.canEditGlowcase(player, pos());
 	}
 }
