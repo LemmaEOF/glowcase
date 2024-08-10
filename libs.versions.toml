@@ -7,10 +7,10 @@ yarn = "1.21+build.9"
 
 fl = "0.15.11"
 fapi = "0.100.7+1.21"
-ffapi = "0.100.7+2.0.8+1.21"
 
-neoYarn = "1.21+build.4"
 neo = "21.0.133-beta"
+neoYarn = "1.21+build.4"
+ffapi = "0.100.7+2.0.8+1.21"
 
 placeholder = "2.4.1+1.21-neo"
 polydex = "1.2.2+1.21"
@@ -26,8 +26,8 @@ yarn = { group = "net.fabricmc", name = "yarn", version.ref = "yarn" }
 fl = { group = "net.fabricmc", name = "fabric-loader", version.ref = "fl" }
 fapi = { group = "net.fabricmc.fabric-api", name = "fabric-api", version.ref = "fapi" }
 
-neoYarn = { group = "dev.architectury", name = "yarn-mappings-patch-neoforge", version.ref = "neoYarn" }
 neo = { group = "net.neoforged", name = "neoforge", version.ref = "neo" }
+neoYarn = { group = "dev.architectury", name = "yarn-mappings-patch-neoforge", version.ref = "neoYarn" }
 ffapi = { group = "org.sinytra.forgified-fabric-api", name = "forgified-fabric-api", version.ref = "ffapi" }
 
 placeholder = { group = "folk.sisby", name = "TextPlaceholderAPI", version.ref = "placeholder" }
