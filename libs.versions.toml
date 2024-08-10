@@ -6,8 +6,9 @@ mc = "1.21"
 yarn = "1.21+build.9"
 
 fl = "0.15.11"
-neo = "21.0.133-beta"
 fapi = "0.100.7+1.21"
+
+neo = "21.0.133-beta"
 
 placeholder = "2.4.0+1.21"
 polydex = "1.2.2+1.21"
