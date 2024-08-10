@@ -43,14 +43,17 @@ processResources {
 		license       : license,
 		authors       : authors.split(", ").join("\",\n    \""),
 		contributors  : contributors.split(", ").join("\",\n    \""),
+		members       : "${authors}. Contributions by ${contributors}",
 		mc            : libs.versions.mc.get(),
 		fl            : libs.versions.fl.get(),
 		fapi          : libs.versions.fapi.get(),
+		neo           : libs.versions.neo.get(),
 		placeholder   : libs.versions.placeholder.get(),
 		polydex       : libs.versions.polydex.get()
 	]
 	inputs.properties meta
-	filesMatching("fabric.mod.json") { expand meta }
+	filesMatching("*.mod.json") { expand(meta) }
+	filesMatching("META-INF/*mods.toml") { expand(meta) }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -79,7 +82,8 @@ publishing {
 
 modrinth {
 	token = System.getenv("MODRINTH_TOKEN")
-	projectId = 'glowcase'
+	projectId = "glowcase"
+	loaders = ["fabric", "neoforge"] // remove once modrinth can detect fabric+neo from jar
 	dependencies {
 		required.version "fabric-api", libs.versions.fapi.get()
 		embedded.version "placeholder-api", libs.versions.placeholder.get()
