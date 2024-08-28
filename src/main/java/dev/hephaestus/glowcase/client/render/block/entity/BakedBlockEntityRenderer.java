@@ -23,7 +23,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
@@ -137,8 +136,6 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 
 		private static final CachedVertexConsumerProvider vcp = new CachedVertexConsumerProvider();
 
-		private static ClientWorld currentWorld = null;
-
 		private static final Logger LOGGER = LogUtils.getLogger();
 
 		private static VertexBuffer getVertexBuffer() {
@@ -218,7 +215,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 						// Find all block entities in this region
 						for (int chunkX = rrp.x << REGION_FROMCHUNK_SHIFT; chunkX < (rrp.x + 1) << REGION_FROMCHUNK_SHIFT; chunkX++) {
 							for (int chunkZ = rrp.z << REGION_FROMCHUNK_SHIFT; chunkZ < (rrp.z + 1) << REGION_FROMCHUNK_SHIFT; chunkZ++) {
-								blockEntities.addAll(currentWorld.getChunk(chunkX, chunkZ).getBlockEntities().values());
+								blockEntities.addAll(wrc.world().getChunk(chunkX, chunkZ).getBlockEntities().values());
 							}
 						}
 
@@ -231,7 +228,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 									bakeMatrices.push();
 									bakeMatrices.translate(pos.getX() & MAX_XZ_IN_REGION, pos.getY(), pos.getZ() & MAX_XZ_IN_REGION);
 									try {
-										renderer.renderBaked(be, bakeMatrices, vcp, WorldRenderer.getLightmapCoordinates(currentWorld, pos), OverlayTexture.DEFAULT_UV);
+										renderer.renderBaked(be, bakeMatrices, vcp, WorldRenderer.getLightmapCoordinates(wrc.world(), pos), OverlayTexture.DEFAULT_UV);
 										bakedAnything = true;
 									} catch (Throwable t) {
 										LOGGER.error("Block entity renderer threw exception during baking : ", t);
@@ -321,11 +318,6 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 			regions.values().forEach(RegionBuffer::release);
 			regions.clear();
 			needsRebuild.clear();
-		}
-
-		public static void setWorld(ClientWorld world) {
-			reset();
-			currentWorld = world;
 		}
 	}
 }

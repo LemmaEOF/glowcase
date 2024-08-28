@@ -226,19 +226,19 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 					));
 				this.textBlockEntity.renderDirty = true;
 				++this.currentRow;
-				this.selectionManager.moveCursorToStart(false);
+				this.selectionManager.moveCursorToStart();
 				return true;
 			} else if (keyCode == GLFW.GLFW_KEY_UP) {
 				this.currentRow = Math.max(this.currentRow - 1, 0);
-				this.selectionManager.moveCursorToEnd(false);
+				this.selectionManager.putCursorAtEnd();
 				return true;
 			} else if (keyCode == GLFW.GLFW_KEY_DOWN) {
 				this.currentRow = Math.min(this.currentRow + 1, (this.textBlockEntity.lines.size() - 1));
-				this.selectionManager.moveCursorToEnd(false);
+				this.selectionManager.putCursorAtEnd();
 				return true;
 			} else if (keyCode == GLFW.GLFW_KEY_BACKSPACE && this.currentRow > 0 && this.textBlockEntity.lines.size() > 1 && this.selectionManager.getSelectionStart() == 0 && this.selectionManager.getSelectionEnd() == this.selectionManager.getSelectionStart()) {
 				--this.currentRow;
-				this.selectionManager.moveCursorToEnd(false);
+				this.selectionManager.putCursorAtEnd();
 				deleteLine();
 				return true;
 			} else if (keyCode == GLFW.GLFW_KEY_DELETE && this.currentRow < this.textBlockEntity.lines.size() - 1 && this.selectionManager.getSelectionEnd() == this.textBlockEntity.getRawLine(this.currentRow).length()) {
@@ -263,7 +263,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 								));
 							this.textBlockEntity.renderDirty = true;
 							++this.currentRow;
-							this.selectionManager.moveCursorToEnd(false);
+							this.selectionManager.putCursorAtEnd();
 							this.selectionManager.moveCursor(-selectionOffset);
 						}
 					}
@@ -322,7 +322,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			if (mouseX <= contentsStart) {
 				this.selectionManager.moveCursorToStart();
 			} else if (mouseX >= contentsEnd) {
-				this.selectionManager.moveCursorToEnd(false);
+				this.selectionManager.putCursorAtEnd();
 			} else {
 				int lastWidth = 0;
 				for (int i = 1; i < baseContents.length(); i++) {

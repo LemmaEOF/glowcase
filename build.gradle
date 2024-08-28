@@ -7,7 +7,7 @@ plugins {
 }
 
 version = "$baseVersion+$branch"
-archivesBaseName = project.archivesName
+archivesBaseName = project.slug
 
 repositories {
 	maven { url "https://maven.nucleoid.xyz/" }
@@ -27,27 +27,22 @@ dependencies {
 	modLocalRuntime libs.polydex
 }
 
-loom {
-	accessWidenerPath = file("src/main/resources/glowcase.accesswidener")
-}
-
 processResources {
 	final Map<String, String> meta = [
 		version       : version,
 		modId         : modId,
 		modName       : modName,
 		modDescription: modDescription,
-		homepage      : homepage,
-		issues        : issues,
-		sources       : sources,
+		homepage      : "https://modrinth.com/mod/${slug}",
+		issues        : "https://github.com/${user}/${slug}/issues",
+		sources       : "https://github.com/${user}/${slug}",
 		license       : license,
 		authors       : authors.split(", ").join("\",\n    \""),
 		contributors  : contributors.split(", ").join("\",\n    \""),
 		members       : "${authors}. Contributions by ${contributors}",
-		mc            : libs.versions.mc.get(),
+		mc            : compatibleVersions.split(", ")[0],
 		fl            : libs.versions.fl.get(),
 		fapi          : libs.versions.fapi.get(),
-		neo           : libs.versions.neo.get(),
 		placeholder   : libs.versions.placeholder.get(),
 		polydex       : libs.versions.polydex.get()
 	]
@@ -63,7 +58,8 @@ tasks.withType(JavaCompile).configureEach {
 
 java {
 	withSourcesJar()
-	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
@@ -81,15 +77,17 @@ publishing {
 }
 
 modrinth {
-	token = System.getenv("MODRINTH_TOKEN")
-	projectId = "glowcase"
-	loaders = ["fabric", "neoforge"] // remove once modrinth can detect fabric+neo from jar
+	token = "$System.env.MODRINTH_TOKEN"
+	projectId = slug
+	versionNumber = project.version
+	uploadFile = remapJar
+	gameVersions = compatibleVersions.split(", ").toList()
+	loaders = compatibleLoaders.split(", ").toList()
+	changelog = "$System.env.CHANGELOG"
+	syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
 	dependencies {
 		required.version "fabric-api", libs.versions.fapi.get()
 		embedded.version "placeholder-api", libs.versions.placeholder.get()
 		optional.version "polydex", libs.versions.polydex.get()
 	}
-	changelog = System.getenv("CHANGELOG")
-	syncBodyFrom = "<!--DO NOT EDIT MANUALLY: synced from gh readme-->\n" + rootProject.file("README.md").text
-	uploadFile = remapJar
 }

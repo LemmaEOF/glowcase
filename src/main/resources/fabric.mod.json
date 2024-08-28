@@ -15,20 +15,8 @@
 		"issues": "${issues}",
 		"sources": "${sources}"
 	},
-	"icon": "assets/glowcase/icon.png",
 	"license": "${license}",
-	"entrypoints": {
-		"main": [
-			"dev.hephaestus.glowcase.Glowcase"
-		],
-		"client": [
-			"dev.hephaestus.glowcase.client.GlowcaseClient"
-		]
-	},
-	"mixins": [
-		"glowcase.mixins.json"
-	],
-	"accessWidener": "glowcase.accesswidener",
+	"icon": "assets/${modId}/icon.png",
 	"depends": {
 		"minecraft": ">=${mc}",
 		"fabricloader": ">=${fl}",
@@ -38,7 +26,12 @@
 	"suggests": {
 		"polydex": ">=${polydex}"
 	},
-	"breaks": {
-		"polydex": "<${polydex}"
+	"entrypoints": {
+		"main": [
+			"dev.hephaestus.glowcase.Glowcase"
+		],
+		"client": [
+			"dev.hephaestus.glowcase.client.GlowcaseClient"
+		]
 	}
 }

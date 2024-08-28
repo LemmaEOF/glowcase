@@ -7,16 +7,13 @@ issueTrackerURL = "${issues}"
 modId = "${modId}"
 version = "${version}"
 displayName = "${modName}"
-displayURL = "${homepage}"
-logoFile = "assets/glowcase/icon.png"
-authors = "${members}"
 description = '''${modDescription}'''
-
-[[mixins]]
-config = "glowcase.mixins.json"
+authors = "${members}"
+displayURL = "${homepage}"
+logoFile = "assets/${modId}/icon.png"
 
 [properties]
-"connector:placeholder"=true
+"connector:placeholder" = true
 
 [[dependencies.${ modId }]]
 modId = "connector"
@@ -28,7 +25,7 @@ side = "BOTH"
 [[dependencies.${ modId }]]
 modId = "neoforge"
 type = "required"
-versionRange = "[${neo},)"
+versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
