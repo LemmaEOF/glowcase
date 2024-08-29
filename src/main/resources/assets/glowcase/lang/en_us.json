@@ -3,6 +3,7 @@
 	"block.glowcase.text_block": "Text Block",
 	"block.glowcase.hyperlink_block": "Hyperlink Block",
 	"block.glowcase.item_display_block": "Item Display Block",
+	"block.glowcase.popup_block": "Popup Block",
 	"gui.glowcase.scale": "Scale: %d",
 	"gui.glowcase.alignment": "Alignment: %s",
 	"gui.glowcase.gives_item": "Gives Item: %s",
