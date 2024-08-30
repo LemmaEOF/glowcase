@@ -3,6 +3,7 @@
 	"block.glowcase.text_block": "Text Block",
 	"block.glowcase.hyperlink_block": "Hyperlink Block",
 	"block.glowcase.item_display_block": "Item Display Block",
+	"block.glowcase.sprite_block": "Sprite Block",
 	"gui.glowcase.scale": "Scale: %d",
 	"gui.glowcase.alignment": "Alignment: %s",
 	"gui.glowcase.gives_item": "Gives Item: %s",
@@ -14,5 +15,8 @@
 	"item.glowcase.text_block": "Text Block",
 	"item.glowcase.hyperlink_block": "Hyperlink Block",
 	"gui.glowcase.title": "Title",
-	"gui.glowcase.url": "URL"
+	"gui.glowcase.url": "URL",
+	"block.glowcase.generic.tooltip": "Interact with a glowcase item to edit",
+	"block.glowcase.sprite_block.tooltip.0": "Displays a sprite",
+	"block.glowcase.sprite_block.tooltip.1": "Can be extended with resource packs"
 }
