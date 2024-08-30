@@ -10,16 +10,17 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
-public record C2SEditHyperlinkBlock(BlockPos pos, String url) implements C2SEditBlockEntity {
+public record C2SEditHyperlinkBlock(BlockPos pos, String title, String url) implements C2SEditBlockEntity {
 	public static final Id<C2SEditHyperlinkBlock> ID = new Id<>(Glowcase.id("channel.hyperlink.save"));
 	public static final PacketCodec<RegistryByteBuf, C2SEditHyperlinkBlock> PACKET_CODEC = PacketCodec.tuple(
 		BlockPos.PACKET_CODEC, C2SEditHyperlinkBlock::pos,
+		PacketCodecs.STRING, C2SEditHyperlinkBlock::title,
 		PacketCodecs.STRING, C2SEditHyperlinkBlock::url,
 		C2SEditHyperlinkBlock::new
 	);
 
 	public static C2SEditHyperlinkBlock of(HyperlinkBlockEntity be) {
-		return new C2SEditHyperlinkBlock(be.getPos(), be.getUrl());
+		return new C2SEditHyperlinkBlock(be.getPos(), be.getTitle(), be.getUrl());
 	}
 
 	@Override
@@ -30,6 +31,9 @@ public record C2SEditHyperlinkBlock(BlockPos pos, String url) implements C2SEdit
 	@Override
 	public void receive(ServerWorld world, BlockEntity blockEntity) {
 		if (!(blockEntity instanceof HyperlinkBlockEntity be)) return;
+		if (this.title().length() <= HyperlinkBlockEntity.TITLE_MAX_LENGTH) {
+			be.setTitle(this.title());
+		}
 		if (this.url().length() <= HyperlinkBlockEntity.URL_MAX_LENGTH) {
 			be.setUrl(this.url());
 		}
