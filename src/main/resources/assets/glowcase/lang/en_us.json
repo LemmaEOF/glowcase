@@ -14,5 +14,12 @@
 	"item.glowcase.text_block": "Text Block",
 	"item.glowcase.hyperlink_block": "Hyperlink Block",
 	"gui.glowcase.title": "Title",
-	"gui.glowcase.url": "URL"
+	"gui.glowcase.url": "URL",
+	"block.glowcase.generic.tooltip": "Interact with a glowcase item to edit",
+	"block.glowcase.text_block.tooltip.0": "Displays formatted text",
+	"block.glowcase.text_block.tooltip.1": "Supports Placeholder QuickText",
+	"block.glowcase.hyperlink_block.tooltip.0": "Opens a URL when interacted",
+	"block.glowcase.item_display_block.tooltip.0": "Gives an item stack when interacted",
+	"block.glowcase.item_display_block.tooltip.1": "Interact with an item stack to set it",
+	"block.glowcase.item_display_block.tooltip.2": "Interact with the same item to edit"
 }
