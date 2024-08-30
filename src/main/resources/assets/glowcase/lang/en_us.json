@@ -15,5 +15,8 @@
 	"item.glowcase.text_block": "Text Block",
 	"item.glowcase.hyperlink_block": "Hyperlink Block",
 	"gui.glowcase.title": "Title",
-	"gui.glowcase.url": "URL"
+	"gui.glowcase.url": "URL",
+	"block.glowcase.generic.tooltip": "Interact with a glowcase item to edit",
+	"block.glowcase.popup_block.tooltip.0": "Displays formatted text when interacted",
+	"block.glowcase.popup_block.tooltip.1": "Supports Placeholder QuickText"
 }
