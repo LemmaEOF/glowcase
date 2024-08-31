@@ -3,6 +3,7 @@
 	"block.glowcase.text_block": "Text Block",
 	"block.glowcase.hyperlink_block": "Hyperlink Block",
 	"block.glowcase.item_display_block": "Item Display Block",
+	"block.glowcase.popup_block": "Popup Block",
 	"gui.glowcase.scale": "Scale: %d",
 	"gui.glowcase.alignment": "Alignment: %s",
 	"gui.glowcase.gives_item": "Gives Item: %s",
@@ -21,5 +22,7 @@
 	"block.glowcase.hyperlink_block.tooltip.0": "Opens a URL when interacted",
 	"block.glowcase.item_display_block.tooltip.0": "Gives an item stack when interacted",
 	"block.glowcase.item_display_block.tooltip.1": "Interact with an item stack to set it",
-	"block.glowcase.item_display_block.tooltip.2": "Interact with the same item to edit"
+	"block.glowcase.item_display_block.tooltip.2": "Interact with the same item to edit",
+	"block.glowcase.popup_block.tooltip.0": "Displays formatted text when interacted",
+	"block.glowcase.popup_block.tooltip.1": "Supports Placeholder QuickText"
 }
