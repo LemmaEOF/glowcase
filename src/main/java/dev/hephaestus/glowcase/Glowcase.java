@@ -9,6 +9,7 @@ import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.compat.PolydexCompatibility;
+import dev.hephaestus.glowcase.item.LockItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
@@ -46,6 +47,8 @@ public class Glowcase implements ModInitializer {
 	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = registerItem("text_block", () -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
 	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = registerBlockEntity("text_block", () -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
 
+	public static final Supplier<Item> LOCK_ITEM = registerItem("lock", () -> new LockItem(new Item.Settings()));
+
 	public static final Supplier<ItemGroup> ITEM_GROUP = registerItemGroup("items", () -> FabricItemGroup.builder()
 		.displayName(Text.translatable("itemGroup.glowcase.items"))
 		.icon(() -> new ItemStack(Items.GLOWSTONE))
@@ -53,6 +56,7 @@ public class Glowcase implements ModInitializer {
 			entries.add(HYPERLINK_BLOCK_ITEM.get());
 			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
 			entries.add(TEXT_BLOCK_ITEM.get());
+			entries.add(LOCK_ITEM.get());
 		})
 		.build()
 	);
