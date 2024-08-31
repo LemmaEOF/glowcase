@@ -3,12 +3,15 @@ package dev.hephaestus.glowcase.client;
 import dev.hephaestus.glowcase.GlowcaseCommonProxy;
 import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
 import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.client.gui.screen.ingame.HyperlinkBlockEditScreen;
 import dev.hephaestus.glowcase.client.gui.screen.ingame.ItemDisplayBlockEditScreen;
-import dev.hephaestus.glowcase.client.gui.screen.ingame.SpriteBlockEditScreen;
 import dev.hephaestus.glowcase.client.gui.screen.ingame.TextBlockEditScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.PopupBlockEditScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.PopupBlockViewScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.SpriteBlockEditScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.util.math.BlockPos;
@@ -40,6 +43,22 @@ public class GlowcaseClientProxy extends GlowcaseCommonProxy {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.world != null && client.world.getBlockEntity(pos) instanceof TextBlockEntity be) {
 			MinecraftClient.getInstance().setScreen(new TextBlockEditScreen(be));
+		}
+	}
+
+	@Override
+	public void openPopupBlockEditScreen(BlockPos pos) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world != null && client.world.getBlockEntity(pos) instanceof PopupBlockEntity be) {
+			MinecraftClient.getInstance().setScreen(new PopupBlockEditScreen(be));
+		}
+	}
+
+	@Override
+	public void openPopupBlockViewScreen(BlockPos pos) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world != null && client.world.getBlockEntity(pos) instanceof PopupBlockEntity be) {
+			MinecraftClient.getInstance().setScreen(new PopupBlockViewScreen(be));
 		}
 	}
 
