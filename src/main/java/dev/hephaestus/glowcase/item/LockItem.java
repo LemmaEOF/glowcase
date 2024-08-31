@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -35,17 +36,20 @@ public class LockItem extends Item {
 
 		var bea = (LockableContainerBlockEntityAccessor) be;
 		Text message;
+		SoundEvent soundEvent;
 
 		if (bea.getLock().equals(ContainerLock.EMPTY)) {
 			bea.setLock(new ContainerLock("glowcase"));
 			message = Text.translatable("gui.glowcase.locked_block", be.getDisplayName());
+			soundEvent = SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE;
 		} else {
 			bea.setLock(ContainerLock.EMPTY);
 			message = Text.translatable("gui.glowcase.unlocked_block", be.getDisplayName());
+			soundEvent = SoundEvents.BLOCK_WOODEN_TRAPDOOR_OPEN;
 		}
 
 		player.sendMessage(message, true);
-		player.playSoundToPlayer(SoundEvents.BLOCK_CHEST_LOCKED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+		player.playSoundToPlayer(soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		be.markDirty();
 
 		return ActionResult.SUCCESS;
