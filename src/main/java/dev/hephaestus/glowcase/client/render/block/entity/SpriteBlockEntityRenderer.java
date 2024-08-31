@@ -7,7 +7,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Colors;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
 
@@ -35,19 +34,19 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 		var entry = matrices.peek();
 		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(Glowcase.id("textures/sprite/" + entity.sprite + ".png")));
 
-		vertex(entry, vertexConsumer, vertices[0], 0, 1);
-		vertex(entry, vertexConsumer, vertices[1], 1, 1);
-		vertex(entry, vertexConsumer, vertices[2], 1, 0);
-		vertex(entry, vertexConsumer, vertices[3], 0, 0);
+		vertex(entry, vertexConsumer, vertices[0], 0, 1, entity.color);
+		vertex(entry, vertexConsumer, vertices[1], 1, 1, entity.color);
+		vertex(entry, vertexConsumer, vertices[2], 1, 0, entity.color);
+		vertex(entry, vertexConsumer, vertices[3], 0, 0, entity.color);
 
 		matrices.pop();
 	}
 
 	private void vertex(
-		MatrixStack.Entry matrix, VertexConsumer vertexConsumer, Vector3f vertex, float u, float v
-	) {
+		MatrixStack.Entry matrix, VertexConsumer vertexConsumer, Vector3f vertex, float u, float v,
+		int color) {
 		vertexConsumer.vertex(matrix, vertex.x(), vertex.y(), vertex.z())
-			.color(Colors.WHITE)
+			.color(color)
 			.texture(u, v)
 			.overlay(OverlayTexture.DEFAULT_UV)
 			.light(LightmapTextureManager.MAX_LIGHT_COORDINATE)

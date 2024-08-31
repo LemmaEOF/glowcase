@@ -14,9 +14,10 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class SpriteBlockEntity extends BlockEntity {
-	public TextBlockEntity.ZOffset zOffset = TextBlockEntity.ZOffset.CENTER;
-	public int rotation = 0;
 	public String sprite = "arrow";
+	public int rotation = 0;
+	public TextBlockEntity.ZOffset zOffset = TextBlockEntity.ZOffset.CENTER;
+	public int color = 0xFFFFFF;
 
 	public SpriteBlockEntity(BlockPos pos, BlockState state) {
 		super(Glowcase.SPRITE_BLOCK_ENTITY.get(), pos, state);
@@ -32,18 +33,20 @@ public class SpriteBlockEntity extends BlockEntity {
 	public void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		super.writeNbt(tag, registryLookup);
 
-		tag.putString("z_offset", this.zOffset.name());
-		tag.putInt("rotation", this.rotation);
 		tag.putString("sprite", this.sprite);
+		tag.putInt("rotation", this.rotation);
+		tag.putString("z_offset", this.zOffset.name());
+		tag.putInt("color", this.color);
 	}
 
 	@Override
 	public void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		super.readNbt(tag, registryLookup);
 
-		this.zOffset = TextBlockEntity.ZOffset.valueOf(tag.getString("z_offset"));
-		this.rotation = tag.getInt("rotation");
 		this.sprite = tag.getString("sprite");
+		this.rotation = tag.getInt("rotation");
+		this.zOffset = TextBlockEntity.ZOffset.valueOf(tag.getString("z_offset"));
+		this.color = tag.getInt("color");
 	}
 
 	@SuppressWarnings({"MethodCallSideOnly", "VariableUseSideOnly"})
