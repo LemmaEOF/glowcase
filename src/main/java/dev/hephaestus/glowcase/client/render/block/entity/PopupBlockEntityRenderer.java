@@ -1,7 +1,6 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
-import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
@@ -33,6 +32,16 @@ public record PopupBlockEntityRenderer(BlockEntityRendererFactory.Context contex
 		matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 		context.getItemRenderer().renderItem(STACK, ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
 
+		HitResult hitResult = mc.crosshairTarget;
+		if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
+			float scale = 0.025F;
+			matrices.scale(scale, scale, scale);
+			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
+			matrices.translate(-context.getTextRenderer().getWidth(entity.title) / 2F, -4, -scale);
+			// Fixes shadow being rendered in front of actual text
+			matrices.scale(1, 1, -1);
+			context.getTextRenderer().draw(entity.title, 0, 0, 0xFFFFFF, true, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+		}
 		matrices.pop();
 	}
 }

@@ -2,10 +2,10 @@ package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.packet.C2SEditPopupBlock;
-import dev.hephaestus.glowcase.packet.C2SEditTextBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -24,6 +24,7 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 	private SelectionManager selectionManager;
 	private int currentRow;
 	private long ticksSinceOpened = 0;
+	private TextFieldWidget titleEntryWidget;
 	private ButtonWidget changeAlignment;
 	private TextFieldWidget colorEntryWidget;
 
@@ -52,6 +53,15 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 			SelectionManager.makeClipboardSetter(this.client),
 			(string) -> true);
 
+		this.titleEntryWidget = new TextFieldWidget(this.client.textRenderer, width / 10, 0, 8 * width / 10, 20, Text.empty());
+		this.titleEntryWidget.setMaxLength(HyperlinkBlockEntity.TITLE_MAX_LENGTH);
+		this.titleEntryWidget.setText(this.popupBlockEntity.title);
+		this.titleEntryWidget.setPlaceholder(Text.translatable("gui.glowcase.title"));
+		this.titleEntryWidget.setChangedListener(string -> {
+			this.popupBlockEntity.title = this.titleEntryWidget.getText();
+			this.popupBlockEntity.renderDirty = true;
+		});
+
 		this.changeAlignment = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.alignment", this.popupBlockEntity.textAlignment), action -> {
 			switch (popupBlockEntity.textAlignment) {
 				case LEFT -> popupBlockEntity.textAlignment = TextBlockEntity.TextAlignment.CENTER;
@@ -61,9 +71,9 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 			this.popupBlockEntity.renderDirty = true;
 
 			this.changeAlignment.setMessage(Text.stringifiedTranslatable("gui.glowcase.alignment", this.popupBlockEntity.textAlignment));
-		}).dimensions(120 + innerPadding, 0, 160, 20).build();
+		}).dimensions(120 + innerPadding, 20 + innerPadding, 160, 20).build();
 
-		this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 0, 50, 20, Text.empty());
+		this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 20 + innerPadding, 50, 20, Text.empty());
 		this.colorEntryWidget.setText("#" + Integer.toHexString(this.popupBlockEntity.color & 0x00FFFFFF));
 		this.colorEntryWidget.setChangedListener(string -> {
 			TextColor.parse(this.colorEntryWidget.getText()).ifSuccess(color -> {
@@ -72,6 +82,7 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 			});
 		});
 
+		this.addDrawableChild(this.titleEntryWidget);
 		this.addDrawableChild(this.changeAlignment);
 		this.addDrawableChild(this.colorEntryWidget);
 	}
@@ -127,7 +138,7 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 
 				int caretStartY = this.currentRow * 12;
 				int caretEndY = this.currentRow * 12 + 9;
-				if (this.ticksSinceOpened / 6 % 2 == 0 && !this.colorEntryWidget.isActive()) {
+				if (this.ticksSinceOpened / 6 % 2 == 0 && !this.titleEntryWidget.isActive() && !this.colorEntryWidget.isActive()) {
 					if (selectionStart < line.length()) {
 						context.fill(startX, caretStartY, startX + 1, caretEndY, 0xCCFFFFFF);
 					} else {
@@ -156,7 +167,9 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 
 	@Override
 	public boolean charTyped(char chr, int keyCode) {
-		if (this.colorEntryWidget.isActive()) {
+		if (this.titleEntryWidget.isActive()) {
+			return this.titleEntryWidget.charTyped(chr, keyCode);
+		} else if (this.colorEntryWidget.isActive()) {
 			return this.colorEntryWidget.charTyped(chr, keyCode);
 		} else {
 			this.selectionManager.insert(chr);
@@ -166,7 +179,14 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (this.colorEntryWidget.isActive()) {
+		if (this.titleEntryWidget.isActive()) {
+			if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+				this.close();
+				return true;
+			} else {
+				return this.titleEntryWidget.keyPressed(keyCode, scanCode, modifiers);
+			}
+		} else if (this.colorEntryWidget.isActive()) {
 			if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
 				this.close();
 				return true;
@@ -248,6 +268,9 @@ public class PopupBlockEditScreen extends GlowcaseScreen {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		int topOffset = (int) (40 + 2 * this.width / 100F);
+		if (!this.titleEntryWidget.mouseClicked(mouseX, mouseY, button)) {
+			this.titleEntryWidget.setFocused(false);
+		}
 		if (!this.colorEntryWidget.mouseClicked(mouseX, mouseY, button)) {
 			this.colorEntryWidget.setFocused(false);
 		}

@@ -26,6 +26,7 @@ import java.util.List;
 
 public class PopupBlockEntity extends BlockEntity {
 	public static final NodeParser PARSER = TagParser.DEFAULT;
+	public String title = "";
 	public List<Text> lines = new ArrayList<>();
 	public TextBlockEntity.TextAlignment textAlignment = TextBlockEntity.TextAlignment.CENTER;
 	public int color = 0xFFFFFF;
@@ -40,6 +41,7 @@ public class PopupBlockEntity extends BlockEntity {
 	protected void writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		super.writeNbt(tag, registryLookup);
 
+		tag.putString("title", this.title);
 		tag.putInt("color", this.color);
 
 		tag.putString("text_alignment", this.textAlignment.name());
@@ -56,6 +58,7 @@ public class PopupBlockEntity extends BlockEntity {
 	protected void readNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		super.readNbt(tag, registryLookup);
 
+		this.title = tag.getString("title");
 		this.lines = new ArrayList<>();
 		this.color = tag.getInt("color");
 
