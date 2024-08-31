@@ -30,7 +30,6 @@ public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context co
 		float n = -camera.getYaw();
 		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(n));
 		matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-		matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 		context.getItemRenderer().renderItem(STACK, ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
 
 		HitResult hitResult = mc.crosshairTarget;
