@@ -20,7 +20,13 @@ public class LockItem extends Item {
 	@Override
 	public ActionResult useOnBlock(ItemUsageContext context) {
 		World world = context.getWorld();
-		if (world.isClient || !(world.getBlockEntity(context.getBlockPos()) instanceof LockableContainerBlockEntity be)) return ActionResult.PASS;
+		PlayerEntity player = context.getPlayer();
+		if (world.isClient ||
+			player == null ||
+			!player.isCreative() ||
+			!(world.getBlockEntity(context.getBlockPos()) instanceof LockableContainerBlockEntity be)) {
+			return ActionResult.PASS;
+		}
 
 		var bea = (LockableContainerBlockEntityAccessor) be;
 		Text message;
@@ -33,7 +39,6 @@ public class LockItem extends Item {
 			message = Text.translatable("gui.glowcase.unlocked_block", be.getDisplayName());
 		}
 
-		PlayerEntity player = context.getPlayer();
 		player.sendMessage(message, true);
 		player.playSoundToPlayer(SoundEvents.BLOCK_CHEST_LOCKED, SoundCategory.BLOCKS, 1.0F, 1.0F);
 		be.markDirty();
