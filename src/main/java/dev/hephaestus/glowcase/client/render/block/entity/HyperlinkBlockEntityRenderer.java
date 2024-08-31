@@ -37,7 +37,7 @@ public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context co
 			float scale = 0.025F;
 			matrices.scale(scale, scale, scale);
 			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
-			matrices.translate(-context.getTextRenderer().getWidth(entity.getText()) / 2F, -4, scale);
+			matrices.translate(-context.getTextRenderer().getWidth(entity.getText()) / 2F, -4, -scale);
 			// Fixes shadow being rendered in front of actual text
 			matrices.scale(1, 1, -1);
 			context.getTextRenderer().draw(entity.getText(), 0, 0, 0xFFFFFF, true, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
