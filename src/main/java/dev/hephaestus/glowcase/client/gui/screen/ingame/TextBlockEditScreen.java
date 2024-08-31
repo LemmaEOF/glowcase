@@ -89,7 +89,7 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		}).dimensions(120 + innerPadding, 20 + innerPadding, 160, 20).build();
 
 		this.colorEntryWidget = new TextFieldWidget(this.client.textRenderer, 280 + innerPadding * 2, 0, 50, 20, Text.empty());
-		this.colorEntryWidget.setText("#" + Integer.toHexString(this.textBlockEntity.color & 0x00FFFFFF));
+		this.colorEntryWidget.setText("#" + String.format("%1$06X", this.textBlockEntity.color & 0x00FFFFFF));
 		this.colorEntryWidget.setChangedListener(string -> {
 			TextColor.parse(this.colorEntryWidget.getText()).ifSuccess(color -> {
 				this.textBlockEntity.color = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
