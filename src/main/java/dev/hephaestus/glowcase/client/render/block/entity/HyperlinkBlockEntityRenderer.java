@@ -36,6 +36,7 @@ public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context co
 		if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
 			float scale = 0.025F;
 			matrices.scale(scale, scale, scale);
+			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 			matrices.translate(-context.getTextRenderer().getWidth(entity.getText()) / 2F, -4, scale);
 			// Fixes shadow being rendered in front of actual text
 			matrices.scale(1, 1, -1);
