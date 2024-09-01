@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "glowcase:block/popup_block"
+		}
+	}
+}

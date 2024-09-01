@@ -4,9 +4,13 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import dev.hephaestus.glowcase.block.HyperlinkBlock;
 import dev.hephaestus.glowcase.block.ItemDisplayBlock;
+import dev.hephaestus.glowcase.block.PopupBlock;
+import dev.hephaestus.glowcase.block.SpriteBlock;
 import dev.hephaestus.glowcase.block.TextBlock;
 import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
+import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.compat.PolydexCompatibility;
 import dev.hephaestus.glowcase.item.LockItem;
@@ -47,6 +51,14 @@ public class Glowcase implements ModInitializer {
 	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = registerItem("text_block", () -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
 	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = registerBlockEntity("text_block", () -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
 
+	public static final Supplier<PopupBlock> POPUP_BLOCK = registerBlock("popup_block", PopupBlock::new);
+	public static final Supplier<BlockItem> POPUP_BLOCK_ITEM = registerItem("popup_block", () -> new BlockItem(POPUP_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<PopupBlockEntity>> POPUP_BLOCK_ENTITY = registerBlockEntity("popup_block", () -> BlockEntityType.Builder.create(PopupBlockEntity::new, POPUP_BLOCK.get()).build(null));
+
+	public static final Supplier<SpriteBlock> SPRITE_BLOCK = registerBlock("sprite_block", SpriteBlock::new);
+	public static final Supplier<BlockItem> SPRITE_BLOCK_ITEM = registerItem("sprite_block", () -> new BlockItem(SPRITE_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<SpriteBlockEntity>> SPRITE_BLOCK_ENTITY = registerBlockEntity("sprite_block", () -> BlockEntityType.Builder.create(SpriteBlockEntity::new, SPRITE_BLOCK.get()).build(null));
+
 	public static final Supplier<Item> LOCK_ITEM = registerItem("lock", () -> new LockItem(new Item.Settings()));
 
 	public static final Supplier<ItemGroup> ITEM_GROUP = registerItemGroup("items", () -> FabricItemGroup.builder()
@@ -56,6 +68,8 @@ public class Glowcase implements ModInitializer {
 			entries.add(HYPERLINK_BLOCK_ITEM.get());
 			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
 			entries.add(TEXT_BLOCK_ITEM.get());
+			entries.add(POPUP_BLOCK_ITEM.get());
+			entries.add(SPRITE_BLOCK_ITEM.get());
 			entries.add(LOCK_ITEM.get());
 		})
 		.build()
