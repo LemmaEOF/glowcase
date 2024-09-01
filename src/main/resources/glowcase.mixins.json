@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "dev.hephaestus.glowcase.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"LockableContainerBlockEntityAccessor",
+		"PlayerEntityMixin"
+	],
+	"client": [],
+	"server": [],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
