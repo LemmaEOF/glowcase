@@ -1,7 +1,7 @@
 package dev.hephaestus.glowcase.block;
 
 import dev.hephaestus.glowcase.Glowcase;
-import dev.hephaestus.glowcase.block.entity.WireframeBlockEntity;
+import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -23,11 +23,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class WireframeBlock extends GlowcaseBlock implements BlockEntityProvider {
+public class OutlineBlock extends GlowcaseBlock implements BlockEntityProvider {
 	@Nullable
 	@Override
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		return new WireframeBlockEntity(pos, state);
+		return new OutlineBlockEntity(pos, state);
 	}
 
 	@Override
@@ -35,20 +35,20 @@ public class WireframeBlock extends GlowcaseBlock implements BlockEntityProvider
 		if (world.isClient && placer instanceof PlayerEntity player && canEditGlowcase(player, pos)) {
 			//load any ctrl-picked NBT clientside
 			NbtComponent blockEntityTag = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
-			if (blockEntityTag != null && world.getBlockEntity(pos) instanceof WireframeBlockEntity be) {
+			if (blockEntityTag != null && world.getBlockEntity(pos) instanceof OutlineBlockEntity be) {
 				blockEntityTag.applyToBlockEntity(be, world.getRegistryManager());
 			}
 
-			Glowcase.proxy.openWireframeBlockEditScreen(pos);
+			Glowcase.proxy.openOutlineBlockEditScreen(pos);
 		}
 	}
 
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!(world.getBlockEntity(pos) instanceof WireframeBlockEntity be)) return ItemActionResult.CONSUME;
+		if (!(world.getBlockEntity(pos) instanceof OutlineBlockEntity be)) return ItemActionResult.CONSUME;
 
 		if (world.isClient && player.getStackInHand(hand).isIn(Glowcase.ITEM_TAG) && canEditGlowcase(player, pos)) {
-			Glowcase.proxy.openWireframeBlockEditScreen(pos);
+			Glowcase.proxy.openOutlineBlockEditScreen(pos);
 		}
 
 		return ItemActionResult.SUCCESS;
@@ -56,7 +56,7 @@ public class WireframeBlock extends GlowcaseBlock implements BlockEntityProvider
 
 	@Override
 	public void appendTooltip(ItemStack itemStack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
-		tooltip.add(Text.translatable("block.glowcase.wireframe_block.tooltip.0").formatted(Formatting.GRAY));
+		tooltip.add(Text.translatable("block.glowcase.outline_block.tooltip.0").formatted(Formatting.GRAY));
 		tooltip.add(Text.translatable("block.glowcase.generic.tooltip").formatted(Formatting.DARK_GRAY));
 	}
 }

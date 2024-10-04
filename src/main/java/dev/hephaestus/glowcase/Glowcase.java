@@ -47,9 +47,9 @@ public class Glowcase implements ModInitializer {
 	public static final Supplier<BlockItem> SPRITE_BLOCK_ITEM = registerItem("sprite_block", () -> new BlockItem(SPRITE_BLOCK.get(), new Item.Settings()));
 	public static final Supplier<BlockEntityType<SpriteBlockEntity>> SPRITE_BLOCK_ENTITY = registerBlockEntity("sprite_block", () -> BlockEntityType.Builder.create(SpriteBlockEntity::new, SPRITE_BLOCK.get()).build(null));
 
-	public static final Supplier<WireframeBlock> WIREFRAME_BLOCK = registerBlock("wireframe_block", WireframeBlock::new);
-	public static final Supplier<BlockItem> WIREFRAME_BLOCK_ITEM = registerItem("wireframe_block", () -> new BlockItem(WIREFRAME_BLOCK.get(), new Item.Settings()));
-	public static final Supplier<BlockEntityType<WireframeBlockEntity>> WIREFRAME_BLOCK_ENTITY = registerBlockEntity("wireframe_block", () -> BlockEntityType.Builder.create(WireframeBlockEntity::new, WIREFRAME_BLOCK.get()).build(null));
+	public static final Supplier<OutlineBlock> OUTLINE_BLOCK = registerBlock("outline_block", OutlineBlock::new);
+	public static final Supplier<BlockItem> OUTLINE_BLOCK_ITEM = registerItem("outline_block", () -> new BlockItem(OUTLINE_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<OutlineBlockEntity>> OUTLINE_BLOCK_ENTITY = registerBlockEntity("outline_block", () -> BlockEntityType.Builder.create(OutlineBlockEntity::new, OUTLINE_BLOCK.get()).build(null));
 
 	public static final Supplier<Item> LOCK_ITEM = registerItem("lock", () -> new LockItem(new Item.Settings()));
 
@@ -62,7 +62,7 @@ public class Glowcase implements ModInitializer {
 			entries.add(TEXT_BLOCK_ITEM.get());
 			entries.add(POPUP_BLOCK_ITEM.get());
 			entries.add(SPRITE_BLOCK_ITEM.get());
-			entries.add(WIREFRAME_BLOCK_ITEM.get());
+			entries.add(OUTLINE_BLOCK_ITEM.get());
 			entries.add(LOCK_ITEM.get());
 		})
 		.build()

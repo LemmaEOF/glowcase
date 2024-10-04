@@ -16,13 +16,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class WireframeBlockEntity extends BlockEntity {
+public class OutlineBlockEntity extends BlockEntity {
 	public Vec3i offset = Vec3i.ZERO;
 	public Vec3i scale = new Vec3i(1, 1, 1);
 	public int color = 0xFFFFFF;
 
-	public WireframeBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.WIREFRAME_BLOCK_ENTITY.get(), pos, state);
+	public OutlineBlockEntity(BlockPos pos, BlockState state) {
+		super(Glowcase.OUTLINE_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	@Override

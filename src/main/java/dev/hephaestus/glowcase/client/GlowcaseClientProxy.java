@@ -62,10 +62,10 @@ public class GlowcaseClientProxy extends GlowcaseCommonProxy {
 	}
 
 	@Override
-	public void openWireframeBlockEditScreen(BlockPos pos) {
+	public void openOutlineBlockEditScreen(BlockPos pos) {
 		MinecraftClient client = MinecraftClient.getInstance();
-		if (client.world != null && client.world.getBlockEntity(pos) instanceof WireframeBlockEntity be) {
-			MinecraftClient.getInstance().setScreen(new WireframeBlockEditScreen(be));
+		if (client.world != null && client.world.getBlockEntity(pos) instanceof OutlineBlockEntity be) {
+			MinecraftClient.getInstance().setScreen(new OutlineBlockEditScreen(be));
 		}
 	}
 }

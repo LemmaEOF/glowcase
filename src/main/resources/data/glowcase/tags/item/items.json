@@ -6,6 +6,6 @@
 		"glowcase:text_block",
 		"glowcase:popup_block",
 		"glowcase:sprite_block",
-		"glowcase:wireframe_block"
+		"glowcase:outline_block"
 	]
 }

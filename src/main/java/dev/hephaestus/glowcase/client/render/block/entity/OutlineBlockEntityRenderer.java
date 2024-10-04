@@ -1,13 +1,13 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
-import dev.hephaestus.glowcase.block.entity.WireframeBlockEntity;
+import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 
-public record WireframeBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<WireframeBlockEntity> {
-	public void render(WireframeBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+public record OutlineBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<OutlineBlockEntity> {
+	public void render(OutlineBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		double x = entity.offset.getX();
 		double y = entity.offset.getY();
 		double z = entity.offset.getZ();
