@@ -47,9 +47,9 @@ public class ItemDisplayBlockEditScreen extends GlowcaseScreen {
 				editItemDisplayBlock(false);
 			}).dimensions(centerW - 75, centerH + individualPadding, 150, 20).build();
 
-			this.offsetButton = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.offset", this.displayBlock.offset), (action) -> {
+			this.offsetButton = ButtonWidget.builder(Text.stringifiedTranslatable("gui.glowcase.offset_value", this.displayBlock.offset), (action) -> {
 				this.displayBlock.cycleOffset();
-				this.offsetButton.setMessage(Text.stringifiedTranslatable("gui.glowcase.offset", this.displayBlock.offset));
+				this.offsetButton.setMessage(Text.stringifiedTranslatable("gui.glowcase.offset_value", this.displayBlock.offset));
 				editItemDisplayBlock(true);
 			}).dimensions(centerW - 75, centerH + 20 + padding, 150, 20).build();
 
