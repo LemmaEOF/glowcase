@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
@@ -27,7 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class ItemDisplayBlockEntity extends BlockEntity {
+public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 	private ItemStack stack = ItemStack.EMPTY;
 	private Entity displayEntity = null;
 
@@ -237,6 +238,44 @@ public class ItemDisplayBlockEntity extends BlockEntity {
 	public enum Offset {
 		CENTER, BACK, FRONT
 	}
+
+	// hopper extraction
+
+	@Override
+	public int size() {
+		return 1;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return stack.isEmpty();
+	}
+
+	@Override
+	public ItemStack getStack(int slot) {
+		return stack.copyWithCount(1);
+	}
+
+	@Override
+	public ItemStack removeStack(int slot, int amount) {
+		return stack.copyWithCount(1);
+	}
+
+	@Override
+	public ItemStack removeStack(int slot) {
+		return stack.copyWithCount(1);
+	}
+
+	@Override
+	public void setStack(int slot, ItemStack stack) {}
+
+	@Override
+	public boolean canPlayerUse(PlayerEntity player) {
+		return false;
+	}
+
+	@Override
+	public void clear() {}
 
 	// standard blockentity boilerplate
 
