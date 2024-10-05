@@ -5,6 +5,7 @@
 	"block.glowcase.item_display_block": "Item Display Block",
 	"block.glowcase.popup_block": "Popup Block",
 	"block.glowcase.sprite_block": "Sprite Block",
+	"block.glowcase.item_acceptor_block": "Item Acceptor Block",
 	"gui.glowcase.scale": "Scale: %d",
 	"gui.glowcase.alignment": "Alignment: %s",
 	"gui.glowcase.gives_item": "Gives Item: %s",
@@ -20,6 +21,8 @@
 	"gui.glowcase.unlocked_block": "%s is now unlocked \uD83D\uDD13",
 	"gui.glowcase.title": "Title",
 	"gui.glowcase.url": "URL",
+	"gui.glowcase.itemOrTag": "Item or Item Tag",
+	"gui.glowcase.count": "Count",
 	"block.glowcase.generic.tooltip": "Interact with a glowcase item to edit",
 	"block.glowcase.text_block.tooltip.0": "Displays formatted text",
 	"block.glowcase.text_block.tooltip.1": "Supports Placeholder QuickText",
@@ -31,5 +34,7 @@
 	"block.glowcase.popup_block.tooltip.1": "Supports Placeholder QuickText",
 	"block.glowcase.sprite_block.tooltip.0": "Displays a sprite",
 	"block.glowcase.sprite_block.tooltip.1": "Can be extended with resource packs",
+	"block.glowcase.item_acceptor_block.tooltip.0": "Emits a redstone pulse when given the required item",
+	"block.glowcase.item_acceptor_block.tooltip.1": "Interact in Creative mode to edit",
 	"item.glowcase.lock.tooltip.0": "Locks and unlocks containers"
 }

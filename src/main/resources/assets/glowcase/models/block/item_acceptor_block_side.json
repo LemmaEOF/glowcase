@@ -1,0 +1,18 @@
+{
+	"parent": "glowcase:block/cube_inner_faces",
+	"textures": {
+		"particle": "block/glass",
+		"down": "block/smooth_stone",
+		"up": "block/glass",
+		"north": "block/observer_back",
+		"east": "block/glass",
+		"south": "block/glass",
+		"west": "block/glass",
+		"inner_down": "block/smooth_stone",
+		"inner_up": "glowcase:block/invisible",
+		"inner_north": "glowcase:block/invisible",
+		"inner_east": "glowcase:block/invisible",
+		"inner_south": "block/smooth_stone",
+		"inner_west": "glowcase:block/invisible"
+	}
+}

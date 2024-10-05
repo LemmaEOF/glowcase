@@ -30,4 +30,8 @@ public class GlowcaseCommonProxy {
 	public void openSpriteBlockEditScreen(BlockPos pos) {
 		//No-op
 	}
+
+	public void openItemAcceptorBlockEditScreen(BlockPos pos) {
+		//No-op
+	}
 }
