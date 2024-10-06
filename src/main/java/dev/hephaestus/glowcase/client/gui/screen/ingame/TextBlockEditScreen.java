@@ -4,8 +4,11 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.packet.C2SEditTextBlock;
+import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
+import eu.pb4.placeholders.api.parsers.tag.TextTag;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
@@ -16,8 +19,12 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.SelectionManager;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 //TODO: multi-character selection at some point? it may be a bit complex but it'd be nice
 public class TextBlockEditScreen extends GlowcaseScreen {
@@ -114,6 +121,55 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		this.addDrawableChild(this.shadowToggle);
 		this.addDrawableChild(this.zOffsetToggle);
 		this.addDrawableChild(this.colorEntryWidget);
+
+		addFormattingButtons(280, 20, innerPadding, 20, 2);
+	}
+
+	private void addFormattingButtons(int x, int y, int innerPadding, int buttonSize, int buttonPadding) {
+		int buttonX = x + innerPadding * 2; //adding numbers to this variable because I personally find that more readable, that's all
+		int buttonY = y + innerPadding; //reduce the times this is calculated
+		ButtonWidget boldText = ButtonWidget.builder(Text.literal("B").formatted(Formatting.BOLD), action -> {
+			insertTag(TagRegistry.SAFE.getTag("bold"));
+		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
+
+		buttonX += buttonSize + buttonPadding;
+		ButtonWidget italicizeText = ButtonWidget.builder(Text.literal("I").formatted(Formatting.ITALIC), action -> {
+			insertTag(TagRegistry.SAFE.getTag("italic"));
+		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
+
+		buttonX += buttonSize + buttonPadding;
+		ButtonWidget strikeText = ButtonWidget.builder(Text.literal("S").formatted(Formatting.STRIKETHROUGH), action -> {
+			insertTag(TagRegistry.SAFE.getTag("strikethrough"));
+		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
+
+		buttonX += buttonSize + buttonPadding;
+		ButtonWidget underlineText = ButtonWidget.builder(Text.literal("U").formatted(Formatting.UNDERLINE), action -> {
+			insertTag(TagRegistry.SAFE.getTag("underline"));
+		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
+
+		buttonX += buttonSize + buttonPadding;
+		//not using the actual obfuscated formatting here because the movement can be annoying
+		ButtonWidget obfuscateText = ButtonWidget.builder(Text.literal("@"), action -> {
+			insertTag(TagRegistry.SAFE.getTag("obfuscated"));
+		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
+
+//		buttonX += buttonSize + buttonPadding; // + 4? (only works on padding of 2)
+//		ButtonWidget colorText = ButtonWidget.builder(Text.literal("\uD83D\uDD8C"), action -> {
+//			//TODO - color picker widget?
+//		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
+//
+//		buttonX += buttonSize + buttonPadding;
+//		ButtonWidget testText = ButtonWidget.builder(Text.literal("t"), action -> {
+//
+//		}).dimensions(buttonX, buttonY, 50, 100).build();
+
+		this.addDrawableChild(boldText);
+		this.addDrawableChild(italicizeText);
+		this.addDrawableChild(strikeText);
+		this.addDrawableChild(underlineText);
+		this.addDrawableChild(obfuscateText);
+//		this.addDrawableChild(colorText);
+//		this.addDrawableChild(testText);
 	}
 
 	@Override
@@ -195,6 +251,15 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		}
 	}
 
+	public void insertTag(TextTag tag) {
+		if(tag == null) return;
+		//find the alias with the least amount of characters
+		String name = Arrays.stream(tag.aliases()).min(Comparator.comparing(String::length)).get();
+
+		this.selectionManager.insert("<" + name + "></" + name + ">");
+		this.selectionManager.moveCursor(-name.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+	}
+
 	@Override
 	public boolean charTyped(char chr, int keyCode) {
 		if (this.colorEntryWidget.isActive()) {
@@ -245,6 +310,30 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 				deleteLine();
 				return true;
 			} else {
+
+				//formatting hotkeys
+				if(Screen.hasControlDown()) {
+					if(keyCode == GLFW.GLFW_KEY_B) {
+						insertTag(TagRegistry.SAFE.getTag("bold"));
+						return true;
+					} else if(keyCode == GLFW.GLFW_KEY_I) {
+						insertTag(TagRegistry.SAFE.getTag("italic"));
+						return true;
+					} else if(keyCode == GLFW.GLFW_KEY_U) {
+						insertTag(TagRegistry.SAFE.getTag("underline"));
+						return true;
+					} else if(keyCode == GLFW.GLFW_KEY_5 || keyCode == GLFW.GLFW_KEY_S) {
+						//There isn't a commonly agreed upon hotkey for strikethrough unlike the rest above
+						//apparently 5 is commonly used for strikethrough ¯\_(ツ)_/¯
+						//Google Docs and Microsoft Word have 5 in their hotkeys, while Discord has S in its hotkey
+						insertTag(TagRegistry.SAFE.getTag("strikethrough"));
+						return true;
+					} else if(keyCode == GLFW.GLFW_KEY_O) {
+						insertTag(TagRegistry.SAFE.getTag("obfuscated"));
+						return true;
+					}
+				}
+
 				try {
 					boolean val = this.selectionManager.handleSpecialKey(keyCode) || super.keyPressed(keyCode, scanCode, modifiers);
 					int selectionOffset = this.textBlockEntity.getRawLine(this.currentRow).length() - this.selectionManager.getSelectionStart();
