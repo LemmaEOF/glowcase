@@ -5,6 +5,7 @@ import dev.hephaestus.glowcase.client.gui.screen.ingame.ColorPickerIncludedScree
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.render.RenderLayer;
@@ -13,11 +14,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.commons.compress.utils.Lists;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class ColorPickerWidget extends PressableWidget {
 	static final Identifier CONFIRM_TEXTURE = Identifier.ofVanilla("pending_invite/accept");
@@ -26,12 +30,17 @@ public class ColorPickerWidget extends PressableWidget {
 	static final Identifier CANCEL_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("pending_invite/reject_highlighted");
 
 	public final ColorPickerIncludedScreen screen;
+	public Element targetElement;
 	public Color color = Color.red;
 	public boolean includePresets = true;
 	public ArrayList<ColorPresetWidget> presetWidgets = Lists.newArrayList();
 	public boolean confirmOrCancelButtonDown = false;
 	public IconButtonWidget confirmButton;
 	public IconButtonWidget cancelButton;
+	private Consumer<Color> changeListener;
+	private BiConsumer<Color, @Nullable Formatting> presetListener;
+	private Consumer<ColorPickerWidget> onAccept;
+	private Consumer<ColorPickerWidget> onCancel;
 
 	private boolean mouseDown = false;
 	private int presetY, presetSize, presetPadding, presetHeight;
@@ -68,6 +77,10 @@ public class ColorPickerWidget extends PressableWidget {
 		updateThumbPositions();
 	}
 
+	public void setTargetElement(Element element) {
+		this.targetElement = element;
+	}
+
 	public void setIncludePresets(boolean shouldInclude) {
 		this.includePresets = shouldInclude;
 	}
@@ -84,12 +97,21 @@ public class ColorPickerWidget extends PressableWidget {
 	}
 
 	public void confirmColor() {
-		this.insertColor(this.color);
-		this.toggle(false);
+//		this.insertColor(this.color);
+		if(this.onAccept != null) {
+			this.onAccept.accept(this);
+		} else {
+			this.toggle(false);
+		}
 	}
 
 	public void cancel() {
-		this.toggle(false);
+//		this.toggle(false);
+		if(this.onCancel != null) {
+			this.onCancel.accept(this);
+		} else {
+			this.toggle(false);
+		}
 	}
 
 	public void toggle(boolean active) {
@@ -113,6 +135,8 @@ public class ColorPickerWidget extends PressableWidget {
 
 	public void setColor(Color color) {
 		this.color = color;
+		this.updateHSL();
+		this.updateThumbPositions();
 	}
 
 	@Override
@@ -148,7 +172,7 @@ public class ColorPickerWidget extends PressableWidget {
 		if(this.includePresets) {
 			//sorta dynamic but also really specific to keep it all aligned
 			//I'm not going to worry about it a lot though because I do not see the custom preset thing being used a lot if at all
-			drawPresets(context, mouseX, mouseY, delta, previewX, presetY, height - presetY, z + 1, presetSize, width / (presetSize + presetPadding), presetPadding);
+			drawPresets(context, mouseX, mouseY, delta, previewX, presetY, y + height - presetY, z + 1, presetSize, width / (presetSize + presetPadding), presetPadding);
 		}
 
 		this.confirmButton.renderWidget(context, mouseX, mouseY, delta);
@@ -304,6 +328,9 @@ public class ColorPickerWidget extends PressableWidget {
 			checkAndSetPreset(mouseX, mouseY);
 		}
 
+		if(this.changeListener != null) {
+			this.changeListener.accept(this.color);
+		}
 	}
 
 	public boolean clickedSatLight(double mouseX, double mouseY) {
@@ -446,7 +473,7 @@ public class ColorPickerWidget extends PressableWidget {
 		return Color.HSBtoRGB(trueHue, 1, 1);
 	}
 
-	protected void updateHSL() {
+	public void updateHSL() {
 		this.HSL = getHSL();
 		this.hue = HSL[0];
 		this.saturation = HSL[1];
@@ -460,6 +487,26 @@ public class ColorPickerWidget extends PressableWidget {
 	@Override
 	public void appendClickableNarrations(NarrationMessageBuilder builder) {
 		this.appendDefaultNarrations(builder);
+	}
+
+	public void setChangeListener(Consumer<Color> changeListener) {
+		this.changeListener = changeListener;
+	}
+
+	public void setPresetListener(BiConsumer<Color, @Nullable Formatting> presetListener) {
+		this.presetListener = presetListener;
+	}
+
+	public void setOnAccept(Consumer<ColorPickerWidget> onAccept) {
+		this.onAccept = onAccept;
+	}
+
+	public void setOnCancel(Consumer<ColorPickerWidget> onCancel) {
+		this.onCancel = onCancel;
+	}
+
+	public BiConsumer<Color, @Nullable Formatting> getPresetListener() {
+		return presetListener;
 	}
 
 	public static String getHexCode(Color color) {

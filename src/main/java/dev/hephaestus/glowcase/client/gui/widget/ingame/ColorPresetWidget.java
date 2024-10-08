@@ -8,6 +8,7 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.function.BiConsumer;
 
 public class ColorPresetWidget extends PressableWidget {
 	public final ColorPickerWidget colorPickerWidget;
@@ -61,13 +62,19 @@ public class ColorPresetWidget extends PressableWidget {
 
 	@Override
 	public void onPress() {
-		if(this.formatting != null && formatting.isColor()) {
-			this.colorPickerWidget.color = this.color;
-			this.colorPickerWidget.insertFormatting(this.formatting);
-			this.colorPickerWidget.toggle(false);
+		BiConsumer<Color, Formatting> presetListener = this.colorPickerWidget.getPresetListener();
+		if(presetListener != null) {
+			presetListener.accept(this.color, this.formatting != null && this.formatting.isColor() ? this.formatting : null);
 		} else {
-			this.colorPickerWidget.setColor(this.color);
+			if(this.formatting != null && formatting.isColor()) {
+				this.colorPickerWidget.color = this.color;
+//				this.colorPickerWidget.insertFormatting(this.formatting);
+				this.colorPickerWidget.toggle(false);
+			} else {
+				this.colorPickerWidget.setColor(this.color);
+			}
 		}
+
 	}
 
 	@Override

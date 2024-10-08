@@ -24,6 +24,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -38,6 +39,7 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 	private ButtonWidget colorText;
 	private ButtonWidget changeAlignment;
 	private TextFieldWidget colorEntryWidget;
+	private Color colorEntryPreColorPicker; //used for color picker cancel button
 	private ButtonWidget zOffsetToggle;
 	private ButtonWidget shadowToggle;
 
@@ -102,9 +104,13 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 		this.colorEntryWidget.setText("#" + String.format("%1$06X", this.textBlockEntity.color & 0x00FFFFFF));
 		this.colorEntryWidget.setChangedListener(string -> {
 			TextColor.parse(this.colorEntryWidget.getText()).ifSuccess(color -> {
-				this.textBlockEntity.color = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
+				int newColor = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
+				this.textBlockEntity.color = newColor;
 				this.textBlockEntity.renderDirty = true;
+				this.colorPickerWidget.setColor(new Color(newColor));
 			});
+			this.colorPickerWidget.updateHSL();
+			this.colorPickerWidget.updateThumbPositions();
 		});
 
 		this.zOffsetToggle = ButtonWidget.builder(Text.literal(this.textBlockEntity.zOffset.name()), action -> {
@@ -162,6 +168,22 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 
 		buttonX += buttonSize + buttonPadding; // + 4? (only works on padding of 2)
 		this.colorText = ButtonWidget.builder(Text.literal("\uD83D\uDD8C"), action -> {
+			this.colorPickerWidget.setPosition(216, 10);
+			this.colorPickerWidget.setTargetElement(this.colorText);
+			this.colorPickerWidget.setOnAccept(picker -> {
+				picker.insertColor(picker.color);
+				picker.toggle(false);
+			});
+			this.colorPickerWidget.setOnCancel(picker -> picker.toggle(false));
+			this.colorPickerWidget.setPresetListener((color, formatting) -> {
+				if(formatting != null) {
+					insertFormattingTag(formatting);
+				} else {
+					insertHexTag(ColorPickerWidget.getHexCode(color));
+				}
+				this.toggleColorPicker(false);
+			});
+			this.colorPickerWidget.setChangeListener(null);
 			toggleColorPicker(!this.colorPickerWidget.active);
 		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
 
@@ -391,8 +413,30 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		int topOffset = (int) (40 + 2 * this.width / 100F);
 		if (!this.colorEntryWidget.mouseClicked(mouseX, mouseY, button)) {
-			this.colorEntryWidget.setFocused(false);
+			if(this.colorPickerWidget.targetElement != this.colorEntryWidget || !this.colorPickerWidget.isMouseOver(mouseX, mouseY)) {
+				this.colorEntryWidget.setFocused(false);
+			}
+		} else { //colorEntry clicked
+//			this.colorPickerWidget.setPosition(this.colorEntryWidget.getX() - this.colorPickerWidget.getWidth(), this.colorEntryWidget.getY() + 2);
+			this.colorPickerWidget.setPosition(this.colorEntryWidget.getX(), this.colorEntryWidget.getY() + this.colorEntryWidget.getHeight());
+			this.colorPickerWidget.setTargetElement(this.colorEntryWidget);
+			this.colorPickerWidget.setOnAccept(null);
+			this.colorPickerWidget.setOnCancel(picker -> {
+				picker.setColor(this.colorEntryPreColorPicker);
+			});
+			this.colorPickerWidget.setChangeListener(color -> {
+				this.colorEntryWidget.setText(ColorPickerWidget.getHexCode(color));
+			});
+			this.colorPickerWidget.setPresetListener((color, formatting) -> {
+				this.colorPickerWidget.setColor(color);
+			});
+			TextColor.parse(this.colorEntryWidget.getText()).ifSuccess(color -> {
+				int prePickerColor = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
+				this.colorEntryPreColorPicker = new Color(prePickerColor);
+			}).ifError(textColorError -> this.colorEntryPreColorPicker = this.colorPickerWidget.getCurrentColor());
+			toggleColorPicker(true);
 		}
+
 		if(colorPickerWidget.active && colorPickerWidget.visible) {
 			if(colorPickerWidget.isMouseOver(mouseX, mouseY)) {
 				colorPickerWidget.mouseClicked(mouseX, mouseY, button);
@@ -400,7 +444,7 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 				this.setDragging(true);
 				return true;
 			} else {
-				if(!this.colorText.isMouseOver(mouseX, mouseY)) {
+				if(!this.colorPickerWidget.targetElement.isMouseOver(mouseX, mouseY)) {
 					toggleColorPicker(false);
 				}
 			}
