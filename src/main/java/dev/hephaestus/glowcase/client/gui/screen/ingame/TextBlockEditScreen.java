@@ -3,6 +3,7 @@ package dev.hephaestus.glowcase.client.gui.screen.ingame;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
+import dev.hephaestus.glowcase.client.gui.widget.ingame.ColorPickerWidget;
 import dev.hephaestus.glowcase.packet.C2SEditTextBlock;
 import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
 import eu.pb4.placeholders.api.parsers.tag.TextTag;
@@ -27,12 +28,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 //TODO: multi-character selection at some point? it may be a bit complex but it'd be nice
-public class TextBlockEditScreen extends GlowcaseScreen {
+public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIncludedScreen{
 	private final TextBlockEntity textBlockEntity;
 
 	private SelectionManager selectionManager;
 	private int currentRow;
 	private long ticksSinceOpened = 0;
+	private ColorPickerWidget colorPickerWidget;
+	private ButtonWidget colorText;
 	private ButtonWidget changeAlignment;
 	private TextFieldWidget colorEntryWidget;
 	private ButtonWidget zOffsetToggle;
@@ -115,6 +118,10 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			this.zOffsetToggle.setMessage(Text.literal(this.textBlockEntity.zOffset.name()));
 		}).dimensions(330 + innerPadding * 3, 0, 80, 20).build();
 
+		this.colorPickerWidget = ColorPickerWidget.builder(this,216, 10).size(182, 104).build();
+		this.colorPickerWidget.toggle(false); //start deactivated
+
+		this.addDrawableChild(colorPickerWidget);
 		this.addDrawableChild(increaseSize);
 		this.addDrawableChild(decreaseSize);
 		this.addDrawableChild(this.changeAlignment);
@@ -129,47 +136,41 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		int buttonX = x + innerPadding * 2; //adding numbers to this variable because I personally find that more readable, that's all
 		int buttonY = y + innerPadding; //reduce the times this is calculated
 		ButtonWidget boldText = ButtonWidget.builder(Text.literal("B").formatted(Formatting.BOLD), action -> {
-			insertTag(TagRegistry.SAFE.getTag("bold"));
+			insertTag(TagRegistry.SAFE.getTag("bold"), true);
 		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
 
 		buttonX += buttonSize + buttonPadding;
 		ButtonWidget italicizeText = ButtonWidget.builder(Text.literal("I").formatted(Formatting.ITALIC), action -> {
-			insertTag(TagRegistry.SAFE.getTag("italic"));
+			insertTag(TagRegistry.SAFE.getTag("italic"), true);
 		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
 
 		buttonX += buttonSize + buttonPadding;
 		ButtonWidget strikeText = ButtonWidget.builder(Text.literal("S").formatted(Formatting.STRIKETHROUGH), action -> {
-			insertTag(TagRegistry.SAFE.getTag("strikethrough"));
+			insertTag(TagRegistry.SAFE.getTag("strikethrough"), true);
 		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
 
 		buttonX += buttonSize + buttonPadding;
 		ButtonWidget underlineText = ButtonWidget.builder(Text.literal("U").formatted(Formatting.UNDERLINE), action -> {
-			insertTag(TagRegistry.SAFE.getTag("underline"));
+			insertTag(TagRegistry.SAFE.getTag("underline"), true);
 		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
 
 		buttonX += buttonSize + buttonPadding;
 		//not using the actual obfuscated formatting here because the movement can be annoying
 		ButtonWidget obfuscateText = ButtonWidget.builder(Text.literal("@"), action -> {
-			insertTag(TagRegistry.SAFE.getTag("obfuscated"));
+			insertTag(TagRegistry.SAFE.getTag("obfuscated"), true);
 		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
 
-//		buttonX += buttonSize + buttonPadding; // + 4? (only works on padding of 2)
-//		ButtonWidget colorText = ButtonWidget.builder(Text.literal("\uD83D\uDD8C"), action -> {
-//			//TODO - color picker widget?
-//		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
-//
-//		buttonX += buttonSize + buttonPadding;
-//		ButtonWidget testText = ButtonWidget.builder(Text.literal("t"), action -> {
-//
-//		}).dimensions(buttonX, buttonY, 50, 100).build();
+		buttonX += buttonSize + buttonPadding; // + 4? (only works on padding of 2)
+		this.colorText = ButtonWidget.builder(Text.literal("\uD83D\uDD8C"), action -> {
+			toggleColorPicker(!this.colorPickerWidget.active);
+		}).dimensions(buttonX, buttonY, buttonSize, buttonSize).build();
 
 		this.addDrawableChild(boldText);
 		this.addDrawableChild(italicizeText);
 		this.addDrawableChild(strikeText);
 		this.addDrawableChild(underlineText);
 		this.addDrawableChild(obfuscateText);
-//		this.addDrawableChild(colorText);
-//		this.addDrawableChild(testText);
+		this.addDrawableChild(colorText);
 	}
 
 	@Override
@@ -251,10 +252,14 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		}
 	}
 
-	public void insertTag(TextTag tag) {
+	public void insertTag(TextTag tag, boolean findShortest) {
 		if(tag == null) return;
 		//find the alias with the least amount of characters
-		String name = Arrays.stream(tag.aliases()).min(Comparator.comparing(String::length)).get();
+		String name = tag.name();
+		if(findShortest && tag.aliases().length > 1) {
+			String shortest = Arrays.stream(tag.aliases()).min(Comparator.comparing(String::length)).get();
+			name = Arrays.stream(tag.aliases()).min(Comparator.comparing(String::length)).get();
+		}
 
 		this.selectionManager.insert("<" + name + "></" + name + ">");
 		this.selectionManager.moveCursor(-name.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
@@ -279,6 +284,13 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 			} else {
 				return this.colorEntryWidget.keyPressed(keyCode, scanCode, modifiers);
 			}
+		} if(this.colorPickerWidget.active && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_ESCAPE)) {
+			if(keyCode == GLFW.GLFW_KEY_ENTER) {
+				this.colorPickerWidget.confirmColor();
+			} else {
+				this.colorPickerWidget.cancel();
+			}
+			return true;
 		} else {
 			setFocused(null);
 			if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
@@ -314,22 +326,22 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 				//formatting hotkeys
 				if(Screen.hasControlDown()) {
 					if(keyCode == GLFW.GLFW_KEY_B) {
-						insertTag(TagRegistry.SAFE.getTag("bold"));
+						insertTag(TagRegistry.SAFE.getTag("bold"), true);
 						return true;
 					} else if(keyCode == GLFW.GLFW_KEY_I) {
-						insertTag(TagRegistry.SAFE.getTag("italic"));
+						insertTag(TagRegistry.SAFE.getTag("italic"), true);
 						return true;
 					} else if(keyCode == GLFW.GLFW_KEY_U) {
-						insertTag(TagRegistry.SAFE.getTag("underline"));
+						insertTag(TagRegistry.SAFE.getTag("underline"), true);
 						return true;
 					} else if(keyCode == GLFW.GLFW_KEY_5 || keyCode == GLFW.GLFW_KEY_S) {
 						//There isn't a commonly agreed upon hotkey for strikethrough unlike the rest above
 						//apparently 5 is commonly used for strikethrough ¯\_(ツ)_/¯
 						//Google Docs and Microsoft Word have 5 in their hotkeys, while Discord has S in its hotkey
-						insertTag(TagRegistry.SAFE.getTag("strikethrough"));
+						insertTag(TagRegistry.SAFE.getTag("strikethrough"), true);
 						return true;
 					} else if(keyCode == GLFW.GLFW_KEY_O) {
-						insertTag(TagRegistry.SAFE.getTag("obfuscated"));
+						insertTag(TagRegistry.SAFE.getTag("obfuscated"), true);
 						return true;
 					}
 				}
@@ -380,6 +392,18 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		int topOffset = (int) (40 + 2 * this.width / 100F);
 		if (!this.colorEntryWidget.mouseClicked(mouseX, mouseY, button)) {
 			this.colorEntryWidget.setFocused(false);
+		}
+		if(colorPickerWidget.active && colorPickerWidget.visible) {
+			if(colorPickerWidget.isMouseOver(mouseX, mouseY)) {
+				colorPickerWidget.mouseClicked(mouseX, mouseY, button);
+				this.setFocused(colorPickerWidget);
+				this.setDragging(true);
+				return true;
+			} else {
+				if(!this.colorText.isMouseOver(mouseX, mouseY)) {
+					toggleColorPicker(false);
+				}
+			}
 		}
 		if (mouseY > topOffset) {
 			this.currentRow = MathHelper.clamp((int) (mouseY - topOffset) / 12, 0, this.textBlockEntity.lines.size() - 1);
@@ -432,5 +456,26 @@ public class TextBlockEditScreen extends GlowcaseScreen {
 		} else {
 			return super.mouseClicked(mouseX, mouseY, button);
 		}
+	}
+
+	@Override
+	public ColorPickerWidget colorPickerWidget() {
+		return this.colorPickerWidget;
+	}
+
+	@Override
+	public void toggleColorPicker(boolean active) {
+		this.colorPickerWidget.toggle(active);
+	}
+
+	@Override
+	public void insertHexTag(String hex) {
+		this.selectionManager.insert("<" + hex + "></" + hex + ">");
+		this.selectionManager.moveCursor(-hex.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+	}
+
+	@Override
+	public void insertFormattingTag(Formatting formatting) {
+		this.insertTag(TagRegistry.SAFE.getTag(formatting.getName()), false);
 	}
 }
