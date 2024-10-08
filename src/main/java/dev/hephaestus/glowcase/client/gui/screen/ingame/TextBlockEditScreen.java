@@ -283,8 +283,21 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 			name = Arrays.stream(tag.aliases()).min(Comparator.comparing(String::length)).get();
 		}
 
-		this.selectionManager.insert("<" + name + "></" + name + ">");
-		this.selectionManager.moveCursor(-name.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+		int selectedStart = this.selectionManager.getSelectionStart();
+		int selectedEnd = this.selectionManager.getSelectionEnd();
+		if(selectedStart != selectedEnd) {
+			int selectedAmount = Math.abs(selectedEnd - selectedStart);
+			//text is selected/highlighted - selection is determined based on the direction it happens, so an extra check is needed
+			this.selectionManager.moveCursor(selectedStart < selectedEnd ? 0 : -selectedAmount, false, SelectionManager.SelectionType.CHARACTER);
+			this.selectionManager.insert("<" + name + ">");
+			this.selectionManager.moveCursor(selectedAmount, false, SelectionManager.SelectionType.CHARACTER);
+			this.selectionManager.insert("</" + name + ">");
+			this.selectionManager.moveCursor(-name.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+			this.selectionManager.setSelection(selectedStart + name.length() + 2, selectedEnd + name.length() + 2);
+		} else {
+			this.selectionManager.insert("<" + name + "></" + name + ">");
+			this.selectionManager.moveCursor(-name.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+		}
 	}
 
 	@Override
@@ -514,8 +527,21 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 
 	@Override
 	public void insertHexTag(String hex) {
-		this.selectionManager.insert("<" + hex + "></" + hex + ">");
-		this.selectionManager.moveCursor(-hex.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+		int selectedStart = this.selectionManager.getSelectionStart();
+		int selectedEnd = this.selectionManager.getSelectionEnd();
+		if(selectedStart != selectedEnd) {
+			int selectedAmount = Math.abs(selectedEnd - selectedStart);
+			//text is selected/highlighted - selection is determined based on the direction it happens, so an extra check is needed
+			this.selectionManager.moveCursor(selectedStart < selectedEnd ? 0 : -selectedAmount, false, SelectionManager.SelectionType.CHARACTER);
+			this.selectionManager.insert("<" + hex + ">");
+			this.selectionManager.moveCursor(selectedAmount, false, SelectionManager.SelectionType.CHARACTER);
+			this.selectionManager.insert("</" + hex + ">");
+			this.selectionManager.moveCursor(-hex.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+			this.selectionManager.setSelection(selectedStart + hex.length() + 2, selectedEnd + hex.length() + 2);
+		} else {
+			this.selectionManager.insert("<" + hex + "></" + hex + ">");
+			this.selectionManager.moveCursor(-hex.length() - 3, false, SelectionManager.SelectionType.CHARACTER);
+		}
 	}
 
 	@Override
