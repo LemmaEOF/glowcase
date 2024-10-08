@@ -106,11 +106,12 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 			TextColor.parse(this.colorEntryWidget.getText()).ifSuccess(color -> {
 				int newColor = color == null ? 0xFFFFFFFF : color.getRgb() | 0xFF000000;
 				this.textBlockEntity.color = newColor;
+				//make sure it doesn't update from the color picker updating the text
+				if(this.colorEntryWidget.isFocused()) {
+					this.colorPickerWidget.setColor(new Color(newColor));
+				}
 				this.textBlockEntity.renderDirty = true;
-				this.colorPickerWidget.setColor(new Color(newColor));
 			});
-			this.colorPickerWidget.updateHSL();
-			this.colorPickerWidget.updateThumbPositions();
 		});
 
 		this.zOffsetToggle = ButtonWidget.builder(Text.literal(this.textBlockEntity.zOffset.name()), action -> {
