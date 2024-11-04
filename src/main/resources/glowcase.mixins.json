@@ -7,7 +7,9 @@
 		"LockableContainerBlockEntityAccessor",
 		"PlayerEntityMixin"
 	],
-	"client": [],
+	"client": [
+		"KeyboardMixin"
+	],
 	"server": [],
 	"injectors": {
 		"defaultRequire": 1
