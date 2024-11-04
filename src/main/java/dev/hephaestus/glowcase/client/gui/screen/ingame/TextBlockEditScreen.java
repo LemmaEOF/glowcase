@@ -431,7 +431,6 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 				this.colorEntryWidget.setFocused(false);
 			}
 		} else { //colorEntry clicked
-//			this.colorPickerWidget.setPosition(this.colorEntryWidget.getX() - this.colorPickerWidget.getWidth(), this.colorEntryWidget.getY() + 2);
 			this.colorPickerWidget.setPosition(this.colorEntryWidget.getX(), this.colorEntryWidget.getY() + this.colorEntryWidget.getHeight());
 			this.colorPickerWidget.setTargetElement(this.colorEntryWidget);
 			this.colorPickerWidget.setOnAccept(null);

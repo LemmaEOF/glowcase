@@ -97,7 +97,6 @@ public class ColorPickerWidget extends PressableWidget {
 	}
 
 	public void confirmColor() {
-//		this.insertColor(this.color);
 		if(this.onAccept != null) {
 			this.onAccept.accept(this);
 		} else {
@@ -106,7 +105,6 @@ public class ColorPickerWidget extends PressableWidget {
 	}
 
 	public void cancel() {
-//		this.toggle(false);
 		if(this.onCancel != null) {
 			this.onCancel.accept(this);
 		} else {

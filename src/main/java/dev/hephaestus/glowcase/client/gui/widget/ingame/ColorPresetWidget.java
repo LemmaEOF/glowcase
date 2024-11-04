@@ -68,7 +68,6 @@ public class ColorPresetWidget extends PressableWidget {
 		} else {
 			if(this.formatting != null && formatting.isColor()) {
 				this.colorPickerWidget.color = this.color;
-//				this.colorPickerWidget.insertFormatting(this.formatting);
 				this.colorPickerWidget.toggle(false);
 			} else {
 				this.colorPickerWidget.setColor(this.color);
