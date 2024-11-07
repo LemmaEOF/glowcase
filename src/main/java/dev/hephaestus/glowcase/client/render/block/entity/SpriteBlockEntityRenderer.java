@@ -15,6 +15,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
 
+import java.io.FileNotFoundException;
+
 public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<SpriteBlockEntity> {
 	private static final Vector3f[] vertices = new Vector3f[] {
 		new Vector3f(-0.5F, -0.5F, 0.0F),
@@ -45,12 +47,12 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 			ResourceManager resourceManager = ((TextureManagerAccessor) textureManager).glowcase$getResourceManager();
 			try {
 				resourceManager.getResourceOrThrow(identifier);
-			} catch (Throwable ignored) {
+			} catch (FileNotFoundException ignored) {
 				/* if the texture (file) does not exist, just replace it.
 				this happens a lot when edit a sprite block, so I'm adding it to avoid log spam
 				- SkyNotTheLimit
 				 */
-				identifier = Glowcase.id("textures/sprite/invalid.png"); // todo: get missing texture and put a giant red X on it
+				identifier = Glowcase.id("textures/sprite/invalid.png");
 			}
 		}
 		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(identifier));
