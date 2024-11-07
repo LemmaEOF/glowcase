@@ -2,11 +2,16 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
+import dev.hephaestus.glowcase.mixin.client.TextureManagerAccessor;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
 
@@ -32,7 +37,23 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 		}
 
 		var entry = matrices.peek();
-		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(Glowcase.id("textures/sprite/" + entity.sprite + ".png")));
+		Identifier identifier = Identifier.tryParse(Glowcase.MODID, "textures/sprite/" + entity.sprite + ".png");
+		if (identifier == null) {
+			identifier = Glowcase.id("textures/sprite/invalid.png");
+		} else {
+			TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
+			ResourceManager resourceManager = ((TextureManagerAccessor) textureManager).glowcase$getResourceManager();
+			try {
+				resourceManager.getResourceOrThrow(identifier);
+			} catch (Throwable ignored) {
+				/* if the texture (file) does not exist, just replace it.
+				this happens a lot when edit a sprite block, so I'm adding it to avoid log spam
+				- SkyNotTheLimit
+				 */
+				identifier = Glowcase.id("textures/sprite/invalid.png"); // todo: get missing texture and put a giant red X on it
+			}
+		}
+		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(identifier));
 
 		vertex(entry, vertexConsumer, vertices[0], 0, 1, entity.color);
 		vertex(entry, vertexConsumer, vertices[1], 1, 1, entity.color);

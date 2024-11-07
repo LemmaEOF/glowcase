@@ -38,12 +38,12 @@ public class LockItem extends Item {
 		Text message;
 		SoundEvent soundEvent;
 
-		if (bea.getLock().equals(ContainerLock.EMPTY)) {
-			bea.setLock(new ContainerLock("glowcase"));
+		if (bea.glowcase$getLock().equals(ContainerLock.EMPTY)) {
+			bea.glowcase$setLock(new ContainerLock("glowcase"));
 			message = Text.translatable("gui.glowcase.locked_block", be.getDisplayName());
 			soundEvent = SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE;
 		} else {
-			bea.setLock(ContainerLock.EMPTY);
+			bea.glowcase$setLock(ContainerLock.EMPTY);
 			message = Text.translatable("gui.glowcase.unlocked_block", be.getDisplayName());
 			soundEvent = SoundEvents.BLOCK_WOODEN_TRAPDOOR_OPEN;
 		}
