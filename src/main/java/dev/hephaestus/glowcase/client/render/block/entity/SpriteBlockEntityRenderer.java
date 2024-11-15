@@ -15,8 +15,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
 
-import java.io.FileNotFoundException;
-
 public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<SpriteBlockEntity> {
 	private static final Vector3f[] vertices = new Vector3f[] {
 		new Vector3f(-0.5F, -0.5F, 0.0F),
@@ -45,11 +43,10 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 		} else {
 			TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
 			ResourceManager resourceManager = ((TextureManagerAccessor) textureManager).glowcase$getResourceManager();
-			try {
-				resourceManager.getResourceOrThrow(identifier);
-			} catch (FileNotFoundException ignored) {
-				/* if the texture (file) does not exist, just replace it.
-				this happens a lot when edit a sprite block, so I'm adding it to avoid log spam
+			if (resourceManager.getResource(identifier).isEmpty()) {
+				/*
+				If the texture (file) does not exist, just replace it.
+				This happens a lot when editing a sprite block, so I'm adding it to avoid log spam
 				- SkyNotTheLimit
 				 */
 				identifier = Glowcase.id("textures/sprite/invalid.png");
@@ -66,8 +63,7 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 	}
 
 	private void vertex(
-		MatrixStack.Entry matrix, VertexConsumer vertexConsumer, Vector3f vertex, float u, float v,
-		int color) {
+		MatrixStack.Entry matrix, VertexConsumer vertexConsumer, Vector3f vertex, float u, float v, int color) {
 		vertexConsumer.vertex(matrix, vertex.x(), vertex.y(), vertex.z())
 			.color(color)
 			.texture(u, v)
