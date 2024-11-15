@@ -64,6 +64,8 @@ public class ParticleDisplayEditScreen extends GlowcaseScreen {
 			Text.empty()
 		);
 
+		particleId.setMaxLength(9999);
+
 		String optionsString = effectToTag(blockEntity.particle, lookup.getOps(NbtOps.INSTANCE)).asString();
 		if (optionsString.startsWith("{}")) optionsString = "";
 
