@@ -47,5 +47,6 @@
 	"block.glowcase.sprite_block.tooltip.0": "Displays a sprite",
 	"block.glowcase.sprite_block.tooltip.1": "Can be extended with resource packs",
 	"block.glowcase.outline_block.tooltip.0": "Displays an outline",
+	"block.glowcase.particle_display_block.tooltip.0": "Displays particles",
 	"item.glowcase.lock.tooltip.0": "Locks and unlocks containers"
 }

@@ -8,13 +8,19 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ParticleDisplayBlock extends GlowcaseBlock implements BlockEntityProvider {
 	@Override
@@ -37,5 +43,11 @@ public class ParticleDisplayBlock extends GlowcaseBlock implements BlockEntityPr
 	@Override
 	public @Nullable BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
 		return new ParticleDisplayBlockEntity(pos, state);
+	}
+
+	@Override
+	public void appendTooltip(ItemStack itemStack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
+		tooltip.add(Text.translatable("block.glowcase.particle_display_block.tooltip.0").formatted(Formatting.GRAY));
+		tooltip.add(Text.translatable("block.glowcase.generic.tooltip").formatted(Formatting.DARK_GRAY));
 	}
 }
