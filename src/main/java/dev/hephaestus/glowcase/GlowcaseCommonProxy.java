@@ -30,4 +30,8 @@ public class GlowcaseCommonProxy {
 	public void openSpriteBlockEditScreen(BlockPos pos) {
 		//No-op
 	}
+
+	public void openParticleDisplayBlockEditScreen(BlockPos pos) {
+		//No-op
+	}
 }
