@@ -1,6 +1,11 @@
 package dev.hephaestus.glowcase;
 
-import dev.hephaestus.glowcase.packet.*;
+import dev.hephaestus.glowcase.packet.C2SEditHyperlinkBlock;
+import dev.hephaestus.glowcase.packet.C2SEditItemDisplayBlock;
+import dev.hephaestus.glowcase.packet.C2SEditOutlineBlock;
+import dev.hephaestus.glowcase.packet.C2SEditPopupBlock;
+import dev.hephaestus.glowcase.packet.C2SEditSpriteBlock;
+import dev.hephaestus.glowcase.packet.C2SEditTextBlock;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 

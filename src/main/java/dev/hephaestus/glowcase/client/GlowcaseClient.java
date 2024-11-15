@@ -1,7 +1,13 @@
 package dev.hephaestus.glowcase.client;
 
 import dev.hephaestus.glowcase.Glowcase;
-import dev.hephaestus.glowcase.client.render.block.entity.*;
+import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.HyperlinkBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.OutlineBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.PopupBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.SpriteBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;

@@ -1,19 +1,7 @@
 package dev.hephaestus.glowcase.client.gui.screen.ingame;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
-import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.SelectionManager;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.math.MathHelper;
-import org.lwjgl.glfw.GLFW;
 
 //TODO: multi-character selection at some point? it may be a bit complex but it'd be nice
 public class PopupBlockViewScreen extends GlowcaseScreen {
