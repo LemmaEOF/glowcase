@@ -1,6 +1,19 @@
 package dev.hephaestus.glowcase.client;
 
 import dev.hephaestus.glowcase.GlowcaseCommonProxy;
+import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
+import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
+import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
+import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
+import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.HyperlinkBlockEditScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.ItemDisplayBlockEditScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.OutlineBlockEditScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.PopupBlockEditScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.PopupBlockViewScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.SpriteBlockEditScreen;
+import dev.hephaestus.glowcase.client.gui.screen.ingame.TextBlockEditScreen;
 import dev.hephaestus.glowcase.block.entity.*;
 import dev.hephaestus.glowcase.client.gui.screen.ingame.*;
 import net.minecraft.client.MinecraftClient;
@@ -58,6 +71,14 @@ public class GlowcaseClientProxy extends GlowcaseCommonProxy {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.world != null && client.world.getBlockEntity(pos) instanceof SpriteBlockEntity be) {
 			MinecraftClient.getInstance().setScreen(new SpriteBlockEditScreen(be));
+		}
+	}
+
+	@Override
+	public void openOutlineBlockEditScreen(BlockPos pos) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world != null && client.world.getBlockEntity(pos) instanceof OutlineBlockEntity be) {
+			MinecraftClient.getInstance().setScreen(new OutlineBlockEditScreen(be));
 		}
 	}
 

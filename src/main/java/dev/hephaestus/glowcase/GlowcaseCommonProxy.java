@@ -31,6 +31,10 @@ public class GlowcaseCommonProxy {
 		//No-op
 	}
 
+	public void openOutlineBlockEditScreen(BlockPos pos) {
+		//No-op
+	}
+
 	public void openParticleDisplayBlockEditScreen(BlockPos pos) {
 		//No-op
 	}

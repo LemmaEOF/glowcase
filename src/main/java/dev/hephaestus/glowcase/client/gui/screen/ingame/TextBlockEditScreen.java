@@ -271,7 +271,7 @@ public class TextBlockEditScreen extends GlowcaseScreen implements ColorPickerIn
 			}
 
 			context.getMatrices().pop();
-			context.drawTextWithShadow(client.textRenderer, Text.translatable("gui.glowcase.scale", this.textBlockEntity.scale), 7, 7, 0xFFFFFFFF);
+			context.drawTextWithShadow(client.textRenderer, Text.translatable("gui.glowcase.scale_value", this.textBlockEntity.scale), 7, 7, 0xFFFFFFFF);
 		}
 	}
 
