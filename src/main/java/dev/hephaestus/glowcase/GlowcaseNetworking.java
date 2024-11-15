@@ -3,6 +3,7 @@ package dev.hephaestus.glowcase;
 import dev.hephaestus.glowcase.packet.C2SEditHyperlinkBlock;
 import dev.hephaestus.glowcase.packet.C2SEditItemDisplayBlock;
 import dev.hephaestus.glowcase.packet.C2SEditOutlineBlock;
+import dev.hephaestus.glowcase.packet.C2SEditParticleDisplayBlock;
 import dev.hephaestus.glowcase.packet.C2SEditPopupBlock;
 import dev.hephaestus.glowcase.packet.C2SEditSpriteBlock;
 import dev.hephaestus.glowcase.packet.C2SEditTextBlock;
