@@ -9,10 +9,15 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
+
+import java.io.FileNotFoundException;
 
 public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<SpriteBlockEntity> {
 	private static final Vector3f[] vertices = new Vector3f[] {
@@ -36,7 +41,23 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 		}
 
 		var entry = matrices.peek();
-		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(Glowcase.id("textures/sprite/" + entity.sprite + ".png")));
+		Identifier identifier = Identifier.tryParse(Glowcase.MODID, "textures/sprite/" + entity.sprite + ".png");
+		if (identifier == null) {
+			identifier = Glowcase.id("textures/sprite/invalid.png");
+		} else {
+			TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
+			ResourceManager resourceManager = ((TextureManagerAccessor) textureManager).glowcase$getResourceManager();
+			try {
+				resourceManager.getResourceOrThrow(identifier);
+			} catch (FileNotFoundException ignored) {
+				/* if the texture (file) does not exist, just replace it.
+				this happens a lot when edit a sprite block, so I'm adding it to avoid log spam
+				- SkyNotTheLimit
+				 */
+				identifier = Glowcase.id("textures/sprite/invalid.png");
+			}
+		}
+		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(identifier));
 
 		vertex(entry, vertexConsumer, vertices[0], 0, 1, entity.color);
 		vertex(entry, vertexConsumer, vertices[1], 1, 1, entity.color);
