@@ -7,9 +7,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(LockableContainerBlockEntity.class)
 public interface LockableContainerBlockEntityAccessor {
-	@Accessor
-	ContainerLock getLock();
+	@Accessor("lock")
+	ContainerLock glowcase$getLock();
 
-	@Accessor
-	void setLock(ContainerLock lock);
+	@Accessor("lock")
+	void glowcase$setLock(ContainerLock lock);
 }

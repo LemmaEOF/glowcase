@@ -2,11 +2,20 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
-import net.minecraft.client.render.*;
+import dev.hephaestus.glowcase.mixin.client.TextureManagerAccessor;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
 
@@ -32,7 +41,22 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 		}
 
 		var entry = matrices.peek();
-		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(Glowcase.id("textures/sprite/" + entity.sprite + ".png")));
+		Identifier identifier = Identifier.tryParse(Glowcase.MODID, "textures/sprite/" + entity.sprite + ".png");
+		if (identifier == null) {
+			identifier = Glowcase.id("textures/sprite/invalid.png");
+		} else {
+			TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
+			ResourceManager resourceManager = ((TextureManagerAccessor) textureManager).glowcase$getResourceManager();
+			if (resourceManager.getResource(identifier).isEmpty()) {
+				/*
+				If the texture (file) does not exist, just replace it.
+				This happens a lot when editing a sprite block, so I'm adding it to avoid log spam
+				- SkyNotTheLimit
+				 */
+				identifier = Glowcase.id("textures/sprite/invalid.png");
+			}
+		}
+		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(identifier));
 
 		vertex(entry, vertexConsumer, vertices[0], 0, 1, entity.color);
 		vertex(entry, vertexConsumer, vertices[1], 1, 1, entity.color);
@@ -43,8 +67,7 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 	}
 
 	private void vertex(
-		MatrixStack.Entry matrix, VertexConsumer vertexConsumer, Vector3f vertex, float u, float v,
-		int color) {
+		MatrixStack.Entry matrix, VertexConsumer vertexConsumer, Vector3f vertex, float u, float v, int color) {
 		vertexConsumer.vertex(matrix, vertex.x(), vertex.y(), vertex.z())
 			.color(color)
 			.texture(u, v)
