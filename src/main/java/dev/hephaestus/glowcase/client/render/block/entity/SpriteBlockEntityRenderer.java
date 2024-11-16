@@ -2,6 +2,7 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
+import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
 import dev.hephaestus.glowcase.mixin.client.TextureManagerAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -20,6 +21,8 @@ import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
 
 public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<SpriteBlockEntity> {
+	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/sprite_block.png");
+
 	private static final Vector3f[] vertices = new Vector3f[] {
 		new Vector3f(-0.5F, -0.5F, 0.0F),
 		new Vector3f(0.5F, -0.5F, 0.0F),
@@ -64,6 +67,8 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 		vertex(entry, vertexConsumer, vertices[3], 0, 0, entity.color);
 
 		matrices.pop();
+
+		if (entity.sprite.isEmpty() || BlockEntityUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
 	}
 
 	private void vertex(

@@ -1,7 +1,9 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
+import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.client.GlowcaseRenderLayers;
+import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -10,10 +12,13 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
 
 public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockEntity> {
+	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/text_block.png");
+
 	public TextBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
 		super(context);
 	}
@@ -29,36 +34,37 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 			entity.renderDirty = false;
 			Manager.markForRebuild(entity.getPos());
 		}
+		if (entity.lines.isEmpty() || BlockEntityUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
 	}
 
 	@Override
-	public void renderBaked(TextBlockEntity blockEntity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+	public void renderBaked(TextBlockEntity entity, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		matrices.push();
 		matrices.translate(0.5D, 0.5D, 0.5D);
 
-		float rotation = -(blockEntity.getCachedState().get(Properties.ROTATION) * 360) / 16.0F;
+		float rotation = -(entity.getCachedState().get(Properties.ROTATION) * 360) / 16.0F;
 		matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
 
-		switch (blockEntity.zOffset) {
+		switch (entity.zOffset) {
 			case FRONT -> matrices.translate(0D, 0D, 0.4D);
 			case BACK -> matrices.translate(0D, 0D, -0.4D);
 		}
 
-		float scale = 0.010416667F * blockEntity.scale;
+		float scale = 0.010416667F * entity.scale;
 		matrices.scale(scale, -scale, scale);
 		TextRenderer textRenderer = this.context.getTextRenderer();
 
 		double maxLength = 0;
 		double minLength = Double.MAX_VALUE;
-		for (int i = 0; i < blockEntity.lines.size(); ++i) {
-			maxLength = Math.max(maxLength, textRenderer.getWidth(blockEntity.lines.get(i)));
-			minLength = Math.min(minLength, textRenderer.getWidth(blockEntity.lines.get(i)));
+		for (int i = 0; i < entity.lines.size(); ++i) {
+			maxLength = Math.max(maxLength, textRenderer.getWidth(entity.lines.get(i)));
+			minLength = Math.min(minLength, textRenderer.getWidth(entity.lines.get(i)));
 		}
 
-		matrices.translate(0, -((blockEntity.lines.size() - 0.25) * 12) / 2D, 0D);
-		for (int i = 0; i < blockEntity.lines.size(); ++i) {
-			double width = textRenderer.getWidth(blockEntity.lines.get(i));
-			double dX = switch (blockEntity.textAlignment) {
+		matrices.translate(0, -((entity.lines.size() - 0.25) * 12) / 2D, 0D);
+		for (int i = 0; i < entity.lines.size(); ++i) {
+			double width = textRenderer.getWidth(entity.lines.get(i));
+			double dX = switch (entity.textAlignment) {
 				case LEFT -> -maxLength / 2D;
 				case CENTER -> (maxLength - width) / 2D - maxLength / 2D;
 				case RIGHT -> maxLength - width - maxLength / 2D;
@@ -67,13 +73,13 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 			matrices.push();
 			matrices.translate(dX, 0, 0);
 
-			if (blockEntity.shadowType == TextBlockEntity.ShadowType.PLATE && width > 0) {
+			if (entity.shadowType == TextBlockEntity.ShadowType.PLATE && width > 0) {
 				matrices.translate(0, 0, -0.025D);
 				drawFillRect(matrices, vertexConsumers, (int) width + 5, (i + 1) * 12 - 2, -5, i * 12 - 2, 0x44000000);
 				matrices.translate(0, 0, 0.025D);
 			}
 
-			textRenderer.draw(blockEntity.lines.get(i), 0, i * 12, blockEntity.color, blockEntity.shadowType == TextBlockEntity.ShadowType.DROP, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+			textRenderer.draw(entity.lines.get(i), 0, i * 12, entity.color, entity.shadowType == TextBlockEntity.ShadowType.DROP, matrices.peek().getPositionMatrix(), vertexConsumers, TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 
 			matrices.pop();
 		}

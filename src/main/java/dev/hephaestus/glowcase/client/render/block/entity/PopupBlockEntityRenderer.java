@@ -18,7 +18,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.RotationAxis;
 
 public record PopupBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<PopupBlockEntity> {
-	private static final MinecraftClient mc = MinecraftClient.getInstance();
 
 	public static final ItemStack STACK = new ItemStack(Glowcase.POPUP_BLOCK.get());
 
@@ -32,7 +31,7 @@ public record PopupBlockEntityRenderer(BlockEntityRendererFactory.Context contex
 		matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 		context.getItemRenderer().renderItem(STACK, ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
 
-		HitResult hitResult = mc.crosshairTarget;
+		HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;
 		if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
 			float scale = 0.025F;
 			matrices.scale(scale, scale, scale);

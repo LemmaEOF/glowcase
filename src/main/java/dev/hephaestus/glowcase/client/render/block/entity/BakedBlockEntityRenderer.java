@@ -36,8 +36,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
-	protected static final MinecraftClient mc = MinecraftClient.getInstance();
-
 	protected final BlockEntityRendererFactory.Context context;
 
 	protected BakedBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
@@ -118,11 +116,10 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 			@Override
 			public VertexConsumer getBuffer(RenderLayer l) {
 				var allocator = allocators.computeIfAbsent(l, l1 -> new BufferAllocator(l.getExpectedBufferSize()));
-				var builder = builders.computeIfAbsent(l, l1 -> new BufferBuilder(
+				return builders.computeIfAbsent(l, l1 -> new BufferBuilder(
 					allocator,
 					l.getDrawMode(),
 					l.getVertexFormat()));
-				return builder;
 			}
 
 			/**
@@ -223,7 +220,7 @@ public abstract class BakedBlockEntityRenderer<T extends BlockEntity> implements
 							boolean bakedAnything = false;
 
 							for (BlockEntity be : blockEntities) {
-								if (mc.getBlockEntityRenderDispatcher().get(be) instanceof BakedBlockEntityRenderer renderer && renderer.shouldBake(be)) {
+								if (MinecraftClient.getInstance().getBlockEntityRenderDispatcher().get(be) instanceof BakedBlockEntityRenderer renderer && renderer.shouldBake(be)) {
 									BlockPos pos = be.getPos();
 									bakeMatrices.push();
 									bakeMatrices.translate(pos.getX() & MAX_XZ_IN_REGION, pos.getY(), pos.getZ() & MAX_XZ_IN_REGION);

@@ -1,14 +1,20 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
+import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
+import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3i;
 
 public record OutlineBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<OutlineBlockEntity> {
+	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/outline_block.png");
+
 	public void render(OutlineBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		double x = entity.offset.getX();
 		double y = entity.offset.getY();
@@ -21,5 +27,7 @@ public record OutlineBlockEntityRenderer(BlockEntityRendererFactory.Context cont
 		float blue = (entity.color & 0xFF) / 255f;
 
 		WorldRenderer.drawBox(matrices, vertexConsumers.getBuffer(RenderLayer.getLines()), x, y, z, x + width, y + height, z + depth, red, green, blue, 1);
+
+		if (entity.scale.equals(Vec3i.ZERO) || BlockEntityUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
 	}
 }

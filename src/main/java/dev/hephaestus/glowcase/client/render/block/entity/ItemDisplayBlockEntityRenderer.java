@@ -1,6 +1,8 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
+import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -17,17 +19,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec2f;
 
 public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<ItemDisplayBlockEntity> {
-	private static final MinecraftClient mc = MinecraftClient.getInstance();
+	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/item_display_block.png");
 
 	@Override
 	public void render(ItemDisplayBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-		Entity camera = mc.getCameraEntity();
+		Entity camera = MinecraftClient.getInstance().getCameraEntity();
 
 		if (camera == null) return;
 
@@ -100,7 +103,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 		}
 
 		if (entity.showName) {
-			HitResult hitResult = mc.crosshairTarget;
+			HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;
 			if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
 				matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
 				matrices.translate(0, 0, -0.4);
@@ -115,5 +118,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 		}
 
 		matrices.pop();
+
+		if (!entity.hasItem() || BlockEntityUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
 	}
 }
