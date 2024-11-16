@@ -74,18 +74,21 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 	@Override
 	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if (!(world.getBlockEntity(pos) instanceof ItemAcceptorBlockEntity be)) return ActionResult.CONSUME;
-		if (canEditGlowcase(player, pos) && world.isClient) {
-			Glowcase.proxy.openItemAcceptorBlockEditScreen(be.getPos());
+		if (canEditGlowcase(player, pos)) {
+			if (world.isClient) {
+				Glowcase.proxy.openItemAcceptorBlockEditScreen(be.getPos());
+			}
+			return ActionResult.SUCCESS;
 		}
-		return ActionResult.SUCCESS;
+		return ActionResult.PASS;
 	}
 
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		if (!(world.getBlockEntity(pos) instanceof ItemAcceptorBlockEntity be)) return ItemActionResult.CONSUME;
 
-		if (!stack.isEmpty()) {
-			if (!world.isClient() && !world.getBlockTickScheduler().isQueued(pos, this) && be.isItemAccepted(stack)) {
+		if (be.isItemAccepted(stack) && !world.getBlockTickScheduler().isQueued(pos, this)) {
+			if (!world.isClient()) {
 				// Remove items
 				ItemStack newStack = stack.copyWithCount(be.count);
 				stack.decrementUnlessCreative(be.count, player);
@@ -100,6 +103,7 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 					addToFirstFreeSlot(inventory, newStack);
 				}
 			}
+
 			return ItemActionResult.SUCCESS;
 		}
 		return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
