@@ -3,6 +3,7 @@ package dev.hephaestus.glowcase.client;
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.client.render.block.entity.BakedBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.HyperlinkBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.ItemAcceptorBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.OutlineBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.PopupBlockEntityRenderer;
