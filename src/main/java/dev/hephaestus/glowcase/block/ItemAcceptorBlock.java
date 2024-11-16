@@ -88,7 +88,7 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 			if (!world.isClient() && !world.getBlockTickScheduler().isQueued(pos, this) && be.isItemAccepted(stack)) {
 				// Remove items
 				ItemStack newStack = stack.copyWithCount(be.count);
-				stack.setCount(stack.getCount() - be.count);
+				stack.decrementUnlessCreative(be.count, player);
 
 				// Schedule redstone pulse
 				world.scheduleBlockTick(pos, this, 2);
