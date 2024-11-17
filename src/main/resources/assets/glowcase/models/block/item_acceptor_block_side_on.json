@@ -1,6 +1,0 @@
-{
-	"parent": "glowcase:block/item_acceptor_block_side",
-	"textures": {
-		"north": "block/observer_back_on"
-	}
-}
