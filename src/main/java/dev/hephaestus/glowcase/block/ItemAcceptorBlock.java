@@ -229,6 +229,8 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 	@Override
 	public void appendTooltip(ItemStack itemStack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
 		tooltip.add(Text.translatable("block.glowcase.item_acceptor_block.tooltip.0").formatted(Formatting.GRAY));
-		tooltip.add(Text.translatable("block.glowcase.item_acceptor_block.tooltip.1").formatted(Formatting.DARK_GRAY));
+		tooltip.add(Text.translatable("block.glowcase.item_acceptor_block.tooltip.1").formatted(Formatting.BLUE));
+		tooltip.add(Text.translatable("block.glowcase.item_acceptor_block.tooltip.2").formatted(Formatting.BLUE));
+		tooltip.add(Text.translatable("block.glowcase.item_acceptor_block.tooltip.3").formatted(Formatting.DARK_GRAY));
 	}
 }
