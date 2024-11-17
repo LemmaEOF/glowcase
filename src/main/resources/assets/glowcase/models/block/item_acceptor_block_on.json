@@ -1,6 +1,6 @@
 {
 	"parent": "glowcase:block/item_acceptor_block",
 	"textures": {
-		"down": "block/observer_back_on"
+		"front": "glowcase:block/item_acceptor_front_on"
 	}
 }

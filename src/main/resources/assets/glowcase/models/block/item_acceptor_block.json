@@ -1,18 +1,8 @@
 {
-	"parent": "glowcase:block/cube_inner_faces",
+	"parent": "minecraft:block/orientable",
 	"textures": {
-		"particle": "block/glass",
-		"down": "block/observer_back",
-		"up": "block/glass",
-		"north": "block/glass",
-		"east": "block/glass",
-		"south": "block/glass",
-		"west": "block/glass",
-		"inner_down": "block/smooth_stone",
-		"inner_up": "glowcase:block/invisible",
-		"inner_north": "glowcase:block/invisible",
-		"inner_east": "glowcase:block/invisible",
-		"inner_south": "glowcase:block/invisible",
-		"inner_west": "glowcase:block/invisible"
+		"front": "glowcase:block/item_acceptor_front",
+		"side": "minecraft:block/observer_side",
+		"top": "minecraft:block/furnace_top"
 	}
 }

@@ -1,39 +1,33 @@
 {
 	"variants": {
-		"facing=down,powered=false": {
+		"facing=north,powered=false": {
 			"model": "glowcase:block/item_acceptor_block"
 		},
 		"facing=east,powered=false": {
-			"model": "glowcase:block/item_acceptor_block_side",
+			"model": "glowcase:block/item_acceptor_block",
 			"y": 90
 		},
-		"facing=north,powered=false": {
-			"model": "glowcase:block/item_acceptor_block_side"
-		},
 		"facing=south,powered=false": {
-			"model": "glowcase:block/item_acceptor_block_side",
+			"model": "glowcase:block/item_acceptor_block",
 			"y": 180
 		},
 		"facing=west,powered=false": {
-			"model": "glowcase:block/item_acceptor_block_side",
+			"model": "glowcase:block/item_acceptor_block",
 			"y": 270
 		},
-		"facing=down,powered=true": {
+		"facing=north,powered=true": {
 			"model": "glowcase:block/item_acceptor_block_on"
 		},
 		"facing=east,powered=true": {
-			"model": "glowcase:block/item_acceptor_block_side_on",
+			"model": "glowcase:block/item_acceptor_block_on",
 			"y": 90
 		},
-		"facing=north,powered=true": {
-			"model": "glowcase:block/item_acceptor_block_side_on"
-		},
 		"facing=south,powered=true": {
-			"model": "glowcase:block/item_acceptor_block_side_on",
+			"model": "glowcase:block/item_acceptor_block_on",
 			"y": 180
 		},
 		"facing=west,powered=true": {
-			"model": "glowcase:block/item_acceptor_block_side_on",
+			"model": "glowcase:block/item_acceptor_block_on",
 			"y": 270
 		}
 	}
