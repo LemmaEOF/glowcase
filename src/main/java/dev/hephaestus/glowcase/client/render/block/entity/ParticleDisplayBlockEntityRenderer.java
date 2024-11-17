@@ -14,6 +14,6 @@ public record ParticleDisplayBlockEntityRenderer(BlockEntityRendererFactory.Cont
 	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/particle_display.png");
 
 	public void render(ParticleDisplayBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-		if (entity.count.equals(DeviatedInteger.ZERO) || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
+		if (entity.count.equals(DeviatedInteger.ZERO) || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers);
 	}
 }
