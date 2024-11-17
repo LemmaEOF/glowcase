@@ -25,7 +25,7 @@ public class BlockEntityRenderUtil {
 		new Vector3f(-0.5F, 0.5F, 0.0F)
 	};
 
-	public static void renderPlaceholder(BlockState state, Identifier texture, Quaternionf rotation, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+	public static void renderPlaceholder(BlockState state, Identifier texture, float scale, Quaternionf rotation, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
 		matrices.push();
 		matrices.translate(0.5, 0.5, 0.5);
 		if (state.contains(Properties.ROTATION)) {
@@ -33,6 +33,7 @@ public class BlockEntityRenderUtil {
 			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(blockRotation));
 		}
 		matrices.multiply(rotation);
+		matrices.scale(scale, scale, scale);
 		var entry = matrices.peek();
 		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture));
 		placeholderVertex(entry, vertexConsumer, placeholderVertices[0], 0, 1);
@@ -46,8 +47,16 @@ public class BlockEntityRenderUtil {
 		matrices.pop();
 	}
 
+	public static void renderPlaceholder(BlockState state, Identifier texture, float scale, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+		renderPlaceholder(state, texture, scale, RotationAxis.POSITIVE_Y.rotationDegrees(0), matrices, vertexConsumers);
+	}
+
+	public static void renderPlaceholder(BlockState state, Identifier texture, Quaternionf rotation, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+		renderPlaceholder(state, texture, 1.0F, rotation, matrices, vertexConsumers);
+	}
+
 	public static void renderPlaceholder(BlockState state, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
-		renderPlaceholder(state, texture, RotationAxis.POSITIVE_Y.rotationDegrees(0), matrices, vertexConsumers);
+		renderPlaceholder(state, texture, 1.0F, RotationAxis.POSITIVE_Y.rotationDegrees(0), matrices, vertexConsumers);
 	}
 
 	public static boolean shouldRenderPlaceholder(BlockPos pos) {
