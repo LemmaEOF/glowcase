@@ -79,10 +79,10 @@ public class Glowcase implements ModInitializer {
 		.icon(() -> new ItemStack(Items.GLOWSTONE))
 		.entries((displayContext, entries) -> {
 			entries.add(TEXT_BLOCK_ITEM.get());
-			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
 			entries.add(SPRITE_BLOCK_ITEM.get());
 			entries.add(OUTLINE_BLOCK_ITEM.get());
 			entries.add(PARTICLE_DISPLAY_ITEM.get());
+			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
 			entries.add(HYPERLINK_BLOCK_ITEM.get());
 			entries.add(POPUP_BLOCK_ITEM.get());
 			entries.add(LOCK_ITEM.get());
