@@ -10,10 +10,8 @@ import dev.hephaestus.glowcase.client.render.block.entity.PopupBlockEntityRender
 import dev.hephaestus.glowcase.client.render.block.entity.SpriteBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 
 public class GlowcaseClient implements ClientModInitializer {
@@ -31,7 +29,5 @@ public class GlowcaseClient implements ClientModInitializer {
 
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(BakedBlockEntityRenderer.Manager::render);
 		InvalidateRenderStateCallback.EVENT.register(BakedBlockEntityRenderer.Manager::reset);
-
-		BlockRenderLayerMap.INSTANCE.putBlock(Glowcase.ITEM_ACCEPTOR_BLOCK.get(), RenderLayer.getCutout());
 	}
 }
