@@ -2,7 +2,7 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
-import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
+import dev.hephaestus.glowcase.client.util.BlockEntityRenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.Camera;
@@ -23,7 +23,7 @@ public record PopupBlockEntityRenderer(BlockEntityRendererFactory.Context contex
 	public void render(PopupBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		Camera camera = context.getRenderDispatcher().camera;
 		Quaternionf rotation = RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()).mul(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-		BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, rotation, matrices, vertexConsumers);
+		BlockEntityRenderUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, rotation, matrices, vertexConsumers);
 
 		matrices.push();
 		HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;

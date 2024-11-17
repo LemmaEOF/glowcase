@@ -2,7 +2,7 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
-import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
+import dev.hephaestus.glowcase.client.util.BlockEntityRenderUtil;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
@@ -28,6 +28,6 @@ public record OutlineBlockEntityRenderer(BlockEntityRendererFactory.Context cont
 
 		WorldRenderer.drawBox(matrices, vertexConsumers.getBuffer(RenderLayer.getLines()), x, y, z, x + width, y + height, z + depth, red, green, blue, 1);
 
-		if (entity.scale.equals(Vec3i.ZERO) || BlockEntityUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
+		if (entity.scale.equals(Vec3i.ZERO) || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
 	}
 }

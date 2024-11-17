@@ -17,7 +17,7 @@ import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class BlockEntityUtil {
+public class BlockEntityRenderUtil {
 	private static final Vector3f[] placeholderVertices = new Vector3f[] {
 		new Vector3f(-0.5F, -0.5F, 0.0F),
 		new Vector3f(0.5F, -0.5F, 0.0F),

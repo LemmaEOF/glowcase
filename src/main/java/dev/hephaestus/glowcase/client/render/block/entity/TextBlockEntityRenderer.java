@@ -3,7 +3,7 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.client.GlowcaseRenderLayers;
-import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
+import dev.hephaestus.glowcase.client.util.BlockEntityRenderUtil;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -34,7 +34,7 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 			entity.renderDirty = false;
 			Manager.markForRebuild(entity.getPos());
 		}
-		if (entity.lines.isEmpty() || BlockEntityUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
+		if (entity.lines.isEmpty() || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
 	}
 
 	@Override

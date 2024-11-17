@@ -2,7 +2,7 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
-import dev.hephaestus.glowcase.client.util.BlockEntityUtil;
+import dev.hephaestus.glowcase.client.util.BlockEntityRenderUtil;
 import dev.hephaestus.glowcase.mixin.client.TextureManagerAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -68,7 +68,7 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 
 		matrices.pop();
 
-		if (entity.sprite.isEmpty() || BlockEntityUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
+		if (entity.sprite.isEmpty() || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, matrices, vertexConsumers);
 	}
 
 	private void vertex(
