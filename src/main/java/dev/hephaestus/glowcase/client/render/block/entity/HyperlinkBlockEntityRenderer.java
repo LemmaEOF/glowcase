@@ -22,7 +22,7 @@ public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context co
 
 	public void render(HyperlinkBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		Camera camera = context.getRenderDispatcher().camera;
-		Quaternionf rotation = RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()).mul(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
+		Quaternionf rotation = RotationAxis.POSITIVE_Y.rotationDegrees(180.0F - camera.getYaw()).mul(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 		BlockEntityRenderUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, rotation, matrices, vertexConsumers);
 
 		matrices.push();
