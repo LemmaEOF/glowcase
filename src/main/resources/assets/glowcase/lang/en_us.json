@@ -2,7 +2,7 @@
 	"itemGroup.glowcase.items": "Glowcase",
 	"block.glowcase.text_block": "Text Block",
 	"block.glowcase.hyperlink_block": "Hyperlink Block",
-	"block.glowcase.item_display_block": "Item Display Block",
+	"block.glowcase.item_display_block": "Item Display",
 	"block.glowcase.particle_display": "Particle Display",
 	"block.glowcase.popup_block": "Popup Block",
 	"block.glowcase.sprite_block": "Sprite Block",
