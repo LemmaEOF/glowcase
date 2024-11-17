@@ -13,7 +13,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
 
@@ -26,8 +25,12 @@ public record PopupBlockEntityRenderer(BlockEntityRendererFactory.Context contex
 		BlockEntityRenderUtil.renderPlaceholder(entity.getCachedState(), ITEM_TEXTURE, 0.5F, rotation, matrices, vertexConsumers);
 
 		matrices.push();
-		HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;
-		if (hitResult instanceof BlockHitResult && ((BlockHitResult) hitResult).getBlockPos().equals(entity.getPos())) {
+		if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult bhr && bhr.getBlockPos().equals(entity.getPos())) {
+			matrices.translate(0.5D, 0.5D, 0.5D);
+			matrices.scale(0.5F, 0.5F, 0.5F);
+			float n = -camera.getYaw();
+			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(n));
+			matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
 			float scale = 0.025F;
 			matrices.scale(scale, scale, scale);
 			matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180));
