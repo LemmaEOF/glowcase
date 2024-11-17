@@ -29,7 +29,7 @@ public class ItemAcceptorBlockEditScreen extends GlowcaseScreen {
 		if (!item.equals(Identifier.ofVanilla("air"))) {
 			this.itemWidget.setText((this.itemAcceptorBlockEntity.isItemTag ? "#" : "") + item);
 		}
-		this.itemWidget.setPlaceholder(Text.translatable("gui.glowcase.itemOrTag"));
+		this.itemWidget.setPlaceholder(Text.translatable("gui.glowcase.item_or_tag"));
 		this.itemWidget.setTextPredicate(s -> s.matches("#?[a-z0-9_.-]*:?[a-z0-9_./-]*"));
 
 		this.countWidget = new TextFieldWidget(this.textRenderer, width / 2 - 75, height / 2 + 5, 150, 20, Text.empty());

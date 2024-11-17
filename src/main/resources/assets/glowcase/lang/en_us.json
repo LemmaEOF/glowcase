@@ -37,7 +37,7 @@
 	"gui.glowcase.count_std_dev": "Amount Deviation",
 	"gui.glowcase.tick_rate_mean": "Mean Tick Rate",
 	"gui.glowcase.tick_rate_std_dev": "Tick Rate Deviation",
-	"gui.glowcase.itemOrTag": "Item or Item Tag",
+	"gui.glowcase.item_or_tag": "Item or Item Tag",
 	"gui.glowcase.count": "Count",
 	"block.glowcase.generic.tooltip": "Interact with a glowcase item to edit",
 	"block.glowcase.text_block.tooltip.0": "Displays formatted text",

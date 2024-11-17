@@ -38,7 +38,7 @@ public class ItemAcceptorBlockEntity extends BlockEntity {
 
 		tag.putString("item", this.item.toString());
 		tag.putInt("count", this.count);
-		tag.putBoolean("isItemTag", this.isItemTag);
+		tag.putBoolean("is_item_tag", this.isItemTag);
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class ItemAcceptorBlockEntity extends BlockEntity {
 
 		setItem(Identifier.tryParse(tag.getString("item")));
 		this.count = tag.getInt("count");
-		this.isItemTag = tag.getBoolean("isItemTag");
+		this.isItemTag = tag.getBoolean("is_item_tag");
 	}
 
 	public Identifier getItem() {
