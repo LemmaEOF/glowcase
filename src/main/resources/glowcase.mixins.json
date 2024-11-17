@@ -9,6 +9,7 @@
 	],
 	"client": [
 		"client.KeyboardMixin",
+		"client.RenderSystemAccessor",
 		"client.TextureManagerAccessor"
 	],
 	"server": [],

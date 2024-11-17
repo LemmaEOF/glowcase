@@ -25,6 +25,7 @@ import java.util.List;
 public class ItemAcceptorBlockEntity extends BlockEntity {
 	private Identifier item = Identifier.ofVanilla("air");
 	public int count = 1;
+	public OutputDirection outputDirection = OutputDirection.BACK;
 	public boolean isItemTag = false;
 	private List<Item> itemTagList = List.of();
 
@@ -39,6 +40,7 @@ public class ItemAcceptorBlockEntity extends BlockEntity {
 		tag.putString("item", this.item.toString());
 		tag.putInt("count", this.count);
 		tag.putBoolean("is_item_tag", this.isItemTag);
+		tag.putString("output_direction", this.outputDirection.name());
 	}
 
 	@Override
@@ -48,6 +50,7 @@ public class ItemAcceptorBlockEntity extends BlockEntity {
 		setItem(Identifier.tryParse(tag.getString("item")));
 		this.count = tag.getInt("count");
 		this.isItemTag = tag.getBoolean("is_item_tag");
+		this.outputDirection = OutputDirection.valueOf(tag.getString("output_direction"));
 	}
 
 	public Identifier getItem() {
@@ -105,5 +108,10 @@ public class ItemAcceptorBlockEntity extends BlockEntity {
 	@Override
 	public Packet<ClientPlayPacketListener> toUpdatePacket() {
 		return BlockEntityUpdateS2CPacket.create(this);
+	}
+
+	public enum OutputDirection
+	{
+		TOP, BACK, BOTTOM
 	}
 }

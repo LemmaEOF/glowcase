@@ -38,12 +38,12 @@ import java.util.List;
 
 public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvider {
 	private static final VoxelShape OUTLINE = VoxelShapes.cuboid(0, 0, 0, 1, 1, 1);
-	public static final DirectionProperty FACING = Properties.HOPPER_FACING;
+	public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 	public static final BooleanProperty POWERED = Properties.POWERED;
 
 	public ItemAcceptorBlock() {
 		super();
-		this.setDefaultState(this.getDefaultState().with(FACING, Direction.DOWN).with(POWERED, false));
+		this.setDefaultState(this.getDefaultState().with(FACING, Direction.NORTH).with(POWERED, false));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
 		Direction direction = ctx.getSide().getOpposite();
-		return this.getDefaultState().with(FACING, direction.getAxis() == Direction.Axis.Y ? Direction.DOWN : direction);
+		return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 				world.scheduleBlockTick(pos, this, 2);
 
 				// Attempt to insert items
-				Inventory inventory = getInventoryAt(world, pos.offset(state.get(FACING)));
+				Inventory inventory = getInventoryAt(world, pos.offset(getOutputDirection(world, pos, state)));
 
 				if (inventory != null) {
 					addToFirstFreeSlot(inventory, newStack);
@@ -164,7 +164,7 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 	}
 
 	protected void updateNeighbors(World world, BlockPos pos, BlockState state) {
-		Direction direction = state.get(FACING);
+		Direction direction = getOutputDirection(world, pos, state);
 		BlockPos blockPos = pos.offset(direction);
 		world.updateNeighbor(blockPos, this, pos);
 		world.updateNeighborsExcept(blockPos, this, direction.getOpposite());
@@ -177,12 +177,12 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 
 	@Override
 	protected int getStrongRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-		return state.getWeakRedstonePower(world, pos, direction);
+		return 0; //state.getWeakRedstonePower(world, pos, direction);
 	}
 
 	@Override
 	protected int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-		return state.get(POWERED) && state.get(FACING) == direction.getOpposite() ? 15 : 0;
+		return state.get(POWERED) && getOutputDirection(world, pos, state) == direction.getOpposite() ? 15 : 0;
 	}
 
 	@Override
@@ -192,6 +192,18 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 				this.updateNeighbors(world, pos, state.with(POWERED, false));
 			}
 		}
+	}
+
+	public Direction getOutputDirection(BlockView world, BlockPos pos, BlockState state) {
+		if (world.getBlockEntity(pos) instanceof ItemAcceptorBlockEntity blockEntity) {
+			return switch (blockEntity.outputDirection) {
+				case BOTTOM -> Direction.DOWN;
+				case BACK -> state.get(FACING).getOpposite();
+				case TOP -> Direction.UP;
+			};
+		}
+
+		return state.get(FACING).getOpposite();
 	}
 
 	@Nullable

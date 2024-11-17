@@ -39,6 +39,7 @@
 	"gui.glowcase.tick_rate_std_dev": "Tick Rate Deviation",
 	"gui.glowcase.item_or_tag": "Item or Item Tag",
 	"gui.glowcase.count": "Count",
+	"gui.glowcase.output_direction": "Output Direction: %s",
 	"block.glowcase.generic.tooltip": "Interact with a glowcase item to edit",
 	"block.glowcase.text_block.tooltip.0": "Displays formatted text",
 	"block.glowcase.text_block.tooltip.1": "Supports Placeholder QuickText",
