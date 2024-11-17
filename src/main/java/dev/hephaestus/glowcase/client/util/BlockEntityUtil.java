@@ -18,13 +18,15 @@ import org.joml.Vector3f;
 
 public class BlockEntityUtil {
 	private static final Vector3f[] placeholderVertices = new Vector3f[] {
-		new Vector3f(0, 0, 0.5F),
-		new Vector3f(1, 0, 0.5F),
-		new Vector3f(1, 1, 0.5F),
-		new Vector3f(0, 1, 0.5F)
+		new Vector3f(-0.5F, -0.5F, 0.0F),
+		new Vector3f(0.5F, -0.5F, 0.0F),
+		new Vector3f(0.5F, 0.5F, 0.0F),
+		new Vector3f(-0.5F, 0.5F, 0.0F)
 	};
 
 	public static void renderPlaceholder(BlockState state, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+		matrices.push();
+		matrices.translate(0.5, 0.5, 0.5);
 		if (state.contains(Properties.ROTATION)) {
 			float rotation = -(state.get(Properties.ROTATION) * 360) / 16.0F;
 			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
@@ -39,6 +41,7 @@ public class BlockEntityUtil {
 		placeholderVertex(entry, vertexConsumer, placeholderVertices[2], 1, 0);
 		placeholderVertex(entry, vertexConsumer, placeholderVertices[1], 1, 1);
 		placeholderVertex(entry, vertexConsumer, placeholderVertices[0], 0, 1);
+		matrices.pop();
 	}
 
 	public static boolean shouldRenderPlaceholder(BlockPos pos) {
