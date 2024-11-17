@@ -85,28 +85,32 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 
 	@Override
 	protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		if (!(world.getBlockEntity(pos) instanceof ItemAcceptorBlockEntity be)) return ItemActionResult.CONSUME;
+		if (!(world.getBlockEntity(pos) instanceof ItemAcceptorBlockEntity be)) {
+			return ItemActionResult.CONSUME;
+		}
 
-		if (be.isItemAccepted(stack) && !world.getBlockTickScheduler().isQueued(pos, this)) {
-			if (!world.isClient()) {
-				// Remove items
-				ItemStack newStack = stack.copyWithCount(be.count);
-				stack.decrementUnlessCreative(be.count, player);
+		if (!be.isItemAccepted(stack)) {
+			return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		}
 
-				// Schedule redstone pulse
-				world.scheduleBlockTick(pos, this, 2);
+		if (world.getBlockTickScheduler().isQueued(pos, this) || state.get(POWERED)) {
+			return ItemActionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+		}
 
-				// Attempt to insert items
-				Inventory inventory = getInventoryAt(world, pos.offset(getOutputDirection(world, pos, state)));
+		if (!world.isClient()) {
+			// Remove items
+			ItemStack newStack = stack.copyWithCount(be.count);
+			stack.decrementUnlessCreative(be.count, player);
 
-				if (inventory != null) {
-					addToFirstFreeSlot(inventory, newStack);
-				}
+			// Attempt to insert items
+			if (getInventoryAt(world, pos.offset(getOutputDirection(world, pos, state))) instanceof Inventory inventory) {
+				addToFirstFreeSlot(inventory, newStack);
 			}
 
-			return ItemActionResult.SUCCESS;
+			// Schedule redstone pulse
+			world.scheduleBlockTick(pos, this, 2);
 		}
-		return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return ItemActionResult.SUCCESS;
 	}
 
 	private static Inventory getInventoryAt(World world, BlockPos pos) {
@@ -157,7 +161,7 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 			world.setBlockState(pos, state.with(POWERED, false), Block.NOTIFY_LISTENERS);
 		} else {
 			world.setBlockState(pos, state.with(POWERED, true), Block.NOTIFY_LISTENERS);
-			world.scheduleBlockTick(pos, this, 2);
+			world.scheduleBlockTick(pos, this, 4);
 		}
 
 		this.updateNeighbors(world, pos, state);
@@ -177,7 +181,7 @@ public class ItemAcceptorBlock extends GlowcaseBlock implements BlockEntityProvi
 
 	@Override
 	protected int getStrongRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-		return 0; //state.getWeakRedstonePower(world, pos, direction);
+		return 0;
 	}
 
 	@Override
