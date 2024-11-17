@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class BlockEntityUtil {
@@ -24,13 +25,14 @@ public class BlockEntityUtil {
 		new Vector3f(-0.5F, 0.5F, 0.0F)
 	};
 
-	public static void renderPlaceholder(BlockState state, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+	public static void renderPlaceholder(BlockState state, Identifier texture, Quaternionf rotation, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
 		matrices.push();
 		matrices.translate(0.5, 0.5, 0.5);
 		if (state.contains(Properties.ROTATION)) {
-			float rotation = -(state.get(Properties.ROTATION) * 360) / 16.0F;
-			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(rotation));
+			float blockRotation = -(state.get(Properties.ROTATION) * 360) / 16.0F;
+			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(blockRotation));
 		}
+		matrices.multiply(rotation);
 		var entry = matrices.peek();
 		var vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(texture));
 		placeholderVertex(entry, vertexConsumer, placeholderVertices[0], 0, 1);
@@ -42,6 +44,10 @@ public class BlockEntityUtil {
 		placeholderVertex(entry, vertexConsumer, placeholderVertices[1], 1, 1);
 		placeholderVertex(entry, vertexConsumer, placeholderVertices[0], 0, 1);
 		matrices.pop();
+	}
+
+	public static void renderPlaceholder(BlockState state, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+		renderPlaceholder(state, texture, RotationAxis.POSITIVE_Y.rotationDegrees(0), matrices, vertexConsumers);
 	}
 
 	public static boolean shouldRenderPlaceholder(BlockPos pos) {
