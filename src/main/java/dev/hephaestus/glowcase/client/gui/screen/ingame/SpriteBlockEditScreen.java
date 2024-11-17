@@ -35,7 +35,7 @@ public class SpriteBlockEditScreen extends GlowcaseScreen {
 			}
 		});
 
-		this.rotationWidget = ButtonWidget.builder(Text.literal("Rotate"), (action) -> {
+		this.rotationWidget = ButtonWidget.builder(Text.translatable("gui.glowcase.rotate"), (action) -> {
 			this.spriteBlockEntity.rotation += 45;
 			if (this.spriteBlockEntity.rotation >= 360) {
 				this.spriteBlockEntity.rotation = 0;

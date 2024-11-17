@@ -25,6 +25,7 @@
 	"gui.glowcase.url": "URL",
 	"gui.glowcase.offset": "Offset",
 	"gui.glowcase.scale": "Scale",
+	"gui.glowcase.rotate": "Rotate",
 	"gui.glowcase.x": "X",
 	"gui.glowcase.y": "Y",
 	"gui.glowcase.z": "Z",
