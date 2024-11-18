@@ -1,0 +1,6 @@
+{
+	"parent": "glowcase:block/item_acceptor_block",
+	"textures": {
+		"front": "glowcase:block/item_acceptor_front_on"
+	}
+}

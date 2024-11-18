@@ -1,0 +1,8 @@
+{
+	"parent": "minecraft:block/orientable",
+	"textures": {
+		"front": "glowcase:block/item_acceptor_front",
+		"side": "minecraft:block/observer_side",
+		"top": "minecraft:block/furnace_top"
+	}
+}

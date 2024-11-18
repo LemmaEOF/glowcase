@@ -3,6 +3,7 @@ package dev.hephaestus.glowcase;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import dev.hephaestus.glowcase.block.HyperlinkBlock;
+import dev.hephaestus.glowcase.block.ItemAcceptorBlock;
 import dev.hephaestus.glowcase.block.ItemDisplayBlock;
 import dev.hephaestus.glowcase.block.OutlineBlock;
 import dev.hephaestus.glowcase.block.ParticleDisplayBlock;
@@ -10,6 +11,7 @@ import dev.hephaestus.glowcase.block.PopupBlock;
 import dev.hephaestus.glowcase.block.SpriteBlock;
 import dev.hephaestus.glowcase.block.TextBlock;
 import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
+import dev.hephaestus.glowcase.block.entity.ItemAcceptorBlockEntity;
 import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
 import dev.hephaestus.glowcase.block.entity.ParticleDisplayBlockEntity;
@@ -55,7 +57,6 @@ public class Glowcase implements ModInitializer {
 	public static final Supplier<BlockItem> PARTICLE_DISPLAY_ITEM = registerItem("particle_display", () -> new BlockItem(PARTICLE_DISPLAY.get(), new Item.Settings()));
 	public static final Supplier<BlockEntityType<ParticleDisplayBlockEntity>> PARTICLE_DISPLAY_BLOCK_ENTITY = registerBlockEntity("particle_display", () -> BlockEntityType.Builder.create(ParticleDisplayBlockEntity::new, PARTICLE_DISPLAY.get()).build(null));
 
-
 	public static final Supplier<TextBlock> TEXT_BLOCK = registerBlock("text_block", TextBlock::new);
 	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = registerItem("text_block", () -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
 	public static final Supplier<BlockEntityType<TextBlockEntity>> TEXT_BLOCK_ENTITY = registerBlockEntity("text_block", () -> BlockEntityType.Builder.create(TextBlockEntity::new, TEXT_BLOCK.get()).build(null));
@@ -72,6 +73,10 @@ public class Glowcase implements ModInitializer {
 	public static final Supplier<BlockItem> OUTLINE_BLOCK_ITEM = registerItem("outline_block", () -> new BlockItem(OUTLINE_BLOCK.get(), new Item.Settings()));
 	public static final Supplier<BlockEntityType<OutlineBlockEntity>> OUTLINE_BLOCK_ENTITY = registerBlockEntity("outline_block", () -> BlockEntityType.Builder.create(OutlineBlockEntity::new, OUTLINE_BLOCK.get()).build(null));
 
+	public static final Supplier<ItemAcceptorBlock> ITEM_ACCEPTOR_BLOCK = registerBlock("item_acceptor_block", ItemAcceptorBlock::new);
+	public static final Supplier<BlockItem> ITEM_ACCEPTOR_BLOCK_ITEM = registerItem("item_acceptor_block", () -> new BlockItem(ITEM_ACCEPTOR_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<ItemAcceptorBlockEntity>> ITEM_ACCEPTOR_BLOCK_ENTITY = registerBlockEntity("item_acceptor_block", () -> BlockEntityType.Builder.create(ItemAcceptorBlockEntity::new, ITEM_ACCEPTOR_BLOCK.get()).build(null));
+
 	public static final Supplier<Item> LOCK_ITEM = registerItem("lock", () -> new LockItem(new Item.Settings()));
 
 	public static final Supplier<ItemGroup> ITEM_GROUP = registerItemGroup("items", () -> FabricItemGroup.builder()
@@ -83,6 +88,7 @@ public class Glowcase implements ModInitializer {
 			entries.add(OUTLINE_BLOCK_ITEM.get());
 			entries.add(PARTICLE_DISPLAY_ITEM.get());
 			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
+			entries.add(ITEM_ACCEPTOR_BLOCK_ITEM.get());
 			entries.add(HYPERLINK_BLOCK_ITEM.get());
 			entries.add(POPUP_BLOCK_ITEM.get());
 			entries.add(LOCK_ITEM.get());

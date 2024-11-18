@@ -7,6 +7,7 @@
 		"glowcase:popup_block",
 		"glowcase:sprite_block",
 		"glowcase:outline_block",
-		"glowcase:particle_display"
+		"glowcase:particle_display",
+		"glowcase:item_acceptor_block"
 	]
 }
