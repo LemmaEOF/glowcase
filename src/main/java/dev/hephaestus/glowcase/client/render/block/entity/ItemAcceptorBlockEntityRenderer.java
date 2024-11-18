@@ -26,12 +26,11 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public record ItemAcceptorBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<ItemAcceptorBlockEntity> {
-	private static final MinecraftClient mc = MinecraftClient.getInstance();
 	private static final Quaternionf ITEM_LIGHT_ROTATION_3D = RotationAxis.POSITIVE_X.rotationDegrees(-15).mul(RotationAxis.POSITIVE_Y.rotationDegrees(15));
 	private static final Quaternionf ITEM_LIGHT_ROTATION_FLAT = RotationAxis.POSITIVE_X.rotationDegrees(-45);
 
 	public void render(ItemAcceptorBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-		Entity camera = mc.getCameraEntity();
+		Entity camera = MinecraftClient.getInstance().getCameraEntity();
 
 		if (camera == null) return;
 
