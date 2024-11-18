@@ -14,15 +14,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.RotationAxis;
-import org.joml.Quaternionf;
 
 public record HyperlinkBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<HyperlinkBlockEntity> {
 	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/hyperlink_block.png");
 
 	public void render(HyperlinkBlockEntity entity, float f, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		Camera camera = context.getRenderDispatcher().camera;
-		Quaternionf rotation = RotationAxis.POSITIVE_Y.rotationDegrees(180.0F-camera.getYaw()).mul(RotationAxis.POSITIVE_X.rotationDegrees(-camera.getPitch()));
-		BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 0.5F, rotation, matrices, vertexConsumers);
+		BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 0.5F, matrices, vertexConsumers, camera);
 
 		matrices.push();
 		if (MinecraftClient.getInstance().crosshairTarget instanceof BlockHitResult bhr && bhr.getBlockPos().equals(entity.getPos())) {

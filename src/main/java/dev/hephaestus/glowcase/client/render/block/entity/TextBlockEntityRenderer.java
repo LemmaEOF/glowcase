@@ -34,7 +34,7 @@ public class TextBlockEntityRenderer extends BakedBlockEntityRenderer<TextBlockE
 			entity.renderDirty = false;
 			Manager.markForRebuild(entity.getPos());
 		}
-		if (entity.lines.isEmpty() || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers);
+		if (entity.lines.stream().allMatch(t -> t.getString().isBlank()) || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers, context.getRenderDispatcher().camera);
 	}
 
 	@Override

@@ -68,7 +68,7 @@ public record SpriteBlockEntityRenderer(BlockEntityRendererFactory.Context conte
 
 		matrices.pop();
 
-		if (entity.sprite.isEmpty() || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers);
+		if (entity.sprite.isEmpty() || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers, context.getRenderDispatcher().camera);
 	}
 
 	private void vertex(

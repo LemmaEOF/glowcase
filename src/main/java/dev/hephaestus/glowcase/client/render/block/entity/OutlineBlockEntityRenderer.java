@@ -28,6 +28,6 @@ public record OutlineBlockEntityRenderer(BlockEntityRendererFactory.Context cont
 
 		WorldRenderer.drawBox(matrices, vertexConsumers.getBuffer(RenderLayer.getLines()), x, y, z, x + width, y + height, z + depth, red, green, blue, 1);
 
-		if (entity.scale.equals(Vec3i.ZERO) || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers);
+		if (entity.scale.equals(Vec3i.ZERO) || BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos())) BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers, context.getRenderDispatcher().camera);
 	}
 }
