@@ -10,13 +10,10 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -70,37 +67,11 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 		ItemStack stack = entity.getDisplayedStack();
 		Text name;
-		if (stack.getItem() instanceof SpawnEggItem) {
-			matrices.push();
-			Entity renderEntity = entity.getDisplayEntity();
-			if (renderEntity != null) {
-				name = stack.get(DataComponentTypes.CUSTOM_NAME);
-				if (name == null) {
-					name = renderEntity.getName();
-				}
-
-				float scale = renderEntity.getHeight() > renderEntity.getWidth() ? 1F / renderEntity.getHeight() : 0.5F;
-				matrices.scale(scale, scale, scale);
-
-				renderEntity.setPitch(-pitch * 57.2957763671875F);
-				renderEntity.setHeadYaw(yaw);
-
-				matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
-				EntityRenderer<? super Entity> entityRenderer = context.getEntityRenderDispatcher().getRenderer(renderEntity);
-				entityRenderer.render(renderEntity, 0, tickDelta, matrices, vertexConsumers, light);
-			} else {
-				name = Text.empty();
-			}
-			matrices.pop();
-			matrices.translate(0, 0.125F, 0);
-			matrices.scale(0.5F, 0.5F, 0.5F);
-		} else {
-			name = stack.isEmpty() ? Text.translatable("gui.glowcase.none") : (Text.literal("")).append(stack.getName()).formatted(stack.getRarity().getFormatting());
-			matrices.translate(0, 0.5, 0);
-			matrices.scale(0.5F, 0.5F, 0.5F);
-			matrices.multiply(RotationAxis.POSITIVE_X.rotation(pitch));
-			context.getItemRenderer().renderItem(entity.getDisplayedStack(), ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
-		}
+		name = stack.isEmpty() ? Text.translatable("gui.glowcase.none") : (Text.literal("")).append(stack.getName()).formatted(stack.getRarity().getFormatting());
+		matrices.translate(0, 0.5, 0);
+		matrices.scale(0.5F, 0.5F, 0.5F);
+		matrices.multiply(RotationAxis.POSITIVE_X.rotation(pitch));
+		context.getItemRenderer().renderItem(entity.getDisplayedStack(), ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
 
 		if (entity.showName) {
 			HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;
