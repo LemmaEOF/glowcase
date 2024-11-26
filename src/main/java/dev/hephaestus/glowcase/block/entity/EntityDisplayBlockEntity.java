@@ -64,8 +64,8 @@ public class EntityDisplayBlockEntity extends ItemDisplayBlockEntity {
 		if (this.displayEntity == null && this.world != null && this.stack.getItem() instanceof SpawnEggItem eggItem) {
 			this.displayEntity = eggItem.getEntityType(this.stack).create(this.world);
 			if(shouldEditScale && this.displayEntity != null) {
-				//make the default scale of the entity the same size as the block,
-				//but only if the player hasn't edited the scale value themselves
+				//make the default scale of the entity the roughly same size as the block
+				//shouldEditScale gets set to true after changing the entity
 				float calcScale = displayEntity.getHeight() >= displayEntity.getWidth() ? 1F / displayEntity.getHeight() : 0.5F;
 				float roundedScale = (float) Math.round(calcScale / 0.125f) * 0.125f;
 				if(Math.abs(roundedScale) > 3) {

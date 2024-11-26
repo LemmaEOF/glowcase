@@ -2,7 +2,6 @@ package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
 import dev.hephaestus.glowcase.block.entity.EntityDisplayBlockEntity;
-import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
 import dev.hephaestus.glowcase.client.util.BlockEntityRenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
