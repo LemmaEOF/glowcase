@@ -8,6 +8,7 @@
 		"glowcase:sprite_block",
 		"glowcase:outline_block",
 		"glowcase:particle_display",
-		"glowcase:item_acceptor_block"
+		"glowcase:item_acceptor_block",
+		"glowcase:entity_display_block"
 	]
 }

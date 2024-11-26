@@ -8,6 +8,7 @@
 	"block.glowcase.sprite_block": "Sprite Block",
 	"block.glowcase.outline_block": "Outline Block",
 	"block.glowcase.item_acceptor_block": "Item Acceptor Block",
+	"block.glowcase.entity_display_block": "Entity Display Block",
 	"gui.glowcase.scale_value": "Scale: %d",
 	"gui.glowcase.alignment": "Alignment: %s",
 	"gui.glowcase.gives_item": "Gives Item: %s",
@@ -15,6 +16,7 @@
 	"gui.glowcase.rotation_type": "Rotation Type: %s",
 	"gui.glowcase.show_name": "Show Name: %s",
 	"gui.glowcase.offset_value": "Offset: %s",
+	"gui.glowcase.tick_entity": "Tick Entity: %s",
 	"gui.glowcase.none": "(None)",
 	"item.glowcase.text_block": "Text Block",
 	"item.glowcase.hyperlink_block": "Hyperlink Block",
@@ -57,5 +59,8 @@
 	"block.glowcase.item_acceptor_block.tooltip.1": " Pushes the item stack to an inventory",
 	"block.glowcase.item_acceptor_block.tooltip.2": " Emits a redstone pulse",
 	"block.glowcase.item_acceptor_block.tooltip.3": "Interact in Creative mode to edit",
+	"block.glowcase.entity_display_block.tooltip.0": "Displays an entity from a spawn egg",
+	"block.glowcase.entity_display_block.tooltip.1": "Interact with a spawn egg to set it",
+	"block.glowcase.entity_display_block.tooltip.2": "Interact with the same spawn egg to edit",
 	"item.glowcase.lock.tooltip.0": "Locks and unlocks containers"
 }

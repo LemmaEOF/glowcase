@@ -42,4 +42,8 @@ public class GlowcaseCommonProxy {
 	public void openItemAcceptorBlockEditScreen(BlockPos pos) {
 		//No-op
 	}
+
+	public void openEntityDisplayBlockEditScreen(BlockPos pos) {
+		//No-op
+	}
 }

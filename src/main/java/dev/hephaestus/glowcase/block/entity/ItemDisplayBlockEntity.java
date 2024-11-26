@@ -3,6 +3,7 @@ package dev.hephaestus.glowcase.block.entity;
 import dev.hephaestus.glowcase.Glowcase;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -20,13 +21,14 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
-	private ItemStack stack = ItemStack.EMPTY;
+	protected ItemStack stack = ItemStack.EMPTY;
 
 	public RotationType rotationType = RotationType.TRACKING;
 	public GivesItem givesItem = GivesItem.YES;
@@ -36,8 +38,12 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 	public float yaw;
 	public Set<UUID> givenTo = new HashSet<>();
 
+	public ItemDisplayBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+	}
+
 	public ItemDisplayBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), pos, state);
+		this(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	@Override
@@ -200,6 +206,10 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 		float yaw = (float) (-MathHelper.atan2(f, d) + Math.PI / 2);
 
 		return new Vec2f(pitch, yaw);
+	}
+
+	public static void tick(World world, BlockPos blockPos, BlockState state, ItemDisplayBlockEntity blockEntity) {
+		//does nothing right now
 	}
 
 	public enum RotationType {
