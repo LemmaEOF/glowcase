@@ -2,6 +2,8 @@ package dev.hephaestus.glowcase.block.entity;
 
 import com.mojang.logging.LogUtils;
 import dev.hephaestus.glowcase.Glowcase;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -122,6 +124,7 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 		return super.toUpdatePacket();
 	}
 
+	@Environment(EnvType.CLIENT)
 	public static void clientTick(World world, BlockPos pos, BlockState state, SoundPlayerBlockEntity entity) {
 		MinecraftClient mc = MinecraftClient.getInstance();
 		if (mc.player instanceof ClientPlayerEntity player) {
