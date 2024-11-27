@@ -8,6 +8,7 @@ import dev.hephaestus.glowcase.client.render.block.entity.ItemDisplayBlockEntity
 import dev.hephaestus.glowcase.client.render.block.entity.OutlineBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.ParticleDisplayBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.PopupBlockEntityRenderer;
+import dev.hephaestus.glowcase.client.render.block.entity.SoundPlayerBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.SpriteBlockEntityRenderer;
 import dev.hephaestus.glowcase.client.render.block.entity.TextBlockEntityRenderer;
 import net.fabricmc.api.ClientModInitializer;
@@ -27,6 +28,7 @@ public class GlowcaseClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(Glowcase.SPRITE_BLOCK_ENTITY.get(), SpriteBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(Glowcase.OUTLINE_BLOCK_ENTITY.get(), OutlineBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(Glowcase.PARTICLE_DISPLAY_BLOCK_ENTITY.get(), ParticleDisplayBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(Glowcase.SOUND_BLOCK_ENTITY.get(), SoundPlayerBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(Glowcase.ITEM_ACCEPTOR_BLOCK_ENTITY.get(), ItemAcceptorBlockEntityRenderer::new);
 
 		WorldRenderEvents.AFTER_TRANSLUCENT.register(BakedBlockEntityRenderer.Manager::render);
