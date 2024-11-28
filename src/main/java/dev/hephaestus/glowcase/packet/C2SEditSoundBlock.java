@@ -24,7 +24,7 @@ public record C2SEditSoundBlock(SoundInfo soundInfo, PositionalInfo positionalIn
 
 	public static C2SEditSoundBlock of(SoundPlayerBlockEntity be) {
 		return new C2SEditSoundBlock(
-			new SoundInfo(be.soundId, be.category.toString(), be.volume, be.pitch, be.repeatDelay),
+			new SoundInfo(be.soundId, be.category.toString(), be.volume, be.pitch, be.repeatDelay, be.cancelOthers),
 			new PositionalInfo(be.distance, be.relative, be.soundPosition),
 			be.getPos()
 		);
@@ -49,6 +49,7 @@ public record C2SEditSoundBlock(SoundInfo soundInfo, PositionalInfo positionalIn
 		be.volume = soundInfo.volume;
 		be.pitch = soundInfo.pitch;
 		be.repeatDelay = soundInfo.repeatDelay;
+		be.cancelOthers = soundInfo.cancelOthers;
 
 		be.distance = positionalInfo.distance;
 		be.relative = positionalInfo.relative;
@@ -58,13 +59,14 @@ public record C2SEditSoundBlock(SoundInfo soundInfo, PositionalInfo positionalIn
 		be.dispatch();
 	}
 
-	public record SoundInfo(Identifier id, String category, float volume, float pitch, int repeatDelay) {
+	public record SoundInfo(Identifier id, String category, float volume, float pitch, int repeatDelay, boolean cancelOthers) {
 		public static final PacketCodec<RegistryByteBuf, SoundInfo> PACKET_CODEC = PacketCodec.tuple(
 			Identifier.PACKET_CODEC, SoundInfo::id,
 			PacketCodecs.STRING, SoundInfo::category,
 			PacketCodecs.FLOAT, SoundInfo::volume,
 			PacketCodecs.FLOAT, SoundInfo::pitch,
 			PacketCodecs.INTEGER, SoundInfo::repeatDelay,
+			PacketCodecs.BOOL, SoundInfo::cancelOthers,
 			SoundInfo::new
 		);
 	}

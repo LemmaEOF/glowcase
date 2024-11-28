@@ -14,7 +14,7 @@ public record SoundPlayerBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 	@Override
 	public void render(SoundPlayerBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-		//if (BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos()))
+		if (BlockEntityRenderUtil.shouldRenderPlaceholder(entity.getPos()))
 			BlockEntityRenderUtil.renderPlaceholder(entity, ITEM_TEXTURE, 1.0F, matrices, vertexConsumers, context.getRenderDispatcher().camera);
 	}
 }

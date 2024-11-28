@@ -40,6 +40,7 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 	public float distance = 16;
 	public boolean relative = false;
 	public Vec3d soundPosition;
+	public boolean cancelOthers = false;
 
 	public PositionedSoundLoop nowPlaying = null;
 
@@ -133,12 +134,16 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 				player,
 				entity.getPos()
 			);
-			LOGGER.info("done? " + (entity.nowPlaying == null ? "null" : entity.nowPlaying.isDone()));
+
+//			LOGGER.info("done? " + (entity.nowPlaying == null ? "null" : entity.nowPlaying.isDone()));
 			if (entity.nowPlaying == null || entity.nowPlaying.isDone() || entity.nowPlaying.isDifferentFrom(sound)) {
 				mc.getSoundManager().stop(entity.nowPlaying);
-				mc.getSoundManager().play(sound);
-				LOGGER.info("playing");
-				entity.nowPlaying = sound;
+//				LOGGER.info("playing");
+				if (sound.inRange()) {
+					if (entity.cancelOthers) mc.getSoundManager().stopSounds(null, entity.category);
+					mc.getSoundManager().play(sound);
+					entity.nowPlaying = sound;
+				}
 			}
 		}
 	}
@@ -184,10 +189,14 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 		@Override
 		public void tick() {
 			// stops track-stacking when reloading the block
-			if (!(this.player.squaredDistanceTo(this.soundBlockPos.toCenterPos()) <= this.squaredDistance) ||
+			if (!inRange() ||
 				!(this.player.getWorld().getBlockEntity(this.soundBlockPos) instanceof SoundPlayerBlockEntity be && !this.isDifferentFrom(be.nowPlaying))) {
 				setDone();
 			}
+		}
+
+		public boolean inRange() {
+			return this.player.squaredDistanceTo(this.soundBlockPos.toCenterPos()) <= this.squaredDistance;
 		}
 
 //		@Override

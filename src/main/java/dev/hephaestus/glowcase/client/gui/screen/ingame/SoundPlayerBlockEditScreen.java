@@ -18,6 +18,7 @@ public class SoundPlayerBlockEditScreen extends GlowcaseScreen {
 
 	private TextFieldWidget soundId;
 	private ButtonWidget categoryButton;
+	private ButtonWidget cancelOthersButton;
 
 	private TextFieldWidget volume;
 	private TextFieldWidget pitch;
@@ -51,6 +52,12 @@ public class SoundPlayerBlockEditScreen extends GlowcaseScreen {
 			this.categoryButton.setMessage(Text.stringifiedTranslatable("gui.glowcase.sound_category", this.soundBlock.category.getName()));
 		}).dimensions(7 * width / 10, 20, 2 * width / 10, 20).build();
 		this.addDrawableChild(this.categoryButton);
+
+		this.cancelOthersButton = new ButtonWidget.Builder(Text.of(Boolean.toString(soundBlock.cancelOthers)), (action) -> {
+			soundBlock.cancelOthers = !soundBlock.cancelOthers;
+			this.cancelOthersButton.setMessage(Text.of(Boolean.toString(soundBlock.cancelOthers)));
+		}).dimensions(7 * width / 10, 50, 2 * width / 10, 20).build();
+		this.addDrawableChild(this.cancelOthersButton);
 
 		this.volume = new TextFieldWidget(
 			this.client.textRenderer,
