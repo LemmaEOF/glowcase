@@ -8,7 +8,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.sound.AbstractSoundInstance;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.TickableSoundInstance;
@@ -42,14 +41,11 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 	public boolean relative = false;
 	public Vec3d soundPosition;
 
-	private AbstractSoundInstance nowPlaying = null;
+	public PositionedSoundLoop nowPlaying = null;
 
 	public SoundPlayerBlockEntity(BlockPos pos, BlockState state) {
 		super(Glowcase.SOUND_BLOCK_ENTITY.get(), pos, state);
 		this.soundPosition = pos.toCenterPos();
-//		this.soundX = pos.getX();
-//		this.soundY = pos.getY();
-//		this.soundZ = pos.getZ();
 	}
 
 	public void cycleCategory() {
@@ -128,62 +124,26 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 	public static void clientTick(World world, BlockPos pos, BlockState state, SoundPlayerBlockEntity entity) {
 		MinecraftClient mc = MinecraftClient.getInstance();
 		if (mc.player instanceof ClientPlayerEntity player) {
-//			if (entity.sound == null) return;
-//
-//			RegistryWrapper.WrapperLookup lookup = world.getRegistryManager();
-//			RegistryKey<SoundEvent> key = RegistryKey.of(RegistryKeys.SOUND_EVENT, entity.sound);
-//
-//			Optional<RegistryEntry.Reference<SoundEvent>> optionalSound =
-//				lookup.getWrapperOrThrow(RegistryKeys.SOUND_EVENT).getOptional(key);
-//			if (optionalSound.isEmpty()) return;
-//
-//			player.playSoundToPlayer(optionalSound.get().value(), SoundCategory.BLOCKS, 1, 1);
-
-			// TODO: check if any of the other properties changed beyond id. need an equals check or something
-			if (entity.nowPlaying == null || !entity.nowPlaying.getId().equals(entity.soundId) || (entity.nowPlaying instanceof TickableSoundInstance tickable && tickable.isDone())) {
-//				AbstractSoundInstance sound = new PositionedSoundLoop(
-//					entity.sound, SoundCategory.BLOCKS,
-//					1, 1,
-//					SoundInstance.createRandom(),
-//					true, 0,
-//					SoundInstance.AttenuationType.LINEAR,
-//					pos.getX(), pos.getY(), pos.getZ(),
-//					false
-//				);
-				// change xyz to 000 when switching to relative (and back to blockpos for absolute)
-//				AbstractSoundInstance sound = new PositionedSoundLoop(
-//					entity.soundId, SoundCategory.BLOCKS,
-//					1, 1,
-//					0,
-//					16,
-//					false,
-//					pos.getX(), pos.getY(), pos.getZ(),
-//					player
-//				);
-				AbstractSoundInstance sound = new PositionedSoundLoop(
-					entity.soundId, entity.category,
-					entity.volume, entity.pitch, entity.repeatDelay,
-					entity.distance,
-					entity.relative,
-					entity.soundPosition,
-					player,
-					entity.getPos()
-				);
-
-				LOGGER.info("playing sound");
-//				WeightedSoundSet sounds = mc.getSoundManager().get(entity.sound);
-//				if (sounds != null) {
-//					sounds.getSound(SoundInstance.createRandom());
-//
-//				}
+			PositionedSoundLoop sound = new PositionedSoundLoop(
+				entity.soundId, entity.category,
+				entity.volume, entity.pitch, entity.repeatDelay,
+				entity.distance,
+				entity.relative,
+				entity.soundPosition,
+				player,
+				entity.getPos()
+			);
+			LOGGER.info("done? " + (entity.nowPlaying == null ? "null" : entity.nowPlaying.isDone()));
+			if (entity.nowPlaying == null || entity.nowPlaying.isDone() || entity.nowPlaying.isDifferentFrom(sound)) {
 				mc.getSoundManager().stop(entity.nowPlaying);
 				mc.getSoundManager().play(sound);
-				//if (mc.player.clientWorld.isPosLoaded(pos))
+				LOGGER.info("playing");
 				entity.nowPlaying = sound;
 			}
 		}
 	}
 
+	// I don't think the repeat is necessary on this at this point
 	public static class PositionedSoundLoop extends PositionedSoundInstance implements TickableSoundInstance {
 		private final PlayerEntity player;
 		private final BlockPos soundBlockPos;
@@ -224,14 +184,31 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 		@Override
 		public void tick() {
 			// stops track-stacking when reloading the block
-			if (!canPlay()) {
+			if (!(this.player.squaredDistanceTo(this.soundBlockPos.toCenterPos()) <= this.squaredDistance) ||
+				!(this.player.getWorld().getBlockEntity(this.soundBlockPos) instanceof SoundPlayerBlockEntity be && !this.isDifferentFrom(be.nowPlaying))) {
 				setDone();
 			}
 		}
 
-		@Override
-		public boolean canPlay() {
-			return this.player.squaredDistanceTo(this.soundBlockPos.toCenterPos()) <= this.squaredDistance;
+//		@Override
+//		public boolean canPlay() {
+//			return this.player.squaredDistanceTo(this.soundBlockPos.toCenterPos()) <= this.squaredDistance;
+//		}
+
+		public boolean isDifferentFrom(PositionedSoundLoop other) {
+			return !(
+				other != null &&
+				this.id.equals(other.id) &&
+					this.category.equals(other.category) &&
+					this.volume == other.volume &&
+					this.pitch == other.pitch &&
+					this.repeatDelay == other.repeatDelay &&
+					this.squaredDistance == other.squaredDistance &&
+					this.relative == other.relative &&
+					this.x == other.x &&
+					this.y == other.y &&
+					this.z == other.z
+			);
 		}
 	}
 }
