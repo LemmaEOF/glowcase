@@ -39,6 +39,10 @@ public class GlowcaseCommonProxy {
 		//No-op
 	}
 
+	public void openSoundBlockEditScreen(BlockPos pos) {
+		//No-op
+	}
+
 	public void openItemAcceptorBlockEditScreen(BlockPos pos) {
 		//No-op
 	}

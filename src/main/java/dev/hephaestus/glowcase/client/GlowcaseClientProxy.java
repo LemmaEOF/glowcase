@@ -91,6 +91,14 @@ public class GlowcaseClientProxy extends GlowcaseCommonProxy {
 	}
 
 	@Override
+	public void openSoundBlockEditScreen(BlockPos pos) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client.world != null && client.world.getBlockEntity(pos) instanceof SoundPlayerBlockEntity be) {
+			MinecraftClient.getInstance().setScreen(new SoundPlayerBlockEditScreen(be));
+		}
+	}
+
+	@Override
 	public void openItemAcceptorBlockEditScreen(BlockPos pos) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client.world != null && client.world.getBlockEntity(pos) instanceof ItemAcceptorBlockEntity be) {

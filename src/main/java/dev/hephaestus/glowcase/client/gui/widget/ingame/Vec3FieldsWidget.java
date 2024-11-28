@@ -57,6 +57,12 @@ public class Vec3FieldsWidget extends ContainerWidget {
 		this.z.setChangedListener(s -> value = new Vec3d(value.x, value.y, ParseUtil.parseOrDefault(s, value.z)));
 	}
 
+	public void setVec(Vec3d newVec) {
+		this.x.setText(String.valueOf(newVec.x));
+		this.y.setText(String.valueOf(newVec.y));
+		this.z.setText(String.valueOf(newVec.z));
+	}
+
 	@Override
 	public List<? extends Element> children() {
 		return List.of(x, y, z);
