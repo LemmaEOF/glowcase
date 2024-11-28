@@ -2,8 +2,24 @@ package dev.hephaestus.glowcase;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import dev.hephaestus.glowcase.block.*;
-import dev.hephaestus.glowcase.block.entity.*;
+import dev.hephaestus.glowcase.block.HyperlinkBlock;
+import dev.hephaestus.glowcase.block.ItemAcceptorBlock;
+import dev.hephaestus.glowcase.block.ItemDisplayBlock;
+import dev.hephaestus.glowcase.block.OutlineBlock;
+import dev.hephaestus.glowcase.block.ParticleDisplayBlock;
+import dev.hephaestus.glowcase.block.PopupBlock;
+import dev.hephaestus.glowcase.block.SoundPlayerBlock;
+import dev.hephaestus.glowcase.block.SpriteBlock;
+import dev.hephaestus.glowcase.block.TextBlock;
+import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
+import dev.hephaestus.glowcase.block.entity.ItemAcceptorBlockEntity;
+import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
+import dev.hephaestus.glowcase.block.entity.ParticleDisplayBlockEntity;
+import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
+import dev.hephaestus.glowcase.block.entity.SoundPlayerBlockEntity;
+import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
+import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
 import dev.hephaestus.glowcase.compat.PolydexCompatibility;
 import dev.hephaestus.glowcase.item.LockItem;
 import net.fabricmc.api.ModInitializer;
@@ -45,7 +61,7 @@ public class Glowcase implements ModInitializer {
 
 	public static final Supplier<SoundPlayerBlock> SOUND_BLOCK = registerBlock("sound_block", SoundPlayerBlock::new);
 	public static final Supplier<BlockItem> SOUND_BLOCK_ITEM = registerItem("sound_block", () -> new BlockItem(SOUND_BLOCK.get(), new Item.Settings()));
-	public static final Supplier<BlockEntityType<SoundPlayerBlockEntity>> SOUND_BLOCK_ENTITY = registerBlockEntity("particle_display", () -> BlockEntityType.Builder.create(SoundPlayerBlockEntity::new, SOUND_BLOCK.get()).build(null));
+	public static final Supplier<BlockEntityType<SoundPlayerBlockEntity>> SOUND_BLOCK_ENTITY = registerBlockEntity("sound_block", () -> BlockEntityType.Builder.create(SoundPlayerBlockEntity::new, SOUND_BLOCK.get()).build(null));
 
 	public static final Supplier<TextBlock> TEXT_BLOCK = registerBlock("text_block", TextBlock::new);
 	public static final Supplier<BlockItem> TEXT_BLOCK_ITEM = registerItem("text_block", () -> new BlockItem(TEXT_BLOCK.get(), new Item.Settings()));
