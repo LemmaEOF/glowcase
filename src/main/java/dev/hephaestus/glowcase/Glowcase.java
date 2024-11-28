@@ -83,7 +83,7 @@ public class Glowcase implements ModInitializer {
 			entries.add(PARTICLE_DISPLAY_ITEM.get());
 			entries.add(ENTITY_DISPLAY_BLOCK_ITEM.get());
 			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
-      entries.add(SOUND_BLOCK_ITEM.get());
+      		entries.add(SOUND_BLOCK_ITEM.get());
 			entries.add(ITEM_ACCEPTOR_BLOCK_ITEM.get());
 			entries.add(HYPERLINK_BLOCK_ITEM.get());
 			entries.add(POPUP_BLOCK_ITEM.get());
