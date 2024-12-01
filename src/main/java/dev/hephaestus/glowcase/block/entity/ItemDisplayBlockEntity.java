@@ -164,7 +164,8 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 		switch (this.givesItem) {
 			case YES -> this.givesItem = GivesItem.NO;
 			case NO -> this.givesItem = GivesItem.ONCE;
-			case ONCE -> this.givesItem = GivesItem.YES;
+			case ONCE -> this.givesItem = GivesItem.ONE;
+			case ONE -> this.givesItem = GivesItem.YES;
 		}
 		givenTo.clear();
 		markDirty();
@@ -187,6 +188,7 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 			case YES -> true;
 			case NO -> false;
 			case ONCE -> player.isCreative() || !givenTo.contains(player.getUuid());
+			case ONE -> player.isCreative() || !player.getInventory().containsAny(Set.of(stack.getItem()));
 		};
 	}
 
@@ -232,7 +234,7 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 	}
 
 	public enum GivesItem {
-		YES, NO, ONCE
+		YES, NO, ONCE, ONE
 	}
 
 	public enum Offset {
