@@ -78,6 +78,7 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 		tag.putInt("repeatDelay", this.repeatDelay);
 		tag.putFloat("distance", this.distance);
 		tag.putBoolean("relative", this.relative);
+		tag.putBoolean("cancelOthers", this.cancelOthers);
 		Vec3d.CODEC.encodeStart(ops, this.soundPosition)
 			.resultOrPartial(LOGGER::error)
 			.ifPresent(result -> tag.put("soundPosition", result));
@@ -98,6 +99,7 @@ public class SoundPlayerBlockEntity extends BlockEntity {
 		this.repeatDelay = tag.getInt("repeatDelay");
 		this.distance = tag.getFloat("distance");
 		this.relative = tag.getBoolean("relative");
+		this.cancelOthers =  tag.getBoolean("cancelOthers");
 		if (tag.contains("soundPosition"))
 			Vec3d.CODEC.parse(ops, tag.get("soundPosition"))
 				.resultOrPartial(LOGGER::error)
