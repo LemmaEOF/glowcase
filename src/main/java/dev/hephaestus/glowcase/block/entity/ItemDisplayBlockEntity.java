@@ -3,11 +3,11 @@ package dev.hephaestus.glowcase.block.entity;
 import dev.hephaestus.glowcase.Glowcase;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -23,14 +23,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
-	private ItemStack stack = ItemStack.EMPTY;
-	private Entity displayEntity = null;
+	protected ItemStack stack = ItemStack.EMPTY;
 
 	public RotationType rotationType = RotationType.TRACKING;
 	public GivesItem givesItem = GivesItem.YES;
@@ -40,8 +38,12 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 	public float yaw;
 	public Set<UUID> givenTo = new HashSet<>();
 
+	public ItemDisplayBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+	}
+
 	public ItemDisplayBlockEntity(BlockPos pos, BlockState state) {
-		super(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), pos, state);
+		this(Glowcase.ITEM_DISPLAY_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	@Override
@@ -72,7 +74,6 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 		this.stack = tag.contains("item", NbtElement.COMPOUND_TYPE)
 			? ItemStack.fromNbt(registryLookup, tag.getCompound("item")).orElse(ItemStack.EMPTY)
 			: ItemStack.EMPTY;
-		this.clearDisplayEntity();
 
 		if (tag.contains("tracking")) {
 			this.rotationType = tag.getBoolean("tracking") ? RotationType.TRACKING : RotationType.LOCKED;
@@ -121,21 +122,8 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 		this.stack = stack.copy();
 
 		this.givenTo.clear();
-		this.clearDisplayEntity();
 		this.markDirty();
 		this.dispatch();
-	}
-
-	private void clearDisplayEntity() {
-		this.displayEntity = null;
-	}
-
-	public Entity getDisplayEntity() {
-		if (this.displayEntity == null && this.world != null && this.stack.getItem() instanceof SpawnEggItem eggItem) {
-			this.displayEntity = eggItem.getEntityType(this.stack).create(this.world);
-		}
-
-		return this.displayEntity;
 	}
 
 	public ItemStack getDisplayedStack() {
@@ -223,10 +211,7 @@ public class ItemDisplayBlockEntity extends BlockEntity implements Inventory {
 	}
 
 	public static void tick(World world, BlockPos blockPos, BlockState state, ItemDisplayBlockEntity blockEntity) {
-		if (blockEntity.getDisplayEntity() != null) {
-			blockEntity.displayEntity.tick();
-			++blockEntity.displayEntity.age;
-		}
+		//does nothing right now
 	}
 
 	public enum RotationType {

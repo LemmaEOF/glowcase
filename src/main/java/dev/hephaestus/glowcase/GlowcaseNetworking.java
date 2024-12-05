@@ -1,14 +1,6 @@
 package dev.hephaestus.glowcase;
 
-import dev.hephaestus.glowcase.packet.C2SEditHyperlinkBlock;
-import dev.hephaestus.glowcase.packet.C2SEditItemAcceptorBlock;
-import dev.hephaestus.glowcase.packet.C2SEditItemDisplayBlock;
-import dev.hephaestus.glowcase.packet.C2SEditOutlineBlock;
-import dev.hephaestus.glowcase.packet.C2SEditParticleDisplayBlock;
-import dev.hephaestus.glowcase.packet.C2SEditPopupBlock;
-import dev.hephaestus.glowcase.packet.C2SEditSoundBlock;
-import dev.hephaestus.glowcase.packet.C2SEditSpriteBlock;
-import dev.hephaestus.glowcase.packet.C2SEditTextBlock;
+import dev.hephaestus.glowcase.packet.*;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
@@ -23,6 +15,7 @@ public class GlowcaseNetworking {
 		PayloadTypeRegistry.playC2S().register(C2SEditParticleDisplayBlock.ID, C2SEditParticleDisplayBlock.PACKET_CODEC);
 		PayloadTypeRegistry.playC2S().register(C2SEditSoundBlock.ID, C2SEditSoundBlock.PACKET_CODEC);
 		PayloadTypeRegistry.playC2S().register(C2SEditItemAcceptorBlock.ID, C2SEditItemAcceptorBlock.PACKET_CODEC);
+		PayloadTypeRegistry.playC2S().register(C2SEditEntityDisplayBlock.ID, C2SEditEntityDisplayBlock.PACKET_CODEC);
 
 		ServerPlayNetworking.registerGlobalReceiver(C2SEditHyperlinkBlock.ID, C2SEditHyperlinkBlock::receive);
 		ServerPlayNetworking.registerGlobalReceiver(C2SEditItemDisplayBlock.ID, C2SEditItemDisplayBlock::receive);
@@ -33,5 +26,6 @@ public class GlowcaseNetworking {
 		ServerPlayNetworking.registerGlobalReceiver(C2SEditParticleDisplayBlock.ID, C2SEditParticleDisplayBlock::receive);
 		ServerPlayNetworking.registerGlobalReceiver(C2SEditSoundBlock.ID, C2SEditSoundBlock::receive);
 		ServerPlayNetworking.registerGlobalReceiver(C2SEditItemAcceptorBlock.ID, C2SEditItemAcceptorBlock::receive);
+		ServerPlayNetworking.registerGlobalReceiver(C2SEditEntityDisplayBlock.ID, C2SEditEntityDisplayBlock::receive);
 	}
 }

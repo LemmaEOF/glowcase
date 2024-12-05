@@ -1,18 +1,19 @@
 package dev.hephaestus.glowcase.client.render.block.entity;
 
 import dev.hephaestus.glowcase.Glowcase;
-import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
+import dev.hephaestus.glowcase.block.entity.EntityDisplayBlockEntity;
 import dev.hephaestus.glowcase.client.util.BlockEntityRenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
@@ -22,11 +23,11 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec2f;
 
-public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<ItemDisplayBlockEntity> {
-	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/item_display_block.png");
+public record EntityDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context context) implements BlockEntityRenderer<EntityDisplayBlockEntity> {
+	public static Identifier ITEM_TEXTURE = Glowcase.id("textures/item/entity_display_block.png");
 
 	@Override
-	public void render(ItemDisplayBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+	public void render(EntityDisplayBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 		Entity camera = MinecraftClient.getInstance().getCameraEntity();
 
 		if (camera == null) return;
@@ -39,7 +40,7 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 		switch (entity.rotationType) {
 			case TRACKING -> {
-				Vec2f pitchAndYaw = ItemDisplayBlockEntity.getPitchAndYaw(camera, entity.getPos(), tickDelta);
+				Vec2f pitchAndYaw = EntityDisplayBlockEntity.getPitchAndYaw(camera, entity, tickDelta);
 				pitch = pitchAndYaw.x;
 				yaw = pitchAndYaw.y;
 				matrices.multiply(RotationAxis.POSITIVE_Y.rotation(yaw));
@@ -67,11 +68,31 @@ public record ItemDisplayBlockEntityRenderer(BlockEntityRendererFactory.Context 
 
 		ItemStack stack = entity.getDisplayedStack();
 		Text name;
-		name = stack.isEmpty() ? Text.translatable("gui.glowcase.none") : (Text.literal("")).append(stack.getName()).formatted(stack.getRarity().getFormatting());
-		matrices.translate(0, 0.5, 0);
-		matrices.scale(0.5F, 0.5F, 0.5F);
-		matrices.multiply(RotationAxis.POSITIVE_X.rotation(pitch));
-		context.getItemRenderer().renderItem(entity.getDisplayedStack(), ModelTransformationMode.FIXED, light, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, entity.getWorld(), 0);
+		matrices.push();
+		Entity renderEntity = entity.getDisplayEntity();
+		if (renderEntity != null) {
+			name = stack.get(DataComponentTypes.CUSTOM_NAME);
+			if (name == null) {
+				name = renderEntity.getName();
+			}
+
+			float scale = entity.displayScale;
+			matrices.scale(scale, scale, scale);
+
+			float entityPitch = -pitch * 57.2957763671875F;
+			renderEntity.setPitch(entityPitch);
+			renderEntity.prevPitch = entityPitch;
+			renderEntity.setHeadYaw(yaw);
+			if(renderEntity instanceof LivingEntity livingRenderEntity) livingRenderEntity.prevHeadYaw = yaw;
+
+			matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180));
+			EntityRenderer<? super Entity> entityRenderer = context.getEntityRenderDispatcher().getRenderer(renderEntity);
+			entityRenderer.render(renderEntity, 0, entity.tickEntity ? tickDelta : 1f, matrices, vertexConsumers, light);
+		} else {
+			name = stack.isEmpty() ? Text.translatable("gui.glowcase.none") : (Text.literal("")).append(stack.getName()).formatted(stack.getRarity().getFormatting());
+		}
+		matrices.pop();
+		matrices.translate(0, 0.125F, 0);
 
 		if (entity.showName) {
 			HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;

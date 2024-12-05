@@ -2,24 +2,8 @@ package dev.hephaestus.glowcase;
 
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import dev.hephaestus.glowcase.block.HyperlinkBlock;
-import dev.hephaestus.glowcase.block.ItemAcceptorBlock;
-import dev.hephaestus.glowcase.block.ItemDisplayBlock;
-import dev.hephaestus.glowcase.block.OutlineBlock;
-import dev.hephaestus.glowcase.block.ParticleDisplayBlock;
-import dev.hephaestus.glowcase.block.PopupBlock;
-import dev.hephaestus.glowcase.block.SoundPlayerBlock;
-import dev.hephaestus.glowcase.block.SpriteBlock;
-import dev.hephaestus.glowcase.block.TextBlock;
-import dev.hephaestus.glowcase.block.entity.HyperlinkBlockEntity;
-import dev.hephaestus.glowcase.block.entity.ItemAcceptorBlockEntity;
-import dev.hephaestus.glowcase.block.entity.ItemDisplayBlockEntity;
-import dev.hephaestus.glowcase.block.entity.OutlineBlockEntity;
-import dev.hephaestus.glowcase.block.entity.ParticleDisplayBlockEntity;
-import dev.hephaestus.glowcase.block.entity.PopupBlockEntity;
-import dev.hephaestus.glowcase.block.entity.SoundPlayerBlockEntity;
-import dev.hephaestus.glowcase.block.entity.SpriteBlockEntity;
-import dev.hephaestus.glowcase.block.entity.TextBlockEntity;
+import dev.hephaestus.glowcase.block.*;
+import dev.hephaestus.glowcase.block.entity.*;
 import dev.hephaestus.glowcase.compat.PolydexCompatibility;
 import dev.hephaestus.glowcase.item.LockItem;
 import net.fabricmc.api.ModInitializer;
@@ -85,6 +69,10 @@ public class Glowcase implements ModInitializer {
 
 	public static final Supplier<Item> LOCK_ITEM = registerItem("lock", () -> new LockItem(new Item.Settings()));
 
+	public static final Supplier<EntityDisplayBlock> ENTITY_DISPLAY_BLOCK = registerBlock("entity_display_block", EntityDisplayBlock::new);
+	public static final Supplier<BlockItem> ENTITY_DISPLAY_BLOCK_ITEM = registerItem("entity_display_block", () -> new BlockItem(ENTITY_DISPLAY_BLOCK.get(), new Item.Settings()));
+	public static final Supplier<BlockEntityType<EntityDisplayBlockEntity>> ENTITY_DISPLAY_BLOCK_ENTITY = registerBlockEntity("entity_display_block", () -> BlockEntityType.Builder.create(EntityDisplayBlockEntity::new, ENTITY_DISPLAY_BLOCK.get()).build(null));
+
 	public static final Supplier<ItemGroup> ITEM_GROUP = registerItemGroup("items", () -> FabricItemGroup.builder()
 		.displayName(Text.translatable("itemGroup.glowcase.items"))
 		.icon(() -> new ItemStack(Items.GLOWSTONE))
@@ -93,8 +81,9 @@ public class Glowcase implements ModInitializer {
 			entries.add(SPRITE_BLOCK_ITEM.get());
 			entries.add(OUTLINE_BLOCK_ITEM.get());
 			entries.add(PARTICLE_DISPLAY_ITEM.get());
-			entries.add(SOUND_BLOCK_ITEM.get());
+			entries.add(ENTITY_DISPLAY_BLOCK_ITEM.get());
 			entries.add(ITEM_DISPLAY_BLOCK_ITEM.get());
+      		entries.add(SOUND_BLOCK_ITEM.get());
 			entries.add(ITEM_ACCEPTOR_BLOCK_ITEM.get());
 			entries.add(HYPERLINK_BLOCK_ITEM.get());
 			entries.add(POPUP_BLOCK_ITEM.get());
